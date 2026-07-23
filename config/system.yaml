@@ -37,7 +37,7 @@ sequence:
 
 can_spam:
   # Physical mailing address, required in every email footer. Blocks live mode until set.
-  physical_address: REPLACE_ME
+  physical_address: "239 Betsey Scull Rd, Egg Harbor Twp, NJ 08234"
   unsubscribe: apollo_opt_out_link
 
 notifications:

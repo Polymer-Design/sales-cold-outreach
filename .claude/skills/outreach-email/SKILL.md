@@ -12,11 +12,12 @@ Because that is literally what you're doing, minus the hand.
 
 Collect 3-6 concrete, current facts about the lead. Every fact needs a source URL.
 - Their website (what's on it, what's broken, what's dated, what platform it runs on)
-- **Site speed (PageSpeed):** run `python scripts/pagespeed.py check --url <their-site>`. If it
-  returns `ok: true`, record `lcp_seconds`, `performance_score`, `mobile_friendly`, and
-  `report_url` — the `report_url` is the source URL for the fact-check gate. If it comes back
-  already scored on the lead (the scoring skill runs it), reuse that number, don't re-fetch.
-  If `ok: false`, skip it; do not open with a made-up load time.
+- **Site speed (PageSpeed), a supporting detail not the hook:** run
+  `python scripts/pagespeed.py check --url <their-site>`. If it returns `ok: true`, record
+  `lcp_seconds`, `performance_score`, `mobile_friendly`, and `report_url` — the `report_url` is
+  the source URL for the fact-check gate. If it comes back already scored on the lead (the
+  scoring skill runs it), reuse that number, don't re-fetch. If `ok: false`, skip it. This is
+  reinforcing evidence for a real hook (Step 3), never the opening line on its own.
 - Churches: their churchcenter.com pages (what modules they use: giving, events, groups,
   check-in), sermon series, campus count, recent announcements
 - Startups: funding announcements, product launches, job postings (especially marketing/web
@@ -31,8 +32,10 @@ rather than writing a generic email.
 
 From `knowledge/case-studies/` (status: approved, icp_fit matches) plus
 `knowledge/business-overview.md`. One proof point per email, the most relevant, not the most
-impressive. If no approved case study fits, use a plain capability statement from the
-business overview and nothing more.
+impressive. The hook (Step 3, part 1) and the proof should point at the same capability: if you
+opened on their Church Center friction, prove it with the church-integration work, not a generic
+redesign. If no approved case study fits, use a plain capability statement from the business
+overview and nothing more. Never manufacture a proof point to match a hook.
 
 ## Step 3 — Write the sequence
 
@@ -44,16 +47,26 @@ of the playbook default for the variable under test, and record the arm on the d
 
 The four-part structure maps onto a very short email; the parts are beats, not paragraphs:
 
-1. **Grab attention** — sentence one is a specific observation about THEM from your research.
-   Not a compliment, an observation. It should be impossible to send to any other company.
-   When PageSpeed came back `poor` (or `moderate` and the site is clearly the problem), a real
-   measured number is one of the strongest openers you have: "your homepage takes 4.8 seconds
-   to load on a phone" lands harder than "your site could be faster." Use the exact number from
-   the research block, phrased in Ethan's plain voice — never round it up for effect, never say
-   "slow" without the number behind it, and only cite it if PageSpeed actually returned it. A
-   `not mobile-friendly` result works the same way ("your site doesn't fit a phone screen").
-   Don't force it: if the freshest, most specific fact is a funding raise or a campaign, lead
-   with that instead — the load time is a hook option, not a mandate.
+1. **Grab attention** — sentence one is a specific observation about THEM, and the best hooks
+   come from crossing your research against what Polymer actually does (`knowledge/business-overview.md`
+   + approved case studies). Not a compliment, not a vanity metric: a real, human insight that
+   names a gap or opportunity we are specifically built to fix. Rank hooks in this order and use
+   the highest one the research supports:
+   - **Capability fit (best):** a fact about them that maps onto a Polymer capability or a
+     case-study outcome. Example (church): they run Planning Center, but their template site
+     pulls none of it in, so events, groups, and giving live in a separate app their people have
+     to go hunting for. We build the site around Church Center so that friction disappears. That
+     is a specific, human, "you clearly looked at us" opener. Startups: a stock template that
+     undercuts the raise, a gap their new marketing hire will inherit, a migration off Wix.
+   - **A fresh, specific moment (good):** a raise, a capital campaign, a new hire, a launch, and
+     why that makes now the moment. Tie it to what we would do, not just "congrats."
+   - **Site health (supporting only, never the opener):** a PageSpeed load time or a
+     not-mobile-friendly result is secondary or tertiary evidence. Use it to reinforce a
+     capability hook ("...and it takes 4.8s to load on a phone, which is where your people open
+     it"), never as the opening line and never as a stat for its own sake. Exact measured number
+     only, in Ethan's plain voice, and only if PageSpeed actually returned it. If a speed number
+     is the only thing you have, the research is too thin — go back to Step 1.
+   Whatever you lead with, it must be impossible to send to any other company.
 2. **Generate interaction** — connect that observation to a problem or moment they're likely
    in right now. One or two sentences.
 3. **Create desire** — the proof point. What we did for someone like them, stated flat, real
