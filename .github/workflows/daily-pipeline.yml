@@ -39,6 +39,7 @@ jobs:
             --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
         env:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+          GOOGLEPAGESPEEDINSIGHTS_API_KEY: ${{ secrets.GOOGLEPAGESPEEDINSIGHTS_API_KEY }}
           GH_TOKEN: ${{ github.token }}
 
       - name: Push any uncommitted data changes

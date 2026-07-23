@@ -12,6 +12,11 @@ Because that is literally what you're doing, minus the hand.
 
 Collect 3-6 concrete, current facts about the lead. Every fact needs a source URL.
 - Their website (what's on it, what's broken, what's dated, what platform it runs on)
+- **Site speed (PageSpeed):** run `python scripts/pagespeed.py check --url <their-site>`. If it
+  returns `ok: true`, record `lcp_seconds`, `performance_score`, `mobile_friendly`, and
+  `report_url` — the `report_url` is the source URL for the fact-check gate. If it comes back
+  already scored on the lead (the scoring skill runs it), reuse that number, don't re-fetch.
+  If `ok: false`, skip it; do not open with a made-up load time.
 - Churches: their churchcenter.com pages (what modules they use: giving, events, groups,
   check-in), sermon series, campus count, recent announcements
 - Startups: funding announcements, product launches, job postings (especially marketing/web
@@ -41,6 +46,14 @@ The four-part structure maps onto a very short email; the parts are beats, not p
 
 1. **Grab attention** — sentence one is a specific observation about THEM from your research.
    Not a compliment, an observation. It should be impossible to send to any other company.
+   When PageSpeed came back `poor` (or `moderate` and the site is clearly the problem), a real
+   measured number is one of the strongest openers you have: "your homepage takes 4.8 seconds
+   to load on a phone" lands harder than "your site could be faster." Use the exact number from
+   the research block, phrased in Ethan's plain voice — never round it up for effect, never say
+   "slow" without the number behind it, and only cite it if PageSpeed actually returned it. A
+   `not mobile-friendly` result works the same way ("your site doesn't fit a phone screen").
+   Don't force it: if the freshest, most specific fact is a funding raise or a campaign, lead
+   with that instead — the load time is a hook option, not a mandate.
 2. **Generate interaction** — connect that observation to a problem or moment they're likely
    in right now. One or two sentences.
 3. **Create desire** — the proof point. What we did for someone like them, stated flat, real
@@ -78,6 +91,8 @@ drafted_at:
 ## research
 - fact one (source: URL)
 - fact two (source: URL)
+- pagespeed: 4.8s LCP on mobile, perf 38, mobile_friendly false (source: report_url)
+  # omit this line entirely if PageSpeed returned ok:false — never leave a placeholder number
 
 ## proof_used
 - knowledge/case-studies/fispoke.md OR knowledge/business-overview.md#section

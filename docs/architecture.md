@@ -11,7 +11,7 @@ visualize. The Mermaid diagrams below render on GitHub automatically.
 | Lead data + sending + CRM | **Apollo** | Finds startup leads, holds all contacts, sends every cold email through connected mailboxes, detects replies |
 | Church lead sourcing | **Custom crawler** (`scripts/church_crawler.py`) | Finds churches via the Planning Center / churchcenter.com signal (Apollo's church data is thin) |
 | Mailbox warmup + deliverability | **TrulyInbox** | Warms the sending inboxes; the health API feeds the failsafe monitor |
-| Site-quality signal | **Google PageSpeed** | Scores each lead's website speed/mobile health → a scoring input and an email hook (being wired in) |
+| Site-quality signal | **Google PageSpeed** | Scores each lead's website speed/mobile health (`scripts/pagespeed.py`) → feeds the technographic score and gives the email its first-line load-time hook |
 | Internal alerts to Ethan | **Resend** | Emails Ethan inbox-health alarms and reply flags. Never sends sales email |
 | Scheduler + system of record | **GitHub Actions + this repo** | Runs the jobs on cron; the repo is the audit trail (leads, drafts, reports, logs) |
 

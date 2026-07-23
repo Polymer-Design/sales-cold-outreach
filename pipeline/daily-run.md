@@ -19,8 +19,10 @@ Append every new lead to `data/leads/index.jsonl`:
 
 ## 2. Score
 
-Run the **lead-scoring** skill on every unscored lead. Write scores to the index (and
-Apollo custom fields in live mode).
+Run the **lead-scoring** skill on every unscored lead. It runs `scripts/pagespeed.py` on each
+lead's site for the technographic site-health signal; the measured number is stored on the lead
+so the drafter reuses it (no second fetch). Write scores to the index (and Apollo custom fields
+in live mode).
 
 ## 3. Draft
 

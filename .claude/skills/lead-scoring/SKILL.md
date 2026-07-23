@@ -19,12 +19,31 @@ fit), team size 5-50, hiring velocity. Full 30 for stage + size match; deduct fo
 
 ## 2. Technographic fit (20 pts)
 
-**Churches:** confirmed churchcenter.com subdomain = 20. Planning Center mentioned on site
-but no subdomain found = 12. No signal = 0.
+A base platform signal plus a site-health need signal from Google PageSpeed. A slow or
+non-mobile site means they need us more, so PageSpeed only ever *adds* points, up to the
+20-pt cap — it never lowers a lead's existing score.
 
-**Startups:** Webflow/Wix/Squarespace/WordPress currently detectable on their site = signal
-they buy websites rather than build in-house. Marketing site visibly weak vs. their funding
-level is worth points too (they need us). 0 if their site is clearly agency-fresh (<6 months old).
+**Run PageSpeed first:** `python scripts/pagespeed.py check --url <their-site>` (mobile is the
+default). It returns `performance_score` (0-100), `lcp_seconds`, `mobile_friendly`, and a
+coarse `signal` (poor | moderate | good). If it returns `ok: false` (no key, site unreachable,
+timeout), score the base signal only and note "pagespeed unavailable" — never invent a number.
+
+**Churches (base):** confirmed churchcenter.com subdomain = 20. Planning Center mentioned on
+site but no subdomain found = 12. No signal = 0.
+
+**Startups (base):** Webflow/Wix/Squarespace/WordPress currently detectable on their site =
+signal they buy websites rather than build in-house. 0 if their site is clearly agency-fresh
+(<6 months old).
+
+**Site-health need (both ICPs), added on top of the base, category still caps at 20:**
+- `signal: poor` (perf <50, or LCP >4s, or no mobile viewport): **+8**
+- `signal: moderate`: **+4**
+- `signal: good` (fast and mobile-friendly): **+0** — a modern fast site needs us less
+
+PageSpeed is the objective read on the old "marketing site visibly weak vs. their funding"
+hunch — use the number, not a vibe. Record the exact number in `score_notes` and in the
+`pagespeed` output field even when it adds 0, because the drafter reuses it as the email's
+first-line hook.
 
 ## 3. Intent / trigger signal (30 pts) — drives personalization believability
 
@@ -65,6 +84,13 @@ Write scores back where the lead lives (Apollo custom fields in live mode; the l
   "score_reachability": 13,
   "tier": "hot",
   "scored_at": "2026-07-01",
+  "pagespeed": {
+    "signal": "poor",
+    "performance_score": 38,
+    "lcp_seconds": 4.8,
+    "mobile_friendly": false,
+    "report_url": "https://pagespeed.web.dev/analysis?url=...&form_factor=mobile"
+  },
   "score_notes": "one line per category: the evidence, with source"
 }
 ```

@@ -16,6 +16,11 @@ For every claim about the lead in all three emails:
   misdated; a church's "new building campaign" post might be from 2023.)
 - Is it current enough to reference? A stale observation reads as lazy, which is worse
   than generic.
+- **PageSpeed hook:** if email 1 cites a load time or "not mobile-friendly", the `research`
+  block must carry the `pagespeed` line with a `report_url`. Re-run `scripts/pagespeed.py`
+  (or open the report) to confirm the number is real and still roughly holds — sites get
+  fixed. If the site is now fast, the claim fails. The emailed number must match the measured
+  one; never a rounded-up or invented figure.
 
 ## Check 2 — Facts about Polymer
 
