@@ -1,0 +1,50 @@
+name: Biweekly self-review
+
+on:
+  schedule:
+    - cron: "0 14 1,15 * *" # 1st and 15th, 10am ET
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: outreach-pipeline
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+
+      - name: Run self-review with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Read CLAUDE.md, then execute pipeline/biweekly-review.md end to end.
+            Commit the report and experiment log as instructed, and open the review
+            issue with `gh` (GH_TOKEN is set).
+          claude_args: |
+            --model claude-sonnet-5
+            --max-turns 60
+            --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch"
+        env:
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Push any uncommitted data changes
+        run: |
+          git config user.name "outreach-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "biweekly review $(date -u +%F) (workflow sweep)"
+          git push

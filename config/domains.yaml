@@ -1,0 +1,16 @@
+# Domain -> ICP routing. Cold email NEVER sends from hellopolymer.com.
+# Mailbox addresses get filled in once the 4 warmed inboxes are connected to Apollo
+# via OAuth. scripts/apollo_client.py list_email_accounts() verifies they exist
+# in Apollo before live mode.
+
+startups:
+  domain: launchwithpolymer.com
+  mailboxes:
+    - REPLACE_ME # e.g. ethan@launchwithpolymer.com
+    - REPLACE_ME # e.g. blair@launchwithpolymer.com
+
+churches:
+  domain: integratedchurchwebsites.com
+  mailboxes:
+    - REPLACE_ME
+    - REPLACE_ME

@@ -1,0 +1,59 @@
+# Global system settings. Placeholders are marked REPLACE_ME and block live mode.
+
+mode: dry_run # dry_run | live. Preflight (scripts/preflight.py) must pass before live.
+
+timezone: America/New_York
+
+booking:
+  tool: dubsado
+  # The Dubsado scheduler URL for the intro call. Blocks live mode until set.
+  link: REPLACE_ME
+
+approval:
+  # Booking emails to interested replies are drafted, then held in
+  # data/queue/pending-approval/ until a human merges the approval PR.
+  # Flip to auto only after classification accuracy is proven on real replies.
+  interested_reply_email: required # required | auto
+
+limits:
+  max_decision_makers_per_org: 2
+  new_leads_scored_per_day: 50
+  emails_drafted_per_day: 25
+  # Per-mailbox send caps are NOT here on purpose - they live under inbox_health.send_caps
+  # so they stay health-aware (warmup vs healthy). One source of truth.
+
+scoring:
+  hot_min: 75
+  warm_min: 50
+  # Cold (<50) leads are tagged and skipped for now; revisit after calibration.
+  draft_cold_tier: false
+
+sequence:
+  steps: 3
+  # Days after the previous step. Step 1 sends immediately on sequence entry.
+  wait_days: [3, 4]
+  # No-reply after step 3: tag for recycle, re-enter with a fresh angle after this many days.
+  recycle_after_days: 90
+
+can_spam:
+  # Physical mailing address, required in every email footer. Blocks live mode until set.
+  physical_address: REPLACE_ME
+  unsubscribe: apollo_opt_out_link
+
+notifications:
+  channel: email
+  to: ethan@hellopolymer.com
+  from: alerts@hellopolymer.com
+  # Delivery uses RESEND_API_KEY if set, else SMTP_* vars, else logs to
+  # data/notifications/. See scripts/notify.py.
+
+inbox_health:
+  provider: trulyinbox # scripts/trulyinbox_monitor.py, checked daily
+  thresholds:
+    # TrulyInbox health score is 0-100. These are the starting lines; tune with real data.
+    watch_below: 90 # trending down: ease this mailbox's volume, include in digest
+    alarm_below: 80 # act now: pause sends, warm a replacement inbox
+  # Any blacklist listing or SPF/DKIM/DMARC failure is an immediate alarm regardless of score.
+  send_caps:
+    warmup_daily: 10 # per mailbox while still warming
+    healthy_daily: 22 # per mailbox once healthy (reference doc says 20-25)

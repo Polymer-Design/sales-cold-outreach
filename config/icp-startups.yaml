@@ -1,0 +1,38 @@
+# Startup ICP definition.
+# status: draft = filters are provisional planning values from the reference doc.
+# Ethan finalizes these (especially industry vertical), then flips to final.
+status: draft
+
+description: >
+  Growth-stage companies that need a credible, high-craft website and move fast.
+  Series A-C is the typical band, not a hard wall: well-funded seed and profitable
+  bootstrapped teams fit too.
+
+# Max 2 per company (enforced by limits.max_decision_makers_per_org).
+# Priority order: take the first title found, then the next.
+decision_maker_titles:
+  - Founder
+  - CEO
+  - Head of Marketing
+  - VP Marketing
+  - Head of Growth
+  - COO
+
+apollo_filters:
+  person_titles: [founder, ceo, "head of marketing", "vp marketing", "head of growth", coo]
+  person_seniorities: [founder, c_suite, vp, head]
+  person_locations: ["United States"]
+  organization_num_employees_ranges: ["5,50"]
+  contact_email_status: [verified]
+  # TODO(ethan): industry/vertical filter. "Series A-C, 5-50 employees" alone is too
+  # broad to be a real SAM. Add q_organization_keyword_tags or NAICS codes once the
+  # vertical focus is decided.
+  q_organization_keyword_tags: []
+
+# Trigger signals the scoring skill looks for (recency matters, see the skill).
+trigger_signals:
+  - recent funding round (0-90 days strongest)
+  - hiring for marketing/brand/web roles
+  - product launch or rebrand announcement
+  - new head of marketing hire
+  - press coverage or conference presence

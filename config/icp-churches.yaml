@@ -1,0 +1,30 @@
+# Church ICP definition.
+# status: draft = provisional. The real qualifier is budget and ambition, with
+# Planning Center / Church Center usage as the sharpest behavioral signal.
+status: draft
+
+description: >
+  US churches, roughly 500-10,000 weekly attendance, running Planning Center
+  (churchcenter.com subdomain is the confirmable signal). Budget and ambition
+  matter more than headcount alone.
+
+# Max 2 per church. Priority order.
+decision_maker_titles:
+  - Executive Pastor
+  - Communications Director
+  - Operations Pastor
+  - Business Administrator
+
+# Churches are sourced by scripts/church_crawler.py (churchcenter.com signal),
+# then decision makers are found via Apollo people search on the church's domain.
+apollo_filters:
+  person_titles: ["executive pastor", "communications director", "operations pastor", "business administrator", "church administrator"]
+  person_locations: ["United States"]
+  contact_email_status: [verified, unverified] # church staff emails verify worse; keep unverified, score lower
+
+trigger_signals:
+  - building campaign or capital campaign announcement
+  - new executive pastor or communications hire
+  - church website visibly outdated or broken on mobile
+  - recent move to Planning Center (new churchcenter subdomain)
+  - Easter/Christmas season site traffic spikes (seasonal angle)

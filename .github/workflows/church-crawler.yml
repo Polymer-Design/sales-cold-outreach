@@ -1,0 +1,33 @@
+name: Church crawler
+
+on:
+  schedule:
+    - cron: "0 11 * * 2" # Tuesdays 7am ET
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Max seeds to check"
+        default: "50"
+
+permissions:
+  contents: write
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Crawl seed list for Planning Center signal
+        run: python scripts/church_crawler.py crawl --limit "${{ github.event.inputs.limit || '50' }}"
+      - name: Commit new candidates
+        run: |
+          git config user.name "outreach-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/leads/churches/
+          git diff --cached --quiet || git commit -m "church crawler: new candidates $(date -u +%F)"
+          git push

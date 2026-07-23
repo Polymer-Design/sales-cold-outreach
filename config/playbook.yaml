@@ -1,0 +1,25 @@
+# Active copy playbook = the current winning strategy.
+#
+# This is what closes the self-review loop. The outreach-email skill reads these
+# defaults when drafting. When a split test produces a clear COPY winner, the
+# self-review skill rewrites the relevant value here and starts the next test
+# (review -> test -> apply winner -> repeat). Structural changes (scoring, ICP,
+# sequence length) never touch this file - those stay approval-gated.
+#
+# Every change is timestamped in `history` so a bad auto-applied winner is one
+# revert away, and data/experiments.md holds the evidence behind each.
+
+version: 1
+updated: 2026-07-13
+updated_by: initial-defaults # or "self-review YYYY-MM-DD (experiment <id>)"
+
+active:
+  subject_style: short_noun_phrase # short_noun_phrase | question
+  first_line_angle: their_site # their_site | their_trigger_event
+  body_length_target_words: 85 # email 1 target; skill keeps its 50-110 band
+  cta_style: soft_time_ask # soft_time_ask ("worth 15 min?") | named_day ("free Thursday?")
+  proof_style: case_study_sentence # case_study_sentence | plain_capability
+  send_time_local: "09:00" # recipient-local
+
+history:
+  - {date: 2026-07-13, change: "initial defaults, no test yet", experiment: null}

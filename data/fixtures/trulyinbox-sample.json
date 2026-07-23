@@ -1,0 +1,6 @@
+[
+  {"email": "ethan@launchwithpolymer.com", "health_score": 96, "esp": "google", "blacklisted": false, "auth_ok": true, "warming": true},
+  {"email": "blair@launchwithpolymer.com", "health_score": 87, "esp": "google", "blacklisted": false, "auth_ok": true, "warming": true},
+  {"email": "hello@integratedchurchwebsites.com", "health_score": 74, "esp": "microsoft", "blacklisted": false, "auth_ok": true, "warming": true},
+  {"email": "team@integratedchurchwebsites.com", "health_score": 91, "esp": "google", "blacklisted": true, "auth_ok": true, "warming": false}
+]

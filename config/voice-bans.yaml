@@ -1,0 +1,72 @@
+# Deterministic voice lexicon. Shared by scripts/voice_check.py (mechanical grep gate)
+# and the fact-check-email skill. Editing this updates both. This catches the obvious
+# AI tells cheaply; the skill still does the judgment calls a word list can't.
+
+banned_words:
+  - insights
+  - streamline
+  - leverage
+  - optimize
+  - maximize
+  - unlock
+  - unleash
+  - enable
+  - empower
+  - solutions-oriented
+  - world-class
+  - cutting-edge
+  - innovative
+  - next-gen
+  - game-changer
+  - best-in-class
+  - future-proof
+  - revolutionary
+  - scalable
+  - disruptive
+  - holistic
+  - robust
+  - dynamic
+  - agile
+  - seamless
+  - synergy
+  - elevate
+  - delve
+  - nuanced
+  - crucial
+  - essential
+  - incredibly
+  - significantly
+  - streamlined
+  - empowering
+
+banned_phrases:
+  - the key to
+  - success requires
+  - driving impact
+  - customer-centric
+  - growth hacking
+  - data-driven
+  - actionable insights
+  - move the needle
+  - low-hanging fruit
+  - quick wins
+  - win-win
+  - thought leader
+  - best practices
+  - at scale
+  - paradigm shift
+  - digital transformation
+  - value-add
+
+banned_openers:
+  - i hope this email finds you well
+  - i hope this finds you well
+  - i wanted to reach out
+  - i'm reaching out
+  - my name is
+  - in today's
+  - when it comes to
+  - at the end of the day
+  - the truth is
+
+# Em dashes are checked separately in code: the — character, and " -- " doing pivot work.

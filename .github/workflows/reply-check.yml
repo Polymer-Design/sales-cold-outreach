@@ -1,0 +1,50 @@
+name: Reply check
+
+on:
+  schedule:
+    - cron: "0 13,15,17,19,21 * * 1-5" # every 2h, 9a-5p ET weekdays
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: outreach-pipeline
+  cancel-in-progress: false
+
+jobs:
+  replies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+
+      - name: Check and classify replies with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Read CLAUDE.md, then execute pipeline/reply-check.md end to end.
+            Commit data/ changes as instructed. Use `gh` (GH_TOKEN is set) for the
+            approval PRs and flag issues the instructions call for.
+          claude_args: |
+            --model claude-sonnet-5
+            --max-turns 60
+            --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch"
+        env:
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Push any uncommitted data changes
+        run: |
+          git config user.name "outreach-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "reply check $(date -u +%FT%H:%M) (workflow sweep)"
+          git push
