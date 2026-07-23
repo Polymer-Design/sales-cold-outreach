@@ -1,4 +1,4 @@
-# Sample outreach — voice & hook refinement (2026-07-23)
+# Sample outreach - voice & hook refinement (2026-07-23)
 
 Draft sequences for refining tone and the hook hierarchy before the ICPs and case study
 library are final. **These leads are illustrative stand-ins, not citable**, same convention as
@@ -18,14 +18,14 @@ metric. Load time is at most a supporting clause, shown where it would go.
 
 ---
 
-## Lead A — groups friction (illustrative): Marcus, Executive Pastor, "Cedar Ridge Church" (~1,800)
+## Lead A - groups friction (illustrative): Marcus, Executive Pastor, "Cedar Ridge Church" (~1,800)
 
 **The hook (capability fit):** they run groups/giving/check-in through Planning Center, but the
 website links *out* to the Church Center app instead of pulling it in, so a visitor has to leave
 the site to do anything. Timed to a fall groups launch, that friction is the pitch. No proof
 numbers used (no approved church case study exists yet), so the hook carries the email alone.
 
-**Email 1** — subject: *your groups page*
+**Email 1** - subject: *your groups page*
 > Hey Marcus, Cedar Ridge runs groups, giving, and check-in through Planning Center, but someone
 > on your website has to leave it and open a separate app to find a group or register for
 > anything. With the fall groups push starting, that extra hop is where a lot of people quietly
@@ -34,26 +34,26 @@ numbers used (no approved church case study exists yet), so the hook carries the
 > minutes to see what that looks like before groups launch?
 > \- Ethan
 
-**Email 2** (+3d) — subject: *one tap from the homepage*
+**Email 2** (+3d) - subject: *one tap from the homepage*
 > One more thing, Marcus. Most people check out a church on their phone before they ever show up,
 > and right now your service times and groups sit behind an app they have to download first. We
 > can pull all of it straight from Planning Center onto your homepage, so it is one tap and your
 > team never updates it twice. Want me to walk you through how that works?
 
-**Email 3** (+7d) — subject: *last note*
+**Email 3** (+7d) - subject: *last note*
 > Last one, Marcus. If the site is not this season's problem with everything groups is taking, I
 > understand. If it is, we can get your Church Center tools onto the homepage instead of behind a
 > download. Worth a quick look?
 
 ---
 
-## Lead B — giving friction mid-campaign (illustrative): Priya, Communications Director, "Grace Harbor Church" (~3,500)
+## Lead B - giving friction mid-campaign (illustrative): Priya, Communications Director, "Grace Harbor Church" (~3,500)
 
 **The hook (capability fit):** a capital campaign is asking people to give, but the giving flow
 is buried and kicks out to a separate app. Polymer's Church Center giving integration puts a
 pledge one tap from anywhere. Again, no invented outcome numbers.
 
-**Email 1** — subject: *the Build Together page*
+**Email 1** - subject: *the Build Together page*
 > Hey Priya, saw Grace Harbor is midway through the Build Together campaign. The campaign page
 > asks people to give, but the giving link is three taps deep and opens a separate Church Center
 > app instead of the site, which is friction right where you want none. We build church sites
@@ -61,13 +61,13 @@ pledge one tap from anywhere. Again, no invented outcome numbers.
 > the site. Worth 15 minutes before the next campaign push?
 > \- Ethan
 
-**Email 2** (+3d) — subject: *mobile giving*
+**Email 2** (+3d) - subject: *mobile giving*
 > Quick follow, Priya. Most campaign gifts now start on a phone, and right now getting to your
 > giving form takes a few too many taps. We can wire Planning Center giving right into the
 > homepage so a pledge is one tap, pulled from the tools you already run. Want to see how that
 > looks?
 
-**Email 3** (+7d) — subject: *last one*
+**Email 3** (+7d) - subject: *last one*
 > Last note, Priya. If the timing is off with everything the campaign is taking, I get it. If a
 > site that keeps pace with the campaign would help, we can move quickly. Want me to sketch what
 > the homepage could do?
