@@ -6,6 +6,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
+  id-token: write # required by anthropics/claude-code-action to auth via OIDC
   contents: write
   pull-requests: write
 
