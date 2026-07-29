@@ -1,0 +1,42 @@
+name: Case study sync
+
+on:
+  schedule:
+    - cron: "0 14 1 * *" # 1st of the month, 10am ET
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt google-api-python-client google-auth
+
+      - name: Pull approved case study Docs from Drive
+        run: python scripts/case_study_sync.py pull
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          CASE_STUDY_FOLDER_ID: ${{ secrets.CASE_STUDY_FOLDER_ID }}
+
+      - name: Distill staged case studies into citable markdown + open PR
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Read CLAUDE.md. If data/case-study-staging/ has any files, run the
+            case-study-sync skill to distill each into knowledge/case-studies/*.md
+            and open a PR. If the folder is empty, do nothing and exit.
+          claude_args: |
+            --model claude-sonnet-5
+            --max-turns 40
+            --allowedTools "Bash,Read,Write,Edit,Glob,Grep"
+        env:
+          GH_TOKEN: ${{ github.token }}
