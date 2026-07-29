@@ -1,0 +1,59 @@
+name: Call prep briefing
+
+# Fired by a Zapier webhook (Dubsado booking event -> Zapier -> GitHub repository_dispatch)
+# the moment someone books a call. See docs/call-prep-zapier-setup.md for the exact Zap.
+on:
+  repository_dispatch:
+    types: [call_booked]
+  workflow_dispatch:
+    inputs:
+      name: {description: "Test: contact name", default: "Test Person"}
+      email: {description: "Test: contact email", default: "test@example.com"}
+      icp: {description: "Test: startups or churches", default: "startups"}
+      appointment_time: {description: "Test: appointment time", default: "2026-08-01T15:00:00-04:00"}
+      org_name: {description: "Test: org name", default: ""}
+
+permissions:
+  contents: write
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+
+      - name: Build the call-prep briefing with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Read CLAUDE.md, then run the call-prep skill for this booked call:
+
+            name: ${{ github.event.client_payload.name || github.event.inputs.name }}
+            email: ${{ github.event.client_payload.email || github.event.inputs.email }}
+            icp: ${{ github.event.client_payload.icp || github.event.inputs.icp }}
+            appointment_time: ${{ github.event.client_payload.appointment_time || github.event.inputs.appointment_time }}
+            org_name: ${{ github.event.client_payload.org_name || github.event.inputs.org_name }}
+
+            Follow the skill exactly: match against data/, refresh the tech-stack read,
+            write the briefing, email it via scripts/notify.py, and commit the file.
+          claude_args: |
+            --model claude-sonnet-5
+            --max-turns 40
+            --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch"
+        env:
+          GOOGLEPAGESPEEDINSIGHTS_API_KEY: ${{ secrets.GOOGLEPAGESPEEDINSIGHTS_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+
+      - name: Push the briefing file
+        run: |
+          git config user.name "outreach-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/call-prep/
+          git diff --cached --quiet || git commit -m "call prep briefing $(date -u +%FT%H:%M)"
+          git push || true

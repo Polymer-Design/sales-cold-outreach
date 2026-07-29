@@ -1,38 +1,101 @@
 # Startup ICP definition.
-# status: draft = filters are provisional planning values from the reference doc.
-# Ethan finalizes these (especially industry vertical), then flips to final.
-status: draft
+# Locked 2026-07-13 per docs/icp-startups-source.md (Ethan's finalized doc). status: final
+# unblocks live mode's ICP-status preflight check. Scoring POINT ALLOCATIONS are still open
+# on purpose - needs real closed-won data - see .claude/skills/lead-scoring/SKILL.md.
+status: final
 
 description: >
-  Growth-stage companies that need a credible, high-craft website and move fast.
-  Series A-C is the typical band, not a hard wall: well-funded seed and profitable
-  bootstrapped teams fit too.
+  Growth-stage SaaS and tech-enabled startups in the US. Series A-C is the typical band,
+  not a hard wall - well-funded seed and profitable bootstrapped teams both fit; Series D+
+  can still fit via an embedded-team framing.
 
-# Max 2 per company (enforced by limits.max_decision_makers_per_org).
-# Priority order: take the first title found, then the next.
-decision_maker_titles:
-  - Founder
-  - CEO
+excluded:
+  # Considered and cut deliberately - not a capability fit for what Polymer builds.
+  - e-commerce / DTC companies
+
+services_this_icp_maps_to:
+  - Webflow website builds (new_build_track)
+  - Ongoing subscription/retainer design (subscription_track, $3k/mo)
+  # Pitch decks and brand/identity design are real Polymer services but are NOT currently
+  # factored into this ICP's scoring - the two tracks above are what the technographic
+  # signal is built around.
+
+# Detected via scripts/platform_detect.py. Same mechanic as the church ICP.
+website_platform_routing:
+  webflow: subscription_track # $3k/mo retainer pitch, NOT a rebuild pitch
+  squarespace: new_build_track
+  wix: new_build_track
+  wordpress: new_build_track
+  other: new_build_track
+  unknown: new_build_track
+
+pagespeed_signal:
+  enabled: true
+  applies_to: both tracks
+  # Same constraint as the church ICP: citable as a raw fact about the lead's site, NOT
+  # as a comparative claim until knowledge/pagespeed-benchmark.md moves past PENDING.
+
+vertical_signal:
+  status: not_proven # confirmed 2026-07-13. Do NOT manufacture a vertical-fit signal to
+    # fake a differentiator that doesn't exist - that was the exact problem with the old
+    # placeholder ("relevant tech stack signals tied to what Polymer sells"), which had
+    # nothing real behind it. Revisit if a real cluster of shipped work emerges (e.g. if
+    # Fispoke/fintech becomes a repeated pattern) - then a vertical weight becomes worth adding.
+
+# Time-sensitive, decays like other trigger signals (see lead-scoring skill). This hire is
+# rarely also a web developer, so the site build tends to get outsourced around the same
+# time the hire happens. Bonus: this title is frequently ALSO the decision-maker contact.
+trigger_signal_titles:
+  - Head of Growth
   - Head of Marketing
   - VP Marketing
+  - Growth Marketer
+  - Marketing Manager
+  - Demand Gen Manager
+
+# Static firmographic signal, re-check periodically - NOT a decaying trigger.
+firmographic_in_house_capability_signal:
+  absence_of_in_house_design_dev: positive # positive fit signal for the BUILD service
+  active_job_posting_designer_or_frontend_dev: negative # they're building the capability
+    # internally - negative for the build service specifically. Doesn't necessarily
+    # affect subscription-track fit.
+
+# Priority order for the max-2-decision-makers rule. Conditional on company stage:
+# if a marketing hire exists, they're the day-to-day driver (contact them first); the
+# Founder/CEO stays as the second contact for budget sign-off. If no marketing hire
+# exists yet, the Founder/CEO IS the primary contact directly.
+decision_maker_titles:
+  # Post-first-marketing-hire stage (the DOMINANT case in Polymer's target band): owns
+  # research, vendor selection, day-to-day project management. Top priority when present.
+  - Head of Marketing
   - Head of Growth
+  # Pre-marketing-hire stage: owns positioning, content, and the site directly. Also
+  # retains final budget sign-off even after a marketing hire exists at this company size.
+  - Founder
+  - CEO
+  # Secondary - sometimes co-owns vendor contracts/logistics, not the strategic driver.
   - COO
+  - Head of Ops
+  # "CMO" is explicitly NOT worth targeting at this ICP's size - a formal CMO-level budget
+  # hierarchy doesn't appear until a marketing team scales to 8-12 people, past this band.
 
 apollo_filters:
-  person_titles: [founder, ceo, "head of marketing", "vp marketing", "head of growth", coo]
+  person_titles: ["head of marketing", "head of growth", "founder", "ceo", "coo", "head of ops"]
   person_seniorities: [founder, c_suite, vp, head]
   person_locations: ["United States"]
   organization_num_employees_ranges: ["5,50"]
   contact_email_status: [verified]
-  # TODO(ethan): industry/vertical filter. "Series A-C, 5-50 employees" alone is too
-  # broad to be a real SAM. Add q_organization_keyword_tags or NAICS codes once the
-  # vertical focus is decided.
-  q_organization_keyword_tags: []
+  # No vertical/keyword filter - vertical_signal.status is not_proven, don't fake one.
+  # Explicit exclusion: e-commerce/DTC. Apollo doesn't have a clean single filter for
+  # this - screen it out manually when qualifying candidates (company description/site).
+  not_organization_naics_codes: ["454"] # electronic shopping and mail-order houses (best-effort NAICS exclusion for DTC/ecommerce; verify against a real lead before trusting it)
 
-# Trigger signals the scoring skill looks for (recency matters, see the skill).
 trigger_signals:
   - recent funding round (0-90 days strongest)
-  - hiring for marketing/brand/web roles
+  - new marketing/growth hire (see trigger_signal_titles above)
   - product launch or rebrand announcement
-  - new head of marketing hire
   - press coverage or conference presence
+
+negative_overrides:
+  - e-commerce / DTC company - score 0, wrong ICP regardless of other fit
+  - prior "not interested" or opted out - do-not-contact, never re-add

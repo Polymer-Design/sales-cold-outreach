@@ -29,8 +29,10 @@ def main() -> None:
     system = yaml.safe_load((REPO_ROOT / "config/system.yaml").read_text())
     domains = yaml.safe_load((REPO_ROOT / "config/domains.yaml").read_text())
 
-    if system.get("booking", {}).get("link") in (None, "", "REPLACE_ME"):
-        problems.append("config/system.yaml booking.link is not set (Dubsado scheduler URL)")
+    booking_links = system.get("booking", {}).get("links", {})
+    for icp in ("startups", "churches"):
+        if booking_links.get(icp) in (None, "", "REPLACE_ME"):
+            problems.append(f"config/system.yaml booking.links.{icp} is not set (Dubsado scheduler URL)")
     if system.get("can_spam", {}).get("physical_address") in (None, "", "REPLACE_ME"):
         problems.append("config/system.yaml can_spam.physical_address is not set (CAN-SPAM requires it)")
 

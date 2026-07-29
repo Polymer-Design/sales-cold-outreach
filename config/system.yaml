@@ -6,8 +6,12 @@ timezone: America/New_York
 
 booking:
   tool: dubsado
-  # The Dubsado scheduler URL for the intro call. Blocks live mode until set.
-  link: REPLACE_ME
+  # Two separate scheduler URLs - both book directly onto Ethan's calendar. Picked by
+  # the lead's icp at draft time (booking-reply skill) and in the standard sequence's
+  # own CTA once wired into Apollo sequence copy.
+  links:
+    startups: https://hello.dubsado.com/public/appointment-scheduler/6a6a78d25cd3f45f0ca069e7/schedule
+    churches: https://hello.dubsado.com/public/appointment-scheduler/6a6a86c55cd3f45f0ca0c447/schedule
 
 approval:
   # Booking emails to interested replies are drafted, then held in
@@ -36,7 +40,6 @@ sequence:
   recycle_after_days: 90
 
 can_spam:
-  # Physical mailing address, required in every email footer. Blocks live mode until set.
   physical_address: "239 Betsey Scull Rd, Egg Harbor Twp, NJ 08234"
   unsubscribe: apollo_opt_out_link
 

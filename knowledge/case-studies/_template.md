@@ -2,6 +2,9 @@
 client: Client Name
 vertical: fintech | church | saas | ...
 icp_fit: startups | churches | both
+track: new_build | subscription | both # which pitch this proves - see the
+  # outreach-email skill's Step 0. Subscription-track case studies don't exist yet
+  # (ongoing-partnership stories, not before/after launch) - flag clearly if this is one.
 year: 2026
 public_url: # add when live on hellopolymer.com
 status: draft # draft case studies are NOT citable; flip to approved

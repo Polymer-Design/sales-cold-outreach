@@ -16,11 +16,6 @@ For every claim about the lead in all three emails:
   misdated; a church's "new building campaign" post might be from 2023.)
 - Is it current enough to reference? A stale observation reads as lazy, which is worse
   than generic.
-- **PageSpeed hook:** if email 1 cites a load time or "not mobile-friendly", the `research`
-  block must carry the `pagespeed` line with a `report_url`. Re-run `scripts/pagespeed.py`
-  (or open the report) to confirm the number is real and still roughly holds — sites get
-  fixed. If the site is now fast, the claim fails. The emailed number must match the measured
-  one; never a rounded-up or invented figure.
 
 ## Check 2 — Facts about Polymer
 
@@ -29,6 +24,15 @@ For every claim about Polymer, pricing, or past work:
   `approved`-status case study in `knowledge/case-studies/`?
 - Numbers must match exactly. "About 5 weeks" when the case study says 6 = fail.
 - Anything marked PENDING in the knowledge base = not citable = fail.
+- **PageSpeed claims specifically:** a number about the LEAD's own site (their load time,
+  their score) is fine with a source. A number that COMPARES the lead to Polymer's own
+  sites ("ours average X", "our clients load in half that time") is only citable if
+  `knowledge/pagespeed-benchmark.md` has `status: approved` - check that file's frontmatter
+  every time. It's still `PENDING` as of this writing - fail any comparative phrasing.
+- **Track/proof consistency:** if the draft is for a `subscription_track` lead, it must
+  pitch the retainer, not a rebuild, and must not borrow a `new_build`-tagged case study's
+  numbers as if they were a subscription story. Cross-check the case study's `track` tag
+  against the lead's track.
 
 ## Check 3 — Voice
 

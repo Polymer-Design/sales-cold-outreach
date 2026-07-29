@@ -1,62 +1,113 @@
 ---
 name: lead-scoring
-description: Score a lead 0-100 against Polymer's rubric and assign a tier. Use whenever new leads enter the pipeline or when re-scoring on new signals.
+description: Score a lead 0-100 against Polymer's rubric, assign a tier, and determine their pitch track (new-build vs subscription). Use whenever new leads enter the pipeline or when re-scoring on new signals.
 ---
 
 # Lead scoring
 
-Score 0-100 across four categories. Starter weights from the reference doc — Ethan will
-recalibrate against closed-won data, so record the per-category breakdown, not just the total.
+Score 0-100 across four categories. The SIGNALS below are locked (per Ethan's finalized
+`config/icp-startups.yaml` / `config/icp-churches.yaml`, 2026-07-13). The exact POINT
+ALLOCATIONS are still starter weights - left open on purpose, pending real closed-won data.
+Record the per-category breakdown, not just the total, so self-review can recalibrate later.
 
-## 1. Firmographic fit (30 pts)
+## Step 0 — Hard exclusions (score 0, don't proceed)
 
-**Churches:** attendance band. Peak points (30) for ~1,500-5,000; taper to 15 at the
-500 and 10,000 edges; 0 outside the band. Multi-site +3 (capped at 30). If attendance is
-unknown, estimate from proxies (staff count on site, service count, seating) and note the proxy.
+- **Startups:** e-commerce / DTC company. Not a capability fit, considered and cut deliberately.
+- **Churches:** nonprofit or parachurch org that isn't a local congregation.
+- Either ICP: prior "not interested," opted out, or already do-not-contact.
 
-**Startups:** funding stage (Series A-C typical, but well-funded seed / profitable bootstrapped
-fit), team size 5-50, hiring velocity. Full 30 for stage + size match; deduct for edges.
+## Step 1 — Detect platform + track (before scoring technographic fit)
 
-## 2. Technographic fit (20 pts)
+Run `scripts/platform_detect.py --url <their site> --icp <startups|churches>`. This returns
+`platform` and `track` (`new_build_track` or `subscription_track`). This determines which
+pitch and which case studies the drafter reaches for later - **not just a score input**.
+Record it on the lead.
 
-A base platform signal plus a site-health need signal from Google PageSpeed. A slow or
-non-mobile site means they need us more, so PageSpeed only ever *adds* points, up to the
-20-pt cap — it never lowers a lead's existing score.
+Church-specific nuance: Subsplash lands in `new_build_track` per the routing table, but it
+gets a DIFFERENT angle than Squarespace/Wix ("your app's great, the website doesn't match
+it" vs. "outgrown the DIY builder") - a church running Subsplash already has budget and
+digital sophistication. Note this on the lead so the drafter picks the right angle.
 
-**Run PageSpeed first:** `python scripts/pagespeed.py check --url <their-site>` (mobile is the
-default). It returns `performance_score` (0-100), `lcp_seconds`, `mobile_friendly`, and a
-coarse `signal` (poor | moderate | good). If it returns `ok: false` (no key, site unreachable,
-timeout), score the base signal only and note "pagespeed unavailable" — never invent a number.
+## Step 2 — Firmographic fit (30 pts)
 
-**Churches (base):** confirmed churchcenter.com subdomain = 20. Planning Center mentioned on
-site but no subdomain found = 12. No signal = 0.
+**Churches:** attendance vs. the 250 floor. Full points near the productive middle of the
+range (churches well past 250 with clear staff capacity); taper near the floor itself since
+250 is a hard qualifying line, not a sweet spot. Estimate attendance from proxies (staff
+count on site, service count, seating, campus count) when not stated, and note the proxy.
+Multi-site: +3 (capped at 30).
 
-**Startups (base):** Webflow/Wix/Squarespace/WordPress currently detectable on their site =
-signal they buy websites rather than build in-house. 0 if their site is clearly agency-fresh
-(<6 months old).
+**Startups:** funding stage (Series A-C typical; well-funded seed and profitable
+bootstrapped both fit; Series D+ can fit via embedded-team framing), team size 5-50.
+Full 30 for stage+size match; deduct for edges.
 
-**Site-health need (both ICPs), added on top of the base, category still caps at 20:**
-- `signal: poor` (perf <50, or LCP >4s, or no mobile viewport): **+8**
-- `signal: moderate`: **+4**
-- `signal: good` (fast and mobile-friendly): **+0** — a modern fast site needs us less
+## Step 3 — Technographic fit (20 pts)
 
-PageSpeed is the objective read on the old "marketing site visibly weak vs. their funding"
-hunch — use the number, not a vibe. Record the exact number in `score_notes` and in the
-`pagespeed` output field even when it adds 0, because the drafter reuses it as the email's
-first-line hook.
+**Churches**, in priority order:
+- Confirmed Planning Center (churchcenter.com subdomain found by the crawler) = 20.
+  This is the flagship signal and strongest personalization angle - always lead with it
+  when present.
+- Breeze/Tithely or Rock RMS signals: **not yet built** (roadmap item, build after the
+  Planning Center pipeline is proven - see `config/icp-churches.yaml`
+  `secondary_technographic_signals_roadmap`). Score 0 on this sub-signal until then; don't
+  guess at it.
+- No ChMS signal found = 0 on this sub-signal.
+- Website platform (from Step 1) is a technographic input too: being on Webflow already
+  (subscription_track) is a distinct positive signal from being technographically absent
+  (new_build_track) - both are real fit, just for different offers. Don't score
+  subscription_track as "worse fit," it's a different fit.
 
-## 3. Intent / trigger signal (30 pts) — drives personalization believability
+**Startups:**
+- In-house capability signal (static, not a decaying trigger): absence of an in-house
+  design/dev function = positive for the build service. An active job posting for an
+  in-house designer or frontend/web developer = negative for the build service
+  specifically (they're building the capability internally) - doesn't necessarily hurt
+  subscription-track fit, score that sub-case separately if it comes up.
+- **No proven vertical-fit signal exists** (confirmed 2026-07-13). Do not invent one to
+  manufacture a differentiator - score 0/neutral on vertical, not a guess. Revisit only if
+  Ethan confirms a real shipped-work cluster (e.g. a fintech pattern beyond Fispoke).
 
-Signals per `config/icp-*.yaml` `trigger_signals`. Score the strongest single signal:
+## Step 4 — Intent / trigger signal (30 pts) — drives personalization believability
+
+**Startups** — watch for a **marketing/growth hire** specifically (Head of Growth, Head of
+Marketing, VP Marketing, Growth Marketer, Marketing Manager, Demand Gen Manager): this hire
+is rarely also a web developer, so the site build tends to get outsourced right around when
+the hire happens. Bonus: this person is frequently also the decision-maker contact.
+Also: recent funding round, product launch/rebrand, press/conference presence.
+
+**Churches** — building/capital campaign announcement, new executive pastor or
+communications hire, recent move to Planning Center, visibly outdated/broken-mobile site,
+Easter/Christmas seasonal angle.
+
+Both ICPs: decay by recency -
 - 0-30 days old: up to 30
 - 31-90 days: up to 20
 - 91-180 days: up to 10
-- older: 0. A 6-month-old signal does not score like a 2-week-old one.
+- older: 0
 
-## 4. Reachability / seniority (20 pts)
+## Step 5 — Reachability / seniority (20 pts)
 
 - Verified email: 10 (unverified: 4, none: 0)
-- Title exactly matches `decision_maker_titles` priority list: 10 (adjacent title: 5)
+- Title exactly matches this ICP's `decision_maker_titles` priority list (see below): 10
+  (adjacent title: 5)
+
+## Decision-maker selection (max 2 per org, both ICPs)
+
+**Startups** - conditional on company stage:
+- If a marketing hire exists (Head of Marketing/Head of Growth found): contact them
+  first (day-to-day driver, owns vendor selection) + Founder/CEO second (retains budget
+  sign-off at this company size - a CMO-level hierarchy doesn't appear until 8-12+ person
+  marketing teams, past this ICP's band, so don't target "CMO").
+- If no marketing hire yet: Founder/CEO directly as primary, COO/Head of Ops as secondary
+  if one exists.
+
+**Churches** - priority order, adjusted by attendance:
+1. Communications Director / Director of Communications / Marketing Director / Creative
+   Director (day-to-day owner, most common contact - top priority always)
+2. Executive Pastor / Executive Director (budget authority, especially prominent 1,000+)
+3. IT Director / Digital Ministry Director (technical co-owner, ONLY relevant 1,500+ - skip
+   below that size even if found)
+4. Web/Digital Manager (500+ attendance, usually under Communications)
+Default to #1 + #2 unless attendance and the specific contacts found suggest otherwise.
 
 ## Tiers
 
@@ -64,16 +115,7 @@ Signals per `config/icp-*.yaml` `trigger_signals`. Score the strongest single si
 - **50-74 Warm** — standard automated 3-email sequence
 - **<50 Cold** — tagged, skipped (see `config/system.yaml` scoring.draft_cold_tier)
 
-## Negative overrides (score 0, tag do-not-contact where applicable)
-
-Prior "not interested", opted out, wrong vertical despite passing filters, no verifiable
-contact info, org in visible financial distress, church that isn't actually a church
-(denomination HQ, parachurch org) unless Ethan says otherwise.
-
 ## Output format
-
-Write scores back where the lead lives (Apollo custom fields in live mode; the lead JSON in
-`data/leads/` in dry_run), as:
 
 ```json
 {
@@ -83,14 +125,9 @@ Write scores back where the lead lives (Apollo custom fields in live mode; the l
   "score_intent": 20,
   "score_reachability": 13,
   "tier": "hot",
-  "scored_at": "2026-07-01",
-  "pagespeed": {
-    "signal": "poor",
-    "performance_score": 38,
-    "lcp_seconds": 4.8,
-    "mobile_friendly": false,
-    "report_url": "https://pagespeed.web.dev/analysis?url=...&form_factor=mobile"
-  },
+  "platform": "wordpress",
+  "track": "new_build_track",
+  "scored_at": "2026-07-29",
   "score_notes": "one line per category: the evidence, with source"
 }
 ```

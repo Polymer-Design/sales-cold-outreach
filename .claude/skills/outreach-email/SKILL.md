@@ -8,21 +8,40 @@ description: Research a lead and draft their 3-email cold sequence in Ethan's vo
 The goal: an email that reads like a human researched this company and wrote it by hand.
 Because that is literally what you're doing, minus the hand.
 
+## Step 0 — Confirm the track before writing anything
+
+Every lead is already tagged `new_build_track` or `subscription_track` by the lead-scoring
+skill (via `scripts/platform_detect.py`). This changes the OFFER, not just the wording:
+
+- **new_build_track**: pitch the website build (Sprint/Core/Custom per
+  `knowledge/business-overview.md`). Case studies tagged `track: new_build` in their
+  frontmatter apply here.
+- **subscription_track** (lead is already on Webflow): pitch the $3k/mo ongoing
+  retainer, NOT a rebuild - never suggest replacing a site that's already on Webflow.
+  Case studies tagged `track: subscription` apply here. **These don't exist yet** (see
+  `knowledge/case-studies/README.md`) - until one does, draft with a plain capability
+  statement only, per the standing "no proof yet, write without proof" rule. Do not
+  borrow a new-build case study's numbers for a subscription pitch; the story doesn't fit.
+- Church-specific: if `platform: subsplash`, use the "your app's great, the website
+  doesn't match it" angle, not the generic "outgrown your DIY builder" angle - a church on
+  Subsplash already has budget and sophistication; don't undersell them.
+
 ## Step 1 — Research (before writing a word)
 
 Collect 3-6 concrete, current facts about the lead. Every fact needs a source URL.
 - Their website (what's on it, what's broken, what's dated, what platform it runs on)
-- **Site speed (PageSpeed), a supporting detail not the hook:** run
-  `python scripts/pagespeed.py check --url <their-site>`. If it returns `ok: true`, record
-  `lcp_seconds`, `performance_score`, `mobile_friendly`, and `report_url` — the `report_url` is
-  the source URL for the fact-check gate. If it comes back already scored on the lead (the
-  scoring skill runs it), reuse that number, don't re-fetch. If `ok: false`, skip it. This is
-  reinforcing evidence for a real hook (Step 3), never the opening line on its own.
 - Churches: their churchcenter.com pages (what modules they use: giving, events, groups,
   check-in), sermon series, campus count, recent announcements
 - Startups: funding announcements, product launches, job postings (especially marketing/web
   roles), founder posts, press
 - The specific person: their role, anything they've said or published
+- **PageSpeed** (`scripts/pagespeed_check.py`, if not already run during scoring): a real
+  load-time number on THEIR site (e.g. "your homepage takes 6.2s to load on mobile"). Record
+  it, but treat it as SUPPORTING evidence, not the opener - see Step 3, part 1 for the hook
+  hierarchy. Citable as a plain fact about their own site with no benchmark needed. NOT
+  citable as a comparison to Polymer's own sites ("ours average X") -
+  `knowledge/pagespeed-benchmark.md` is still PENDING; the fact-check gate blocks any
+  comparative phrasing until that changes.
 
 Write these into the draft file's `research` block (format below). Weak research = weak
 email. If you can't find one specific, current, non-obvious fact, flag the lead for skip
@@ -32,10 +51,8 @@ rather than writing a generic email.
 
 From `knowledge/case-studies/` (status: approved, icp_fit matches) plus
 `knowledge/business-overview.md`. One proof point per email, the most relevant, not the most
-impressive. The hook (Step 3, part 1) and the proof should point at the same capability: if you
-opened on their Church Center friction, prove it with the church-integration work, not a generic
-redesign. If no approved case study fits, use a plain capability statement from the business
-overview and nothing more. Never manufacture a proof point to match a hook.
+impressive. If no approved case study fits, use a plain capability statement from the
+business overview and nothing more.
 
 ## Step 3 — Write the sequence
 
@@ -48,24 +65,21 @@ of the playbook default for the variable under test, and record the arm on the d
 The four-part structure maps onto a very short email; the parts are beats, not paragraphs:
 
 1. **Grab attention** — sentence one is a specific observation about THEM, and the best hooks
-   come from crossing your research against what Polymer actually does (`knowledge/business-overview.md`
-   + approved case studies). Not a compliment, not a vanity metric: a real, human insight that
-   names a gap or opportunity we are specifically built to fix. Rank hooks in this order and use
-   the highest one the research supports:
+   come from crossing your research against what Polymer does for their track (Step 0) plus a
+   proof point. Not a compliment, not a vanity metric. Rank hooks, use the highest the
+   research supports:
    - **Capability fit (best):** a fact about them that maps onto a Polymer capability or a
-     case-study outcome. Example (church): they run Planning Center, but their template site
-     pulls none of it in, so events, groups, and giving live in a separate app their people have
-     to go hunting for. We build the site around Church Center so that friction disappears. That
-     is a specific, human, "you clearly looked at us" opener. Startups: a stock template that
-     undercuts the raise, a gap their new marketing hire will inherit, a migration off Wix.
-   - **A fresh, specific moment (good):** a raise, a capital campaign, a new hire, a launch, and
-     why that makes now the moment. Tie it to what we would do, not just "congrats."
-   - **Site health (supporting only, never the opener):** a PageSpeed load time or a
-     not-mobile-friendly result is secondary or tertiary evidence. Use it to reinforce a
-     capability hook ("...and it takes 4.8s to load on a phone, which is where your people open
-     it"), never as the opening line and never as a stat for its own sake. Exact measured number
-     only, in Ethan's plain voice, and only if PageSpeed actually returned it. If a speed number
-     is the only thing you have, the research is too thin — go back to Step 1.
+     matching case study. Church example: they run Planning Center but their site pulls none
+     of it in, so events, groups, and giving live in a separate app people hunt for, and we
+     build the site around Church Center so that friction disappears. Startups: a stock
+     template that undercuts the raise, a gap their new marketing hire inherits, a rebuild off
+     Wix (new_build), or, for a site already on Webflow, the ongoing-work angle (subscription).
+   - **A fresh, specific moment (good):** a raise, a capital campaign, a new hire, a launch,
+     and why now. Tie it to what we would do, not just "congrats."
+   - **Site health (supporting only, never the opener):** a PageSpeed load time is secondary
+     evidence that reinforces a capability hook ("...and it takes 6.2s to load on a phone,
+     which is where your people open it"), never the opening line on its own and never a stat
+     for its own sake. If a speed number is the only thing you have, the research is too thin.
    Whatever you lead with, it must be impossible to send to any other company.
 2. **Generate interaction** — connect that observation to a problem or moment they're likely
    in right now. One or two sentences.
@@ -104,8 +118,6 @@ drafted_at:
 ## research
 - fact one (source: URL)
 - fact two (source: URL)
-- pagespeed: 4.8s LCP on mobile, perf 38, mobile_friendly false (source: report_url)
-  # omit this line entirely if PageSpeed returned ok:false — never leave a placeholder number
 
 ## proof_used
 - knowledge/case-studies/fispoke.md OR knowledge/business-overview.md#section

@@ -1,26 +1,112 @@
 # Church ICP definition.
-# status: draft = provisional. The real qualifier is budget and ambition, with
-# Planning Center / Church Center usage as the sharpest behavioral signal.
-status: draft
+# Locked 2026-07-13 per docs/icp-churches-source.md (Ethan's finalized doc). status: final
+# unblocks live mode's ICP-status preflight check. Scoring POINT ALLOCATIONS across these
+# signals are still open on purpose - needs real closed-won data - see
+# .claude/skills/lead-scoring/SKILL.md. The signals themselves are locked; the weights aren't.
+status: final
 
 description: >
-  US churches, roughly 500-10,000 weekly attendance, running Planning Center
-  (churchcenter.com subdomain is the confirmable signal). Budget and ambition
-  matter more than headcount alone.
+  US churches, 250+ weekly attendance. The floor is 250, not 500 or higher: full-time
+  pastoral roles rarely exist below ~100 attendance, staff benefits typically start past
+  250, and the Executive Pastor title (a target decision-maker) generally doesn't exist
+  below 250. Hartford Institute data: the largest 13% of US congregations (250+) account
+  for 78% of everyone who attends church. TAM/SAM has not been re-run at this floor yet
+  (old ~3,000-5,000 estimate was based on a stale 500 floor).
 
-# Max 2 per church. Priority order.
+excluded:
+  # Dropped from targeting AND from the site's audience rotation. No shipped nonprofit
+  # case study to back it. Revisit only if that changes.
+  - nonprofits / parachurch organizations (not local congregations)
+
+attendance_floor: 250
+
+# Primary technographic signal. This is Polymer's flagship integration story and the
+# strongest personalization angle - lead with it whenever present.
+primary_technographic_signal:
+  platform: planning_center
+  detection: churchcenter.com subdomain (check-in/giving), found by scripts/church_crawler.py
+  note: >
+    Planning Center's pricing (free tier to $239/mo) signals tech-forward, organized ops,
+    NOT budget. The attendance floor does the budget filtering; this does the
+    technographic filtering. Don't conflate the two when scoring or drafting.
+
+# Build in this order, AFTER the Planning Center pipeline is live and proven. Do not
+# build detection for these yet - documented here so the roadmap isn't lost.
+secondary_technographic_signals_roadmap:
+  - platform: breeze_tithely
+    detection: "[church].breezechms.com subdomain, often visible via an embedded giving link"
+    confidence: high (same detection pattern as Planning Center)
+    note: mostly overlaps the lower end of 250+ (positioned for churches under ~500)
+  - platform: rock_rms
+    detection: no consistent subdomain pattern (self-hosted) - needs real testing against
+      known Rock sites before it's trusted as a scored signal
+    confidence: lower, unproven
+    note: >
+      free/open-source, skews toward large tech-staffed congregations (Life.Church,
+      NewSpring both run on it) - a segment Planning Center detection would otherwise
+      miss entirely. Weaker personalization angle (not Polymer's named integration) but
+      potentially high-value per lead.
+
+# Detected via scripts/platform_detect.py against the church's OWN site (separate from
+# the Planning Center technographic signal above, which is about their ChMS, not their
+# marketing site). This determines which pitch/track the drafter uses.
+website_platform_routing:
+  webflow: subscription_track # already on Webflow -> $3k/mo retainer pitch, NOT a rebuild pitch.
+    # Needs its own sequence copy + case studies (ongoing-partnership stories, not
+    # before/after launch). NOT WRITTEN YET - see knowledge/case-studies/README.md.
+  squarespace: new_build_track # "outgrown the DIY builder" angle
+  wix: new_build_track # "outgrown the DIY builder" angle
+  subsplash: new_build_track # DIFFERENT angle: Subsplash is a premium church-specific
+    # bundle (app+giving+site) - a church running it already has budget and digital
+    # sophistication. Pitch is "your app's great, the website doesn't match it," never
+    # an upgrade-from-cheap-tool story.
+  other: new_build_track
+  unknown: new_build_track
+
+pagespeed_signal:
+  enabled: true
+  applies_to: both tracks # even a Webflow site with a weak score is a valid "let's
+    # tighten this up" angle for the subscription pitch
+  # IMPORTANT: Polymer's own client-average benchmark does not exist yet (in progress).
+  # A PageSpeed score MAY be cited as a raw fact about the lead's own site ("your homepage
+  # takes 6s to load on mobile"). It may NOT be used as a comparative proof point ("you
+  # score X, our clients average Y") until knowledge/pagespeed-benchmark.md says PENDING
+  # -> approved. The fact-check-email skill enforces this distinction.
+
+# Priority order for the max-2-decision-makers rule. Selection depends on attendance:
+# always try the day-to-day owner first, then the budget authority; the technical/site
+# roles only come into play at larger churches where they're more likely to be the
+# actual contact Apollo finds.
 decision_maker_titles:
-  - Executive Pastor
+  # Day-to-day owner - most common contact, drives the project. Top priority always.
   - Communications Director
-  - Operations Pastor
-  - Business Administrator
+  - Director of Communications
+  - Marketing Director
+  - Creative Director # used instead of the above at some churches
+  # Budget / final authority - approves rather than executes. Especially prominent 1,000+.
+  - Executive Pastor
+  - Executive Director
+  # Technical co-owner - ONLY relevant at 1,500+ attendance, co-owns technical evaluation.
+  - IT Director
+  - Digital Ministry Director
+  # Narrower site-specific owner - 500+ attendance, usually under Communications.
+  - Web/Digital Manager
+  - Web Manager
+  - Digital Manager
+  # Secondary/billing contact only, folded in under the Executive Pastor tier per
+  # Ethan's current default. Not a primary target.
+  - Operations/Business Administrator
+  # Discipleship/Connections Pastor: dropped from targeting per Ethan's finalized doc.
 
-# Churches are sourced by scripts/church_crawler.py (churchcenter.com signal),
-# then decision makers are found via Apollo people search on the church's domain.
 apollo_filters:
-  person_titles: ["executive pastor", "communications director", "operations pastor", "business administrator", "church administrator"]
+  person_titles: ["communications director", "director of communications", "marketing director",
+    "creative director", "executive pastor", "executive director", "it director",
+    "digital ministry director", "web manager", "digital manager", "business administrator"]
   person_locations: ["United States"]
   contact_email_status: [verified, unverified] # church staff emails verify worse; keep unverified, score lower
+  # Attendance isn't a direct Apollo filter field - apply the 250 floor when qualifying
+  # candidates from the crawler (staff count / service count / seating as proxies, same
+  # as the lead-scoring skill's firmographic estimate approach).
 
 trigger_signals:
   - building campaign or capital campaign announcement
@@ -28,3 +114,7 @@ trigger_signals:
   - church website visibly outdated or broken on mobile
   - recent move to Planning Center (new churchcenter subdomain)
   - Easter/Christmas season site traffic spikes (seasonal angle)
+
+negative_overrides:
+  - nonprofit or parachurch organization (not a local congregation) - score 0
+  - prior "not interested" or opted out - do-not-contact, never re-add

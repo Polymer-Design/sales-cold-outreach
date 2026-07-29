@@ -6,7 +6,9 @@ it doesn't go in an email. Items marked PENDING are not citable yet.
 ## The basics
 
 - Polymer is a full-service design and Webflow studio, founded 2017, based in New Jersey.
+- Website: hellopolymer.com. Never send cold outreach from this domain — see `config/domains.yaml`.
 - Founders: Ethan Hoover and Blair Hoover (brothers). Never "Tyler."
+- Ethan personally takes every sales call booked from outreach.
 - Positioning: build-first. We lead with the websites we build, around the rare combination
   of craft, speed, and cost. The subscription is an add-on for post-launch work, not the headline.
 - Core pitch line: "we build the systems growing teams run on."
@@ -21,6 +23,11 @@ it doesn't go in an email. Items marked PENDING are not citable yet.
   architecture, strategy.
 - Ongoing subscription: starts at $3k/month. (Name still undecided: "Growth Plan" vs
   "Ongoing Partner" — don't use either name in outreach yet, say "ongoing plan" if needed.)
+  This is specifically the pitch for leads already on Webflow (`subscription_track` per
+  `scripts/platform_detect.py`) — never pitch a rebuild to someone already on Webflow.
+  Subscription-track case studies (ongoing-partnership stories, not before/after launch)
+  don't exist yet — see `knowledge/case-studies/README.md`. Until one does, pitch the
+  retainer on capability alone, no invented proof.
 
 ## What we sell to each ICP
 

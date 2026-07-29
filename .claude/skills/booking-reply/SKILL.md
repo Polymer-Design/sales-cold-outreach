@@ -18,13 +18,15 @@ Read `knowledge/voice-and-tone.md`. Then:
 - **Answer whatever they actually asked first.** If they asked about pricing, answer it
   plainly from `knowledge/business-overview.md` before the link. Ignoring their question to
   push the calendar reads as automated, which kills the whole thing.
-- Then the ask: the booking link from `config/system.yaml` `booking.link`, framed as the
-  easy next step ("grab whatever time works: LINK").
+- Then the ask: the booking link from `config/system.yaml` `booking.links` — use
+  `links.startups` or `links.churches` matching THIS lead's icp, never the wrong one.
+  Framed as the easy next step ("grab whatever time works: LINK"). Both links book
+  directly onto Ethan's calendar, since he's the one taking these calls.
 - 3-6 sentences total. Same thread, so no re-introduction.
 - Sign-off "- Ethan".
 
-If `booking.link` is still REPLACE_ME, stop and flag loudly in the approval PR — do not
-draft around a missing link.
+If the matching link is missing, stop and flag loudly in the approval PR — do not draft
+around a missing link.
 
 ## Queue for approval
 
