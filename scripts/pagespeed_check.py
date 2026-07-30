@@ -31,15 +31,19 @@ def check(url: str, strategy: str = "mobile") -> dict:
     if not key:
         sys.exit("GOOGLEPAGESPEEDINSIGHTS_API_KEY is not set.")
     # Pull all four Lighthouse categories, not just speed - SEO and accessibility are
-    # often the bigger, more-overlooked opportunity on a lead's site.
-    resp = requests.get(API, params=[
-        ("url", url), ("strategy", strategy), ("key", key),
-        ("category", "performance"), ("category", "accessibility"),
-        ("category", "best-practices"), ("category", "seo"),
-    ], timeout=60)
+    # often the bigger, more-overlooked opportunity on a lead's site. Four categories make
+    # Lighthouse slower, so allow a generous timeout.
+    try:
+        resp = requests.get(API, params=[
+            ("url", url), ("strategy", strategy), ("key", key),
+            ("category", "performance"), ("category", "accessibility"),
+            ("category", "best-practices"), ("category", "seo"),
+        ], timeout=120)
+    except requests.RequestException as exc:
+        # A single lead's site timing out or refusing shouldn't crash a batch run -
+        # report it as a soft failure the caller can skip on.
+        return {"url": url, "ok": False, "error": f"request failed: {exc}"}
     if resp.status_code >= 400:
-        # A single lead's site failing Lighthouse (blocked, times out, robots) shouldn't
-        # crash a batch run - report it as a soft failure the caller can skip on.
         return {"url": url, "ok": False, "error": f"{resp.status_code}: {resp.text[:300]}"}
 
     data = resp.json()
