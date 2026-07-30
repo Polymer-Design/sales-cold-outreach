@@ -35,13 +35,16 @@ Collect 3-6 concrete, current facts about the lead. Every fact needs a source UR
 - Startups: funding announcements, product launches, job postings (especially marketing/web
   roles), founder posts, press
 - The specific person: their role, anything they've said or published
-- **PageSpeed** (`scripts/pagespeed_check.py`, if not already run during scoring): a real
-  load-time number on THEIR site (e.g. "your homepage takes 6.2s to load on mobile"). Record
-  it, but treat it as SUPPORTING evidence, not the opener - see Step 3, part 1 for the hook
-  hierarchy. Citable as a plain fact about their own site with no benchmark needed. NOT
-  citable as a comparison to Polymer's own sites ("ours average X") -
-  `knowledge/pagespeed-benchmark.md` is still PENDING; the fact-check gate blocks any
-  comparative phrasing until that changes.
+- **PageSpeed** (`scripts/pagespeed_check.py --url <their-site>`, if not already run during
+  scoring): returns all four Lighthouse scores (performance, accessibility, best practices,
+  SEO) plus load time. Don't fixate on speed — a weak SEO or accessibility score is often the
+  bigger, more-overlooked problem and a legitimate angle ("your site isn't set up to be found
+  in search", "it fails basic accessibility checks"). Record whatever is genuinely weak, but
+  treat it as SUPPORTING evidence, not the opener (see Step 3, part 1 for the hook hierarchy).
+  Any number about THEIR own site is citable as a plain fact. A comparison to Polymer's own
+  sites ("ours average X") is allowed now that `knowledge/pagespeed-benchmark.md` is
+  `status: approved` — but use it sparingly and compare like for like (our benchmark is
+  desktop), and the fact-check gate still checks that file's status every time.
 
 Write these into the draft file's `research` block (format below). Weak research = weak
 email. If you can't find one specific, current, non-obvious fact, flag the lead for skip

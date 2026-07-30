@@ -40,8 +40,9 @@ Run fresh (don't trust a stale cached value if the lead record is old):
 - `scripts/platform_detect.py --url <their site> --icp <icp>` — platform + track
   (new_build_track vs subscription_track — Ethan needs to know which pitch to lead with
   on the call)
-- `scripts/pagespeed_check.py --url <their site>` — a concrete site-speed fact he can
-  reference if useful, same citable-as-raw-fact-only rule as outreach emails
+- `scripts/pagespeed_check.py --url <their site>` — concrete site-quality facts he can
+  reference: performance, accessibility, best practices, and SEO scores plus load time (not
+  just speed), same citable rule as outreach emails
 - Church leads: note the Planning Center / ChMS signal if present
 
 ## Step 3 — Write the briefing
@@ -62,7 +63,7 @@ Write to `data/call-prep/{date}--{name-slug}.md`:
 ## Their current stack
 - Platform: {webflow/squarespace/wix/subsplash/wordpress/unknown}
 - {Planning Center / ChMS signal if church}
-- PageSpeed: {mobile score, load time} — cite as a fact only, not a comparison
+- PageSpeed: {performance, accessibility, best practices, SEO scores, load time}
 
 ## Reply history
 {if they replied to outreach: what they said, how it was classified. Else: "No prior reply — this is their first touch" or "Booked directly, no outreach history"}

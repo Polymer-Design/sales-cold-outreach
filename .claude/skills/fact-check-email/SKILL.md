@@ -28,7 +28,9 @@ For every claim about Polymer, pricing, or past work:
   their score) is fine with a source. A number that COMPARES the lead to Polymer's own
   sites ("ours average X", "our clients load in half that time") is only citable if
   `knowledge/pagespeed-benchmark.md` has `status: approved` - check that file's frontmatter
-  every time. It's still `PENDING` as of this writing - fail any comparative phrasing.
+  every time. It IS approved now (desktop benchmark), so comparative claims are allowed - but
+  the comparison must be honest and like-for-like (our benchmark is desktop; don't pit it
+  against a lead's mobile number), and fail anything the file's numbers don't support.
 - **Track/proof consistency:** if the draft is for a `subscription_track` lead, it must
   pitch the retainer, not a rebuild, and must not borrow a `new_build`-tagged case study's
   numbers as if they were a subscription story. Cross-check the case study's `track` tag

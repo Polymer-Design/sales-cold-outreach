@@ -30,8 +30,13 @@ def check(url: str, strategy: str = "mobile") -> dict:
     key = os.environ.get("GOOGLEPAGESPEEDINSIGHTS_API_KEY", "").strip()
     if not key:
         sys.exit("GOOGLEPAGESPEEDINSIGHTS_API_KEY is not set.")
-    resp = requests.get(API, params={"url": url, "strategy": strategy, "key": key,
-                                     "category": "performance"}, timeout=45)
+    # Pull all four Lighthouse categories, not just speed - SEO and accessibility are
+    # often the bigger, more-overlooked opportunity on a lead's site.
+    resp = requests.get(API, params=[
+        ("url", url), ("strategy", strategy), ("key", key),
+        ("category", "performance"), ("category", "accessibility"),
+        ("category", "best-practices"), ("category", "seo"),
+    ], timeout=60)
     if resp.status_code >= 400:
         # A single lead's site failing Lighthouse (blocked, times out, robots) shouldn't
         # crash a batch run - report it as a soft failure the caller can skip on.
@@ -39,18 +44,30 @@ def check(url: str, strategy: str = "mobile") -> dict:
 
     data = resp.json()
     lh = data.get("lighthouseResult", {})
-    perf = lh.get("categories", {}).get("performance", {}).get("score")
+    cats = lh.get("categories", {})
     audits = lh.get("audits", {})
+
+    def cat_score(key_name: str) -> int | None:
+        s = cats.get(key_name, {}).get("score")
+        return round(s * 100) if isinstance(s, (int, float)) else None
 
     def audit(key_name: str) -> dict:
         a = audits.get(key_name, {})
         return {"display": a.get("displayValue"), "numeric_ms": a.get("numericValue")}
 
+    scores = {
+        "performance": cat_score("performance"),
+        "accessibility": cat_score("accessibility"),
+        "best_practices": cat_score("best-practices"),
+        "seo": cat_score("seo"),
+    }
+
     return {
         "url": url,
         "ok": True,
         "strategy": strategy,
-        "performance_score_0_100": round(perf * 100) if isinstance(perf, (int, float)) else None,
+        "scores": scores,  # all four Lighthouse categories, 0-100
+        "performance_score_0_100": scores["performance"],  # kept for back-compat
         "largest_contentful_paint": audit("largest-contentful-paint"),
         "speed_index": audit("speed-index"),
         # Field data (real-user CrUX), when Google has enough traffic on this URL to report it.

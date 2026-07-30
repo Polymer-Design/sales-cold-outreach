@@ -51,70 +51,87 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--url", action="append", dest="urls",
                     help="override the default site list (repeatable)")
+    ap.add_argument("--strategy", default="desktop", choices=["mobile", "desktop"],
+                    help="which Lighthouse run to average (default desktop for our own sites)")
     args = ap.parse_args()
     sites = args.urls or POLYMER_SITES
+    strategy = args.strategy
 
-    rows, scores, lcps, skipped = [], [], [], []
+    cats = ("performance", "accessibility", "best_practices", "seo")
+    rows, agg, lcps, skipped = [], {c: [] for c in cats}, [], []
     for u in sites:
-        r = check(u, "mobile")
+        r = check(u, strategy)
         if not r.get("ok"):
             skipped.append((u, r.get("error", "unknown error")))
             rows.append((u, None, None))
             time.sleep(1)
             continue
-        score = r.get("performance_score_0_100")
+        s = r.get("scores", {})
         lcp = _lcp_seconds(r)
-        rows.append((u, score, lcp))
-        if isinstance(score, int):
-            scores.append(score)
+        rows.append((u, s, lcp))
+        for c in cats:
+            if isinstance(s.get(c), int):
+                agg[c].append(s[c])
         if isinstance(lcp, float):
             lcps.append(lcp)
         time.sleep(1)
 
-    if not scores:
+    if not agg["performance"]:
         print("No sites measured successfully (all skipped/rate-limited). "
-              "Not writing the benchmark - leaving it PENDING.", file=sys.stderr)
+              "Not writing the benchmark - leaving it as-is.", file=sys.stderr)
         for u, e in skipped:
             print(f"  skip {u}: {e}", file=sys.stderr)
         sys.exit(1)
 
     today = date.today().isoformat()
-    avg_score = round(statistics.mean(scores))
+    n = len(agg["performance"])
+    avg = {c: (round(statistics.mean(agg[c])) if agg[c] else None) for c in cats}
     avg_lcp = round(statistics.mean(lcps), 1) if lcps else None
 
     lines = [
         "---",
         "status: approved",
         f"refreshed: {today}",
+        f"strategy: {strategy}",
         "---",
         "",
         "# Polymer client PageSpeed benchmark",
         "",
-        f"Real mobile PageSpeed/Lighthouse scores from {len(scores)} shipped Polymer client "
-        "sites. Citable in outreach as a comparative claim (\"our client sites average X\"). "
+        f"Real {strategy} Lighthouse scores from {n} shipped Polymer client sites, across all "
+        "four categories (performance, accessibility, best practices, SEO). Citable in outreach "
+        "as a comparative claim (\"our client sites average X\"). "
         f"Refreshed {today} by `scripts/build_pagespeed_benchmark.py`.",
         "",
-        f"- **Sample size:** {len(scores)} shipped sites",
-        f"- **Average mobile performance score:** {avg_score} / 100",
-        f"- **Average mobile load (LCP):** {avg_lcp}s" if avg_lcp is not None
-        else "- **Average mobile load (LCP):** not available",
+        f"- **Sample size:** {n} shipped sites ({strategy})",
+        f"- **Average performance:** {avg['performance']} / 100",
+        f"- **Average accessibility:** {avg['accessibility']} / 100",
+        f"- **Average best practices:** {avg['best_practices']} / 100",
+        f"- **Average SEO:** {avg['seo']} / 100",
+        (f"- **Average load (LCP):** {avg_lcp}s" if avg_lcp is not None
+         else "- **Average load (LCP):** not available"),
         f"- **Date last refreshed:** {today}",
         "",
-        "## Per-site (mobile)",
+        f"## Per-site ({strategy})",
         "",
-        "| site | performance score | LCP (s) |",
-        "|---|---|---|",
+        "| site | perf | a11y | best practices | SEO | LCP (s) |",
+        "|---|---|---|---|---|---|",
     ]
+    cell = lambda v: v if v is not None else "n/a"
     for u, s, l in rows:
-        lines.append(f"| {u} | {s if s is not None else 'n/a'} | {l if l is not None else 'n/a'} |")
+        if isinstance(s, dict):
+            lines.append(f"| {u} | {cell(s.get('performance'))} | {cell(s.get('accessibility'))} "
+                         f"| {cell(s.get('best_practices'))} | {cell(s.get('seo'))} | {cell(l)} |")
+        else:
+            lines.append(f"| {u} | n/a | n/a | n/a | n/a | n/a |")
     if skipped:
         lines += ["", "## Skipped this run (not counted in the average)", ""]
         lines += [f"- {u}: {e}" for u, e in skipped]
     lines.append("")
 
     BENCHMARK.write_text("\n".join(lines))
-    print(f"Wrote {BENCHMARK.relative_to(REPO_ROOT)}: {len(scores)} sites, "
-          f"avg score {avg_score}, avg LCP {avg_lcp}s. Status: approved.")
+    print(f"Wrote {BENCHMARK.relative_to(REPO_ROOT)}: {n} sites ({strategy}) - "
+          f"avg perf {avg['performance']}, a11y {avg['accessibility']}, "
+          f"best-practices {avg['best_practices']}, seo {avg['seo']}, LCP {avg_lcp}s. Status: approved.")
     if skipped:
         print(f"({len(skipped)} site(s) skipped - see the file's 'Skipped this run' section.)")
 
