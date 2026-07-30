@@ -40,6 +40,9 @@ For each draft with `status: ready`:
   any mailbox TrulyInbox still reports as warming, `healthy_daily` once healthy. Count what's
   already scheduled on each mailbox today so the cap holds across the two ICPs.
 - Set `status: pushed` + timestamp. In dry_run, leave `status: ready` and just report.
+- **Funnel:** for each contact actually added to a sequence (live mode), record it:
+  `python scripts/funnel.py record --email <email> --stage emailed --icp <icp> --org <org>`.
+  This is the denominator for the booked-call conversion rate.
 
 ## 5. Recycle check
 

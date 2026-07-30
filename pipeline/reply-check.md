@@ -14,6 +14,11 @@ Run the **classify-reply** skill on each new reply. Every action the skill speci
 (do-not-contact marks, nurture tags, OOO reschedules) happens now, this run. Append every
 classification to `data/replies/log.jsonl`.
 
+**Funnel:** for each reply, record `replied`, and additionally `interested` when the reply
+is classified interested:
+`python scripts/funnel.py record --email <email> --stage replied --icp <icp> --org <org>`
+(and `--stage interested` for interested replies). Feeds the conversion dashboard.
+
 ## 3. Interested -> booking reply
 
 For each `interested`: run the **booking-reply** skill. It drafts, queues to

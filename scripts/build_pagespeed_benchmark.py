@@ -30,7 +30,9 @@ BENCHMARK = REPO_ROOT / "knowledge/pagespeed-benchmark.md"
 POLYMER_SITES = [
     "https://www.fispoke.com/",
     "https://socialscience.nyc/",
-    "http://thelandmark.church/",
+    # thelandmark.church intentionally excluded: a large, content/visual-heavy build where
+    # the client prioritized content interconnectivity over raw Lighthouse metrics, so it
+    # isn't representative of the speed/quality benchmark.
     "https://www.coastalcc.org/",
     "https://www.sounderbenefits.com/",
     "https://allinpoolcare.com/",

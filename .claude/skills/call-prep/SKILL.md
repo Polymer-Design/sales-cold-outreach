@@ -79,6 +79,10 @@ thread to pull on. Not a script, just a running start.
   `Call prep: {name} @ {org} — {appointment_time}` so it's scannable in an inbox.
 - Commit the briefing file — it's the durable record, same pattern as everything else
   in `data/`.
+- **Funnel:** record the booking so it counts toward the conversion rate:
+  `python scripts/funnel.py record --email <email> --stage booked --icp <icp> --org <org>`.
+  (Ethan marks the call's outcome later with `python scripts/funnel.py mark --email <email>
+  --outcome won|lost` — the briefing email should remind him to do that after the call.)
 
 ## Never
 
