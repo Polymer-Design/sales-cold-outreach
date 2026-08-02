@@ -1,0 +1,30 @@
+name: Notify channel test
+
+# Diagnostic: calls scripts/notify.py directly as a plain step (not hidden inside the
+# Claude SDK wrapper), so the real Resend/SMTP response is visible in this step's log.
+# Use this whenever "did the email actually send" needs a real answer instead of a guess.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+
+      - name: Send a test notification
+        run: |
+          python scripts/notify.py \
+            --subject "Notify channel test $(date -u +%FT%H:%M:%SZ)" \
+            --body "This is a diagnostic send from the notify-test workflow, checking whether email delivery actually works." \
+            --urgency info
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
