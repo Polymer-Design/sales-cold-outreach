@@ -43,9 +43,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Push any uncommitted data changes
+        # anthropics/claude-code-action rewrites the git remote to its own short-lived
+        # token, then revokes it right after its step ends - before this step runs.
+        # A plain `git push` here fails auth silently if it relies on that credential.
+        # Push against an explicit, fresh URL using this job's own github.token instead.
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/
           git diff --cached --quiet || git commit -m "biweekly review $(date -u +%F) (workflow sweep)"
-          git push
+          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "HEAD:${{ github.ref_name }}"

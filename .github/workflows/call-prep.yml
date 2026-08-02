@@ -52,9 +52,15 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
       - name: Push the briefing file
+        # anthropics/claude-code-action rewrites the git remote to use its own
+        # short-lived installation token, then revokes that token as soon as its step
+        # ends - before this step runs. A plain `git push` here silently fails auth
+        # (previously masked by `|| true`). Push against an explicit, fresh URL using
+        # this job's own github.token so it doesn't depend on what that action left behind.
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/call-prep/
           git diff --cached --quiet || git commit -m "call prep briefing $(date -u +%FT%H:%M)"
-          git push || true
+          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "HEAD:${{ github.ref_name }}" \
+            || echo "::warning::Failed to push the call-prep briefing file - check this step's log"
