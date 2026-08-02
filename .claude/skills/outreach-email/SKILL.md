@@ -89,11 +89,15 @@ The four-part structure maps onto a very short email; the parts are beats, not p
 3. **Create desire** — the proof point. What we did for someone like them, stated flat, real
    numbers only.
 4. **Call to action** — one ask: the intro call. Low-pressure phrasing beats assumptive
-   closes ("worth 15 minutes?" not "grab time on my calendar here").
+   closes ("worth 15 minutes?" not "grab time on my calendar here"). Previewing that a
+   scheduler link will follow if they're interested ("let me know and I'll send over a
+   scheduler link!") is also on-voice - it's still not putting the link in email 1.
 
 **Constraints:** body 50-110 words. Subject 2-5 words, lowercase-leaning, specific, no
-clickbait ("your event pages", "the new site"). No greeting beyond "Hey [first name],".
-Sign-off "- Ethan" or nothing.
+clickbait ("your event pages", "the new site"). No greeting beyond "Hey [first name],", on
+its own line, then a blank line before the body - see `knowledge/voice-and-tone.md`
+"Email register" for the full paragraph-break formatting. Sign-off per that file's "Sign-off
+by stage and ICP" - startups get plain "Ethan", churches get "God Bless," then "Ethan".
 
 **Email 2** (day +3): new angle, not a "just bumping this". Reference a different research
 fact or a different proof point. 40-80 words. Sent as a reply in the same thread.

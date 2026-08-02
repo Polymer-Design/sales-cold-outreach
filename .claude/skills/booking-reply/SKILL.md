@@ -23,7 +23,10 @@ Read `knowledge/voice-and-tone.md`. Then:
   Framed as the easy next step ("grab whatever time works: LINK"). Both links book
   directly onto Ethan's calendar, since he's the one taking these calls.
 - 3-6 sentences total. Same thread, so no re-introduction.
-- Sign-off "- Ethan".
+- Sign-off: a short, situational close matching the energy of their reply - "Cheers!",
+  "Excited to chat!", "Thanks!" - then "Ethan". Churches: "God Bless," then "Ethan" instead.
+  See `knowledge/voice-and-tone.md` "Sign-off by stage and ICP". Never "- Ethan" here; that's
+  the cold-email sign-off, this stage is warmer.
 
 If the matching link is missing, stop and flag loudly in the approval PR — do not draft
 around a missing link.
