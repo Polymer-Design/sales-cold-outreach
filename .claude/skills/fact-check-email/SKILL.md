@@ -43,7 +43,8 @@ nonzero, the draft fails here, no judgment needed - fix the flagged words and re
 
 Then the judgment checks a word list can't do:
 - first sentence is a specific observation about them, sendable to no other org
-- one CTA, correct sign-off, body within length limits (e1 50-110, e2 40-80, e3 30-60 words)
+- one CTA, correct sign-off, body within length limits (e1 50-85 words, aim under 80; e2 40-80;
+  e3 30-60)
 - reads out loud like a person, not a template with the blanks filled in
 
 ## Check 4 — Cohesion

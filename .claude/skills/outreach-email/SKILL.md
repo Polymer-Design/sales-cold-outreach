@@ -93,7 +93,10 @@ The four-part structure maps onto a very short email; the parts are beats, not p
    scheduler link will follow if they're interested ("let me know and I'll send over a
    scheduler link!") is also on-voice - it's still not putting the link in email 1.
 
-**Constraints:** body 50-110 words. Subject 2-5 words, lowercase-leaning, specific, no
+**Constraints:** body 50-85 words, aim under 80 - external benchmark data (elite cold-email
+performers average under 80 words on first touch) matches our own "extremely economical"
+voice rule, so this is the default target until real reply-rate data says otherwise via
+self-review. Subject 2-5 words, lowercase-leaning, specific, no
 clickbait ("your event pages", "the new site"). No greeting beyond "Hey [first name],", on
 its own line, then a blank line before the body - see `knowledge/voice-and-tone.md`
 "Email register" for the full paragraph-break formatting. Sign-off per that file's "Sign-off
