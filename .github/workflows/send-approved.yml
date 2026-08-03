@@ -25,6 +25,7 @@ jobs:
         run: python scripts/send_approved.py
         env:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       - name: Commit queue state
         run: |
           git config user.name "outreach-bot"

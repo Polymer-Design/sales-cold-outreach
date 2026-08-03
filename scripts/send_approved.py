@@ -29,6 +29,8 @@ from pathlib import Path
 import requests
 import yaml
 
+from notify import send as notify_send
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PENDING = REPO_ROOT / "data/queue/pending-approval"
 TO_SEND = REPO_ROOT / "data/queue/approved-to-send"
@@ -77,7 +79,24 @@ def main() -> None:
         (TO_SEND / f.name).write_text(text + stamp)
         f.unlink()
         print(f"APPROVED {f.name} -> approved-to-send/ (Apollo task: {tasked})")
-        if not tasked:
+
+        # Merging the PR is the approval, but it doesn't send anything yet - Apollo has no
+        # proven one-off reply-send endpoint. Tell Ethan there's a real, human paste-and-send
+        # step waiting, so approving in git doesn't silently dead-end.
+        if tasked:
+            notify_send(
+                subject=f"Ready to send in Apollo: {name} @ {org}",
+                body=f"Approved and queued as an Apollo task for {name} @ {org}.\n\n"
+                     f"Open Apollo and send it from the task - the full email is already "
+                     f"written there.\n\n{text}",
+                urgency="info")
+        else:
+            notify_send(
+                subject=f"ACTION NEEDED: send manually - {name} @ {org}",
+                body=f"Approved, but creating the Apollo task failed (see the workflow log). "
+                     f"The draft is sitting in data/queue/approved-to-send/{f.name} - send it "
+                     f"by hand.\n\n{text}",
+                urgency="alarm")
             problems.append(f.name)
 
     if problems:

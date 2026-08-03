@@ -57,3 +57,9 @@ Then open a PR titled "Booking reply: {name} @ {org}" containing the file, with 
 original reply quoted in the PR description so Ethan can approve from his phone in one look.
 **Merging the PR is the approval** — the send-approved workflow picks it up from there.
 Never call any send API from this skill.
+
+**Notify Ethan the PR is waiting.** Right after opening it, call `scripts/notify.py`
+(`urgency: info`) so he gets an email instead of having to notice a GitHub notification:
+subject `Approve reply: {name} @ {org}`, body a one-line summary of their reply plus the PR
+URL. This is the only alert for this stage - the send step (below) sends its own separate
+alert once he's approved.
