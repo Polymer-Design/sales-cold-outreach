@@ -1,7 +1,5 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { getFunnelStats, getQueueCounts, getReplyCount, getSystemMode } from "@/lib/data";
-import SignOutButton from "./sign-out-button";
+import Topbar from "./topbar";
 
 const STAGE_LABELS: { key: "emailed" | "replied" | "interested" | "booked" | "won"; label: string }[] = [
   { key: "emailed", label: "Emailed" },
@@ -12,7 +10,6 @@ const STAGE_LABELS: { key: "emailed" | "replied" | "interested" | "booked" | "wo
 ];
 
 export default async function OverviewPage() {
-  const session = await getServerSession(authOptions);
   const { counts, bookedRate, closeRate, leadsTotal } = getFunnelStats();
   const queue = getQueueCounts();
   const mode = getSystemMode();
@@ -21,19 +18,7 @@ export default async function OverviewPage() {
 
   return (
     <main>
-      <div className="topbar">
-        <div className="brand">
-          <div className="mark">
-            <span /><span /><span /><span />
-          </div>
-          <div className="name">Polymer</div>
-        </div>
-        <div className="topright">
-          <span className={`modebadge ${mode}`}>{mode.replace("_", " ")}</span>
-          {session?.user?.email && <span className="who">{session.user.email}</span>}
-          <SignOutButton />
-        </div>
-      </div>
+      <Topbar active="overview" />
 
       <div className="wrap">
         <h1>Outreach Command Center</h1>
