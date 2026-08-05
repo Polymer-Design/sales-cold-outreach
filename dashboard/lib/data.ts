@@ -90,3 +90,103 @@ export function getSystemMode(): string {
 export function getReplyCount(): number {
   return readJsonl("data/replies/log.jsonl").length;
 }
+
+export type CallPrepBrief = {
+  file: string;
+  title: string;
+  when: string | null;
+  icp: string | null;
+  track: string | null;
+  leadScore: string | null;
+  summary: string | null;
+};
+
+export function getCallPrepBriefs(): CallPrepBrief[] {
+  const dir = path.join(REPO_ROOT, "data/call-prep");
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".md"))
+    .sort()
+    .reverse()
+    .map((f) => {
+      const text = fs.readFileSync(path.join(dir, f), "utf-8");
+      const title = (text.match(/^#\s*(.+)$/m)?.[1] ?? f).replace(/^Call prep:\s*/, "");
+      const when = text.match(/\*\*When:\*\*\s*([^\s*]+)/)?.[1] ?? null;
+      const icp = text.match(/\*\*ICP:\*\*\s*(\S+)/)?.[1] ?? null;
+      const track = text.match(/\*\*Track:\*\*\s*(\S+)/)?.[1] ?? null;
+      const leadScore = text.match(/\*\*Lead score:\*\*\s*(.+)/)?.[1]?.trim() ?? null;
+      const summary =
+        text.match(/## What we found on them\n([\s\S]*?)(?=\n##|$)/)?.[1]?.trim() ?? null;
+      return { file: f, title, when, icp, track, leadScore, summary };
+    });
+}
+
+export type Experiments = { running: string; backlog: string[]; completedCount: number };
+
+export function getExperiments(): Experiments {
+  const full = path.join(REPO_ROOT, "data/experiments.md");
+  if (!fs.existsSync(full)) return { running: "", backlog: [], completedCount: 0 };
+  const text = fs.readFileSync(full, "utf-8");
+  const running = text.match(/## Running\n([\s\S]*?)(?=\n## )/)?.[1]?.trim() ?? "";
+  const backlogBlock = text.match(/## Backlog[^\n]*\n([\s\S]*?)(?=\n## )/)?.[1] ?? "";
+  const backlog = [...backlogBlock.matchAll(/^-\s*(.+)$/gm)].map((m) => m[1].trim());
+  const completedBlock = text.match(/## Completed\n([\s\S]*)/)?.[1] ?? "";
+  const tableLines = completedBlock.split("\n").filter((l) => l.trim().startsWith("|"));
+  return { running, backlog, completedCount: Math.max(0, tableLines.length - 2) };
+}
+
+export type PagespeedBenchmark = {
+  status: string | null;
+  refreshed: string | null;
+  sampleSize: string | null;
+  avgPerf: string | null;
+  avgA11y: string | null;
+  avgBestPractices: string | null;
+  avgSeo: string | null;
+  avgLcp: string | null;
+};
+
+export function getPagespeedBenchmark(): PagespeedBenchmark {
+  const full = path.join(REPO_ROOT, "knowledge/pagespeed-benchmark.md");
+  const empty: PagespeedBenchmark = {
+    status: null,
+    refreshed: null,
+    sampleSize: null,
+    avgPerf: null,
+    avgA11y: null,
+    avgBestPractices: null,
+    avgSeo: null,
+    avgLcp: null,
+  };
+  if (!fs.existsSync(full)) return empty;
+  const text = fs.readFileSync(full, "utf-8");
+  const grab = (re: RegExp) => text.match(re)?.[1]?.trim() ?? null;
+  return {
+    status: grab(/^status:\s*(\S+)/m),
+    refreshed: grab(/^refreshed:\s*(\S+)/m),
+    sampleSize: grab(/\*\*Sample size:\*\*\s*(.+)/),
+    avgPerf: grab(/\*\*Average performance:\*\*\s*(.+)/),
+    avgA11y: grab(/\*\*Average accessibility:\*\*\s*(.+)/),
+    avgBestPractices: grab(/\*\*Average best practices:\*\*\s*(.+)/),
+    avgSeo: grab(/\*\*Average SEO:\*\*\s*(.+)/),
+    avgLcp: grab(/\*\*Average load \(LCP\):\*\*\s*(.+)/),
+  };
+}
+
+// Real leads (not fixtures) live under data/leads/. Right now it only holds an
+// example seed CSV, so this surfaces exactly what's there rather than a fake count.
+export function getLeadsFiles(): string[] {
+  const dir = path.join(REPO_ROOT, "data/leads");
+  if (!fs.existsSync(dir)) return [];
+  const out: string[] = [];
+  const walk = (d: string, prefix = "") => {
+    for (const f of fs.readdirSync(d)) {
+      const full = path.join(d, f);
+      if (fs.statSync(full).isDirectory()) walk(full, `${prefix}${f}/`);
+      else if (f !== ".gitkeep") out.push(`${prefix}${f}`);
+    }
+  };
+  walk(dir);
+  return out;
+}

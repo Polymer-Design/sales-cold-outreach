@@ -1,15 +1,14 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import PolymerMark from "../polymer-mark";
 
 export default function SignInPage() {
   return (
     <main className="signinwrap">
       <div className="signincard">
         <div className="brand">
-          <div className="mark">
-            <span /><span /><span /><span />
-          </div>
+          <PolymerMark size={26} />
           <div className="name">Polymer</div>
         </div>
         <h1>Outreach Command Center</h1>
