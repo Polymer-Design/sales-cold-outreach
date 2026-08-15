@@ -8,6 +8,9 @@ per ICP).
 
 *(none yet — first experiments start once sending begins)*
 
+Reviewed 2026-08-15 (biweekly review): still pre-launch, zero sends, nothing to start yet.
+See `data/reports/2026-08-15-review.md`.
+
 ## Backlog (ideas, not started)
 
 - Subject: 2-3 word noun phrase vs. question form
