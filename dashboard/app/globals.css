@@ -51,10 +51,18 @@ body {
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
+:root {
+  /* Scales the side gutter from 16px on a phone up to 36px on desktop, and caps
+     content width generously so wide monitors don't sit on a fixed 1000px column
+     with the rest of the viewport empty. */
+  --pad-x: clamp(16px, 4vw, 36px);
+  --content-max: 1400px;
+}
+
 .wrap {
-  max-width: 1000px;
+  max-width: var(--content-max);
   margin: 0 auto;
-  padding: 8px 36px 60px;
+  padding: 8px var(--pad-x) 60px;
 }
 
 .topbar {
@@ -65,18 +73,24 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 36px 12px;
-  max-width: 1000px;
+  gap: 12px;
+  padding: 18px var(--pad-x) 12px;
+  max-width: var(--content-max);
   margin: 0 auto;
 }
 
 .tabs {
   display: flex;
   gap: 4px;
-  padding: 0 36px;
-  max-width: 1000px;
+  padding: 0 var(--pad-x);
+  max-width: var(--content-max);
   margin: 0 auto;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  /* Mobile-friendly tap targets - a 9px vertical pad + 13px text falls under the
+     ~44px recommended minimum. */
+  -webkit-tap-highlight-color: transparent;
 }
 .tab {
   display: inline-block;
@@ -111,7 +125,9 @@ body {
 .topright {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 .modebadge {
   font-size: 11px;
@@ -132,6 +148,15 @@ body {
 .who {
   font-size: 12.5px;
   color: var(--text-dim);
+  max-width: 45vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .who {
+    display: none;
+  }
 }
 .signout,
 .themetoggle {
@@ -165,7 +190,11 @@ h2 {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* Auto-fit collapses empty tracks, so a 2-tile row (Booked Calls) or a 4-tile row
+     (Overview) each fill the available width without a per-page column override,
+     and it naturally drops to one column on a phone instead of needing a fixed
+     breakpoint. */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   margin-bottom: 16px;
 }
@@ -208,14 +237,9 @@ h2 {
 }
 .cardgrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
-}
-@media (max-width: 720px) {
-  .cardgrid,
-  .stats {
-    grid-template-columns: 1fr;
-  }
+  align-items: start;
 }
 .kicker {
   font-size: 11.5px;
@@ -290,10 +314,14 @@ h2 {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   padding: 8px 0;
   border-bottom: 1px solid var(--border-soft);
   font-size: 13.5px;
+}
+.kv .v {
+  overflow-wrap: anywhere;
 }
 .kv:last-child {
   border-bottom: none;
@@ -400,13 +428,15 @@ ul.plain li {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 24px;
 }
 .signincard {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 36px;
-  width: 320px;
+  padding: clamp(24px, 6vw, 36px);
+  width: 100%;
+  max-width: 320px;
   text-align: center;
 }
 .signincard h1 {
