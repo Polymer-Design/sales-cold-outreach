@@ -12,7 +12,7 @@ export default async function BookedCallsPage() {
         <h1>Booked Calls</h1>
         <p className="sub">Call-prep briefings, generated automatically once a lead books.</p>
 
-        <div className="stats" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
+        <div className="stats">
           <div className="stat">
             <div className="label">Booked (funnel-tracked)</div>
             <div className="val">{counts.booked}</div>

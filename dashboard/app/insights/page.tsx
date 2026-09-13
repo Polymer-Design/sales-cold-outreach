@@ -86,7 +86,7 @@ export default async function InsightsPage() {
           </div>
           {pagespeed.avgPerf ? (
             <>
-              <div className="stats" style={{ gridTemplateColumns: "repeat(4, 1fr)", marginBottom: 0 }}>
+              <div className="stats" style={{ marginBottom: 0 }}>
                 <div className="stat">
                   <div className="label">Performance</div>
                   <div className="val">{pagespeed.avgPerf}</div>

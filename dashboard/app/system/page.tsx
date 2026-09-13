@@ -82,8 +82,9 @@ export default async function SystemPage() {
             const allConnected = d.mailboxesTotal > 0 && d.mailboxesConnected === d.mailboxesTotal;
             return (
               <div className="kv" key={d.icp}>
-                <span className="k" style={{ textTransform: "capitalize" }}>
-                  {d.icp} - {d.domain ?? "no domain set"}
+                <span className="k">
+                  <span style={{ textTransform: "capitalize" }}>{d.icp}</span> -{" "}
+                  {d.domain ?? "no domain set"}
                 </span>
                 <span className="v">
                   <span className={`pill ${allConnected ? "good" : "crit"}`}>
