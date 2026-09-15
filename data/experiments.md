@@ -14,6 +14,9 @@ See `data/reports/2026-08-15-review.md`.
 Reviewed 2026-09-01 (biweekly review): no change since last review, still pre-launch, zero
 sends, nothing to start yet. See `data/reports/2026-09-01-review.md`.
 
+Reviewed 2026-09-15 (biweekly review): no change since last review, still pre-launch, zero
+sends, nothing to start yet. See `data/reports/2026-09-15-review.md`.
+
 ## Backlog (ideas, not started)
 
 - Subject: 2-3 word noun phrase vs. question form
