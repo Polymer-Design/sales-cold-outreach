@@ -1,5 +1,6 @@
 import { getCallPrepBriefs, getFunnelStats } from "@/lib/data";
 import Topbar from "../topbar";
+import LogCallForm from "./log-call-form";
 
 export default async function BookedCallsPage() {
   const briefs = getCallPrepBriefs();
@@ -21,6 +22,15 @@ export default async function BookedCallsPage() {
             <div className="label">Call-prep briefs on file</div>
             <div className="val">{briefs.length}</div>
           </div>
+        </div>
+
+        <div className="card">
+          <div className="kicker">Log a booked call</div>
+          <p className="empty" style={{ marginBottom: 14 }}>
+            No automatic Dubsado hook yet - fires the same pipeline the Zapier hook would
+            (repository_dispatch, then call-prep briefing, then email - and logs the funnel event).
+          </p>
+          <LogCallForm />
         </div>
 
         <div className="card">

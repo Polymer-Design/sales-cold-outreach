@@ -34,6 +34,19 @@ repo and auto-deploys on every push to `main`. Two things to set in its dashboar
 
 Once those are set, redeploy (or just push any commit) and it's live.
 
+### 3. GitHub token for "Log a booked call"
+
+The Booked Calls tab has a manual form (`app/api/book-call/route.ts`) that fires the same
+`repository_dispatch` event Zapier posts today (see `docs/call-prep-zapier-setup.md`) - use it
+to trigger a call-prep briefing without wiring a Dubsado automation trigger.
+
+1. GitHub -> your avatar -> **Settings -> Developer settings -> Personal access tokens ->
+   Tokens (classic) -> Generate new token**. Scope: **`repo`**. Note the expiration.
+2. Vercel -> **Settings -> Environment Variables**, add `GITHUB_DISPATCH_TOKEN` with that
+   token. Redeploy.
+
+Without this set, the form returns a clear error instead of silently failing.
+
 ## Local development
 
 ```
