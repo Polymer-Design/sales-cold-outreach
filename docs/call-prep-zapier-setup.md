@@ -1,7 +1,19 @@
-# Call-prep: Zapier setup (Ethan's manual steps)
+# Call-prep: Zapier setup (superseded - kept for reference)
+
+**Superseded 2026-09-23.** Booking moved from Dubsado to Cal.com, which has a native
+webhook - the current setup is `dashboard/README.md` step 4
+(`dashboard/app/api/webhooks/cal/route.ts`), no Zapier needed. The dashboard's "Log a
+booked call" button (Booked Calls tab) is the manual fallback now, replacing the old
+Zapier-relies-on-Dubsado path entirely.
+
+This doc is left below as a reference for the repository_dispatch payload shape
+(`call-prep.yml` still accepts it exactly as documented) and in case Zapier is ever
+needed again for a different booking tool without a native webhook.
+
+---
 
 Everything on the code side is built and lives in this repo (`.claude/skills/call-prep/`,
-`.github/workflows/call-prep.yml`). This doc is the one manual thing left: wiring Dubsado to
+`.github/workflows/call-prep.yml`). This doc was the one manual thing left: wiring Dubsado to
 tell GitHub when a call gets booked.
 
 You need **two Zaps** (one per booking link), since each hardcodes which ICP it's for.

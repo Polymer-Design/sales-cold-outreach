@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { dispatchCallBooked } from "@/lib/github";
 
-// Fires the same GitHub repository_dispatch event Zapier posts today (see
-// docs/call-prep-zapier-setup.md) - this is the manual alternative to wiring a
-// Dubsado trigger, since Make has no native Dubsado module. call-prep.yml doesn't
-// care which of the two fired it.
-const REPO = "Polymer-Design/sales-cold-outreach";
-
+// Manual fallback for the "Log a booked call" button - fires the same
+// repository_dispatch the Cal.com webhook (app/api/webhooks/cal) fires automatically.
+// Useful if the webhook is down, misconfigured, or the booking happened somewhere else.
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -46,29 +44,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "ICP must be startups or churches." }, { status: 400 });
   }
 
-  const res = await fetch(`https://api.github.com/repos/${REPO}/dispatches`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      event_type: "call_booked",
-      client_payload: {
+  try {
+    await dispatchCallBooked(
+      {
         name: name.trim(),
         email: email.trim(),
         icp,
         appointment_time: appointment_time.trim(),
-        org_name: org_name?.trim() ?? "",
+        org_name: org_name?.trim(),
+        source: "dashboard manual form",
       },
-    }),
-  });
-
-  if (!res.ok) {
-    const detail = await res.text();
+      token
+    );
+  } catch (err) {
     return NextResponse.json(
-      { error: `GitHub rejected the dispatch (${res.status}): ${detail.slice(0, 300)}` },
+      { error: err instanceof Error ? err.message : "Dispatch failed." },
       { status: 502 }
     );
   }

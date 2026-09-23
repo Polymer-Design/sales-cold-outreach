@@ -1,6 +1,6 @@
 ---
 name: call-prep
-description: Build Ethan a one-page briefing before a sales call - what we sent them, what we researched, their tech stack, their score. Triggered the moment a call is booked in Dubsado.
+description: Build Ethan a one-page briefing before a sales call - what we sent them, what we researched, their tech stack, their score. Triggered the moment a call is booked in Cal.com.
 ---
 
 # Call prep briefing
@@ -11,13 +11,13 @@ one page, fast, and get it to him before the call.
 
 ## Input
 
-A `repository_dispatch` payload (`client_payload`) with whatever Zapier sent from Dubsado's
-booking form:
+A `repository_dispatch` payload (`client_payload`), sent either by the Cal.com booking
+webhook or by a human clicking "Log a booked call" in the dashboard:
 ```json
 {"name": "...", "email": "...", "icp": "startups|churches",
  "appointment_time": "2026-08-05T15:00:00-04:00", "org_name": "..." }
 ```
-`org_name` may be blank if Dubsado's form didn't capture it - derive the org from the
+`org_name` may be blank if the booking didn't capture it - derive the org from the
 email domain instead when missing.
 
 ## Step 1 — Match against what we already know

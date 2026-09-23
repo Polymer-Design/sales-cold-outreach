@@ -25,10 +25,12 @@ export default async function BookedCallsPage() {
         </div>
 
         <div className="card">
-          <div className="kicker">Log a booked call</div>
+          <div className="kicker">Log a booked call (manual fallback)</div>
           <p className="empty" style={{ marginBottom: 14 }}>
-            No automatic Dubsado hook yet - fires the same pipeline the Zapier hook would
-            (repository_dispatch, then call-prep briefing, then email - and logs the funnel event).
+            Cal.com bookings on the Website Intro / Church Website Intro events fire the
+            call-prep pipeline automatically now (see app/api/webhooks/cal). Use this only if
+            a booking happened somewhere the webhook doesn&apos;t cover, or the webhook itself
+            needs debugging - it fires the identical pipeline by hand.
           </p>
           <LogCallForm />
         </div>

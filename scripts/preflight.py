@@ -32,7 +32,7 @@ def main() -> None:
     booking_links = system.get("booking", {}).get("links", {})
     for icp in ("startups", "churches"):
         if booking_links.get(icp) in (None, "", "REPLACE_ME"):
-            problems.append(f"config/system.yaml booking.links.{icp} is not set (Dubsado scheduler URL)")
+            problems.append(f"config/system.yaml booking.links.{icp} is not set (Cal.com scheduler URL)")
     if system.get("can_spam", {}).get("physical_address") in (None, "", "REPLACE_ME"):
         problems.append("config/system.yaml can_spam.physical_address is not set (CAN-SPAM requires it)")
 

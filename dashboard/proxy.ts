@@ -15,5 +15,10 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api/auth|signin|_next/static|_next/image|favicon.ico|icon.svg).*)"],
+  // api/webhooks/* is deliberately excluded - those are called by external services
+  // (e.g. Cal.com) with no session cookie, and authenticate themselves instead (see
+  // app/api/webhooks/cal/route.ts's HMAC signature check).
+  matcher: [
+    "/((?!api/auth|api/webhooks|signin|_next/static|_next/image|favicon.ico|icon.svg).*)",
+  ],
 };

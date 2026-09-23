@@ -485,7 +485,8 @@ ul.plain li {
   color: var(--text-dim);
 }
 .logcallform input,
-.logcallform select {
+.logcallform select,
+.logcallform textarea {
   background: var(--surface-2);
   border: 1px solid var(--border);
   color: var(--text);
@@ -494,8 +495,13 @@ ul.plain li {
   padding: 9px 10px;
   border-radius: 8px;
 }
+.logcallform textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
 .logcallform input:focus,
-.logcallform select:focus {
+.logcallform select:focus,
+.logcallform textarea:focus {
   outline: 2px solid var(--accent);
   outline-offset: -1px;
 }
