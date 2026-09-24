@@ -58,7 +58,7 @@ SELF-REVIEW     Every 2 weeks .claude/skills/self-review reads performance,
 2. **Merge to the default branch.** GitHub cron schedules only fire from the default branch.
 3. **Connect the 4 warmed mailboxes** to Apollo via OAuth once warming completes
    (2 per domain, per `config/domains.yaml`).
-4. **Fill placeholders**: Dubsado booking link + physical mailing address in `config/system.yaml`.
+4. **Fill placeholders**: Cal.com booking link + physical mailing address in `config/system.yaml`.
 5. **Finalize ICPs** in `config/icp-startups.yaml` / `config/icp-churches.yaml` and flip
    `status: draft` -> `status: final`.
 6. **Add case studies** to `knowledge/case-studies/` (template provided). Until at least one

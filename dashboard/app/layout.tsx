@@ -1,9 +1,17 @@
 import "./globals.css";
 import type { ReactNode } from "react";
+import type { Viewport } from "next";
 
 export const metadata = {
   title: "Outreach Command Center",
   description: "Polymer internal outreach dashboard",
+};
+
+// Without this, mobile Safari/Chrome fall back to a ~980px desktop layout viewport
+// and zoom the whole page out instead of laying it out at the phone's real width.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 // Runs before hydration so a stored light-theme preference doesn't flash dark first.

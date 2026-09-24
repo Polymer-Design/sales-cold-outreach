@@ -12,10 +12,17 @@ function readConfig(relPath: string): string {
 }
 
 // Grabs a top-level (column-0) `key:` block up to the next top-level key or EOF.
+// Found via manual index scan rather than a single regex with a `$` lookahead - with
+// the "m" flag `$` matches end-of-*line*, not end-of-section, which silently truncated
+// every block at its first line (e.g. "booking" stopped right after "tool: dubsado").
 function section(text: string, key: string): string {
-  const re = new RegExp(`^${key}:\\s*\\n([\\s\\S]*?)(?=\\n[a-zA-Z_]+:|$)`, "m");
-  const m = text.match(re);
-  return m ? m[1] : "";
+  const startMatch = new RegExp(`^${key}:[ \\t]*\\n`, "m").exec(text);
+  if (!startMatch) return "";
+  const contentStart = startMatch.index + startMatch[0].length;
+  const nextKeyRe = /^[A-Za-z_][A-Za-z0-9_]*:/gm;
+  nextKeyRe.lastIndex = contentStart;
+  const nextMatch = nextKeyRe.exec(text);
+  return text.slice(contentStart, nextMatch ? nextMatch.index : text.length);
 }
 
 function field(text: string, key: string): string | null {

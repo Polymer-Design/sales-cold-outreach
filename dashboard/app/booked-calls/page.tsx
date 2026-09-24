@@ -1,5 +1,6 @@
 import { getCallPrepBriefs, getFunnelStats } from "@/lib/data";
 import Topbar from "../topbar";
+import LogCallForm from "./log-call-form";
 
 export default async function BookedCallsPage() {
   const briefs = getCallPrepBriefs();
@@ -12,7 +13,7 @@ export default async function BookedCallsPage() {
         <h1>Booked Calls</h1>
         <p className="sub">Call-prep briefings, generated automatically once a lead books.</p>
 
-        <div className="stats" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
+        <div className="stats">
           <div className="stat">
             <div className="label">Booked (funnel-tracked)</div>
             <div className="val">{counts.booked}</div>
@@ -21,6 +22,17 @@ export default async function BookedCallsPage() {
             <div className="label">Call-prep briefs on file</div>
             <div className="val">{briefs.length}</div>
           </div>
+        </div>
+
+        <div className="card">
+          <div className="kicker">Log a booked call (manual fallback)</div>
+          <p className="empty" style={{ marginBottom: 14 }}>
+            Cal.com bookings on the Website Intro / Church Website Intro events fire the
+            call-prep pipeline automatically now (see app/api/webhooks/cal). Use this only if
+            a booking happened somewhere the webhook doesn&apos;t cover, or the webhook itself
+            needs debugging - it fires the identical pipeline by hand.
+          </p>
+          <LogCallForm />
         </div>
 
         <div className="card">

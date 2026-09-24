@@ -13,7 +13,8 @@ step records the stage a lead reached; nothing is ever overwritten, so the histo
 
 Who records what:
   - emailed / replied / interested : the daily pipeline + reply-check jobs (automatic)
-  - booked                         : the call-prep job, fired by the Dubsado booking (automatic)
+  - booked                         : the call-prep job, fired by a Cal.com booking webhook or
+                                      the dashboard's manual "Log a booked call" button
   - won / lost                     : Ethan, after the call (manual) - see `mark` below
 
 Usage:

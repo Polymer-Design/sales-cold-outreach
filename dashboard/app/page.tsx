@@ -1,4 +1,5 @@
 import { getFunnelStats, getQueueCounts, getReplyCount, getSystemMode } from "@/lib/data";
+import { listBookingReplyPRs } from "@/lib/github";
 import Topbar from "./topbar";
 
 const STAGE_LABELS: { key: "emailed" | "replied" | "interested" | "booked" | "won"; label: string }[] = [
@@ -15,6 +16,19 @@ export default async function OverviewPage() {
   const mode = getSystemMode();
   const replies = getReplyCount();
   const maxStage = Math.max(1, counts.emailed);
+
+  // Drafts only land in data/queue/pending-approval/ on main for the instant between a
+  // PR merging and send_approved.py moving them on - in practice that folder is always
+  // empty. The real "awaiting approval" count is open booking-reply PRs (see Approvals).
+  const token = process.env.GITHUB_DISPATCH_TOKEN;
+  let pendingApproval: number | null = null;
+  if (token) {
+    try {
+      pendingApproval = (await listBookingReplyPRs(token)).length;
+    } catch {
+      pendingApproval = null;
+    }
+  }
 
   return (
     <main>
@@ -78,7 +92,13 @@ export default async function OverviewPage() {
           <div className="kicker">Needs you</div>
           <ul className="needslist">
             <li>
-              <b>{queue.pendingApproval}</b> booking replies awaiting approval
+              <b>{pendingApproval ?? "—"}</b> booking replies awaiting approval
+              {pendingApproval !== null && pendingApproval > 0 && (
+                <>
+                  {" "}
+                  - <a href="/approvals">review them</a>
+                </>
+              )}
             </li>
             <li>
               <b>{queue.drafts}</b> drafts in the queue

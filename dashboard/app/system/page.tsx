@@ -1,5 +1,6 @@
 import { getQueueCounts, getReplyCount, getSystemMode } from "@/lib/data";
 import { getDomainsConfig, getSystemConfig } from "@/lib/config";
+import { listBookingReplyPRs } from "@/lib/github";
 import Topbar from "../topbar";
 
 export default async function SystemPage() {
@@ -8,6 +9,16 @@ export default async function SystemPage() {
   const domains = getDomainsConfig();
   const queue = getQueueCounts();
   const replies = getReplyCount();
+
+  const token = process.env.GITHUB_DISPATCH_TOKEN;
+  let pendingApproval: number | null = null;
+  if (token) {
+    try {
+      pendingApproval = (await listBookingReplyPRs(token)).length;
+    } catch {
+      pendingApproval = null;
+    }
+  }
 
   return (
     <main>
@@ -58,8 +69,8 @@ export default async function SystemPage() {
               <span className="v">{queue.drafts}</span>
             </div>
             <div className="kv">
-              <span className="k">Pending approval</span>
-              <span className="v">{queue.pendingApproval}</span>
+              <span className="k">Pending approval (open PRs)</span>
+              <span className="v">{pendingApproval ?? "—"}</span>
             </div>
             <div className="kv">
               <span className="k">Approved, awaiting send</span>
@@ -82,8 +93,9 @@ export default async function SystemPage() {
             const allConnected = d.mailboxesTotal > 0 && d.mailboxesConnected === d.mailboxesTotal;
             return (
               <div className="kv" key={d.icp}>
-                <span className="k" style={{ textTransform: "capitalize" }}>
-                  {d.icp} - {d.domain ?? "no domain set"}
+                <span className="k">
+                  <span style={{ textTransform: "capitalize" }}>{d.icp}</span> -{" "}
+                  {d.domain ?? "no domain set"}
                 </span>
                 <span className="v">
                   <span className={`pill ${allConnected ? "good" : "crit"}`}>

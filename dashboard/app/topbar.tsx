@@ -9,6 +9,7 @@ import ThemeToggle from "./theme-toggle";
 const TABS = [
   { key: "overview", href: "/", label: "Overview" },
   { key: "leads", href: "/leads", label: "Leads" },
+  { key: "approvals", href: "/approvals", label: "Approvals" },
   { key: "booked-calls", href: "/booked-calls", label: "Booked Calls" },
   { key: "insights", href: "/insights", label: "Insights" },
   { key: "system", href: "/system", label: "System" },

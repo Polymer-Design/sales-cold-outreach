@@ -48,9 +48,9 @@ flowchart TD
 ```mermaid
 flowchart TD
     N[Reply classified] --> O{Category}
-    O -->|Interested| P[booking-reply skill drafts friendly email + Dubsado link]
+    O -->|Interested| P[booking-reply skill drafts friendly email + Cal.com link]
     P --> Q[Opens approval PR - held, never auto-sent]
-    Q --> R[Ethan merges PR = send]
+    Q --> R[Ethan approves in the dashboard's Approvals tab, or merges the PR directly - same effect]
     O -->|Not interested / unsubscribe| S[Mark do-not-contact in Apollo, log, never re-add]
     O -->|Referral / objection / ambiguous| T[Flag in a GitHub issue with a suggested reply for Ethan]
     O -->|Soft: later| U[Tag nurture with a follow-up date]

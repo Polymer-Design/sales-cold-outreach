@@ -5,13 +5,18 @@ mode: dry_run # dry_run | live. Preflight (scripts/preflight.py) must pass befor
 timezone: America/New_York
 
 booking:
-  tool: dubsado
+  tool: cal.com
   # Two separate scheduler URLs - both book directly onto Ethan's calendar. Picked by
   # the lead's icp at draft time (booking-reply skill) and in the standard sequence's
   # own CTA once wired into Apollo sequence copy.
+  #
+  # UTM-tagged so a Cal.com booking's tracking metadata shows it came from cold outreach,
+  # not the website - lets the "Log a booked call" webhook (dashboard/app/api/webhooks/cal)
+  # and any future funnel-source reporting tell the two apart. The website's own Tier CTAs
+  # use the bare links (or their own utm_source=website tag) - that's set in Webflow, not here.
   links:
-    startups: https://hello.dubsado.com/public/appointment-scheduler/6a6a78d25cd3f45f0ca069e7/schedule
-    churches: https://hello.dubsado.com/public/appointment-scheduler/6a6a86c55cd3f45f0ca0c447/schedule
+    startups: https://cal.com/hellopolymer/intro?utm_source=cold-email&utm_medium=email&utm_campaign=startups
+    churches: https://cal.com/hellopolymer/church-website-intro-call?utm_source=cold-email&utm_medium=email&utm_campaign=churches
 
 approval:
   # Booking emails to interested replies are drafted, then held in

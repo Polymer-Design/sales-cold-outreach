@@ -34,6 +34,42 @@ repo and auto-deploys on every push to `main`. Two things to set in its dashboar
 
 Once those are set, redeploy (or just push any commit) and it's live.
 
+### 3. GitHub token (booking capture + the dashboard's own PR approvals)
+
+Both the Cal.com webhook (step 4) and the manual "Log a booked call" fallback fire a
+`repository_dispatch` event; the Approvals tab also reads/edits/merges PRs with this same
+token. All of it needs one token with `repo` scope:
+
+1. GitHub -> your avatar -> **Settings -> Developer settings -> Personal access tokens ->
+   Tokens (classic) -> Generate new token**. Scope: **`repo`**. Note the expiration.
+2. Vercel -> **Settings -> Environment Variables**, add `GITHUB_DISPATCH_TOKEN` with that
+   token. Redeploy.
+
+Without this set, the form/webhook/approvals return a clear error instead of silently failing.
+
+### 4. Cal.com webhook (automatic booking capture - no manual click needed)
+
+Cal.com has a native webhook, no Zapier/Make relay required:
+
+1. Generate a random secret: `openssl rand -base64 32`.
+2. Vercel -> **Settings -> Environment Variables**, add `CAL_WEBHOOK_SECRET` with that value.
+   Redeploy.
+3. Cal.com -> **Settings -> Developer -> Webhooks -> New Webhook**:
+   - **Subscriber URL**: `https://<your-domain>/api/webhooks/cal`
+   - **Secret**: the same value from step 2.
+   - **Event trigger**: only **Booking Created**.
+   - Apply it to the *Website Intro Call* and *Church Website Intro Call* event types
+     (or all of them - unrecognized event-type slugs are safely ignored, see
+     `app/api/webhooks/cal/route.ts`).
+
+The "Log a booked call" button on the Booked Calls tab stays as a manual fallback - use it if
+a booking happened somewhere the webhook doesn't cover, or the webhook is misconfigured.
+
+Note: I built the payload parsing against Cal.com's documented webhook shape but haven't seen
+a real delivery yet - if the first real booking doesn't show up as a call-prep briefing, check
+the Vercel function logs for `app/api/webhooks/cal` first; the error will say exactly which
+field didn't parse.
+
 ## Local development
 
 ```
