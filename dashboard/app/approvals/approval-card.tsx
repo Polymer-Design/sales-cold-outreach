@@ -65,7 +65,7 @@ export default function ApprovalCard({ item }: { item: Item }) {
 
   if (status === "approved") {
     return (
-      <div className="listcard">
+      <div className="listcard" id={`pr-${item.number}`}>
         <div className="listcardhead">
           <span className="title">
             {item.contact_name || "Unknown"} @ {item.organization || "?"}
@@ -77,7 +77,7 @@ export default function ApprovalCard({ item }: { item: Item }) {
   }
 
   return (
-    <div className="card">
+    <div className="card" id={`pr-${item.number}`}>
       <div className="listcardhead">
         <span className="title">
           {item.contact_name || "Unknown"} @ {item.organization || "?"}

@@ -60,6 +60,8 @@ Never call any send API from this skill.
 
 **Notify Ethan the PR is waiting.** Right after opening it, call `scripts/notify.py`
 (`urgency: info`) so he gets an email instead of having to notice a GitHub notification:
-subject `Approve reply: {name} @ {org}`, body a one-line summary of their reply plus the PR
-URL. This is the only alert for this stage - the send step (below) sends its own separate
-alert once he's approved.
+subject `Approve reply: {name} @ {org}`, body a one-line summary of their reply plus a link
+to `https://outreach.hellopolymer.com/approvals#pr-{pr_number}` (the dashboard's Approvals
+tab, not the raw GitHub PR URL - he reviews, edits if needed, and approves from there). This
+is the only alert for this stage - the send step (below) sends its own separate alert once
+he's approved.

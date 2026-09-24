@@ -229,6 +229,11 @@ h2 {
 .card + .card {
   margin-top: 0;
 }
+.card:target,
+.listcard:target {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .cardhead {
   display: flex;
   align-items: center;
