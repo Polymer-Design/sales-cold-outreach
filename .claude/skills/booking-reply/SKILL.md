@@ -18,6 +18,13 @@ Read `knowledge/voice-and-tone.md`. Then:
 - **Answer whatever they actually asked first.** If they asked about pricing, answer it
   plainly from `knowledge/business-overview.md` before the link. Ignoring their question to
   push the calendar reads as automated, which kills the whole thing.
+- **If they ask to see examples, work, or the site itself** (or it's otherwise clearly on
+  their mind - e.g. "can we see some of your work first?"), point them to hellopolymer.com
+  before the booking link. It's a placeholder: `knowledge/business-overview.md` notes
+  ICP-specific solution pages are coming but not live yet, so this is the homepage for now
+  and should become the matching solutions page the moment one exists for their ICP. Don't
+  force this into every reply - only when their message actually calls for it; most
+  "interested" replies go straight to the booking link with no detour.
 - Then the ask: the booking link from `config/system.yaml` `booking.links` — use
   `links.startups` or `links.churches` matching THIS lead's icp, never the wrong one.
   Framed as the easy next step ("grab whatever time works: LINK"). Both links book
