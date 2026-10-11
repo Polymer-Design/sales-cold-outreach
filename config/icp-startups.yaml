@@ -15,14 +15,16 @@ excluded:
 
 services_this_icp_maps_to:
   - Webflow website builds (new_build_track)
-  - Ongoing subscription/retainer design (subscription_track, $3k/mo)
+  - Ongoing monthly plan design (subscription_track - Care/Grow/Partner/Partner Plus,
+    see knowledge/business-overview.md)
   # Pitch decks and brand/identity design are real Polymer services but are NOT currently
   # factored into this ICP's scoring - the two tracks above are what the technographic
   # signal is built around.
 
 # Detected via scripts/platform_detect.py. Same mechanic as the church ICP.
 website_platform_routing:
-  webflow: subscription_track # $3k/mo retainer pitch, NOT a rebuild pitch
+  webflow: subscription_track # monthly plan pitch (Grow/Partner), NOT a rebuild pitch -
+    # tiers/prices live in knowledge/business-overview.md, not duplicated here
   squarespace: new_build_track
   wix: new_build_track
   wordpress: new_build_track

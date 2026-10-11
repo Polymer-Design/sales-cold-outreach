@@ -16,12 +16,20 @@ skill (via `scripts/platform_detect.py`). This changes the OFFER, not just the w
 - **new_build_track**: pitch the website build (Sprint/Core/Custom per
   `knowledge/business-overview.md`). Case studies tagged `track: new_build` in their
   frontmatter apply here.
-- **subscription_track** (lead is already on Webflow): pitch the $3k/mo ongoing
-  retainer, NOT a rebuild - never suggest replacing a site that's already on Webflow.
-  Case studies tagged `track: subscription` apply here. **These don't exist yet** (see
-  `knowledge/case-studies/README.md`) - until one does, draft with a plain capability
-  statement only, per the standing "no proof yet, write without proof" rule. Do not
-  borrow a new-build case study's numbers for a subscription pitch; the story doesn't fit.
+- **subscription_track** (lead is on Webflow/Webflow Source - the only platforms
+  `scripts/platform_detect.py` currently auto-detects into this track): pitch the right
+  monthly plan tier per `knowledge/business-overview.md` (Grow/Partner for startups,
+  Care/Grow for churches), NOT a rebuild. Case studies tagged `track: subscription` apply
+  here. **These don't exist yet** (see `knowledge/case-studies/README.md`) - until one
+  does, draft with a plain capability statement only, per the standing "no proof yet,
+  write without proof" rule. Do not borrow a new-build case study's numbers for a
+  subscription pitch; the story doesn't fit.
+  - `knowledge/business-overview.md` also says Astro/Vercel/other custom-code sites fit a
+    monthly plan, same as Webflow - but platform_detect.py doesn't auto-detect those yet,
+    so a lead on one of those will come through tagged `new_build_track` by default. If
+    Step 1's research turns up that the lead's site is clearly custom-code (not a hosted
+    builder), pitch the monthly plan anyway and note it in the draft's research block -
+    don't blindly follow a stale auto-tag when you can see the real platform.
 - Church-specific: if `platform: subsplash`, use the "your app's great, the website
   doesn't match it" angle, not the generic "outgrown your DIY builder" angle - a church on
   Subsplash already has budget and sophistication; don't undersell them.
