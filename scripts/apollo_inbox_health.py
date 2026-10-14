@@ -82,29 +82,30 @@ def fetch_bounce_report(key: str, fixture: str | None) -> dict:
             # (pivot_group_by stays singular) - confirmed because those two stopped
             # erroring once set this way. What's still failing, and why, per the third
             # 400's full body:
-            #   - Everything below except metrics is now CONFIRMED correct: the fourth
-            #     live 400 (2026-10-14) stopped complaining about date_range, group_bys,
-            #     pivot_group_by, sorts, filters, group_by_totals_selected,
-            #     pivot_group_by_totals_selected, and skip_group_by_value entirely - only
-            #     metrics errored, 3x over ("Metrics must have key value, Metrics must
-            #     have smart datetime reference, Metrics must have smart user id
-            #     reference"). So each metrics entry needs key (not name) plus both
-            #     reference fields. Apollo's own CLI docs show one real working example:
-            #     num_emails_sent pairs with smart_datetime_reference
-            #     "emailer_message__sent_at" and smart_user_id_reference
-            #     "emailer_message__user_id" - applied that pattern to the other two
-            #     emailer_message-based metrics (delivered_at/bounced_at), same user ref.
+            #   - Everything below except metrics is now CONFIRMED correct - 4+ live runs
+            #     today stopped complaining about date_range, group_bys, pivot_group_by,
+            #     sorts, filters, both totals-selected booleans, and skip_group_by_value
+            #     entirely. metrics took two more rounds: {"name": ...} got "metrics is
+            #     required" (whole array ignored); {"key": ..., smart_datetime_reference,
+            #     smart_user_id_reference} got the two reference fields accepted (no
+            #     error) but "Metrics must have key value" x3 - the two reference field
+            #     NAMES are right (confirmed via Apollo's own CLI docs example:
+            #     num_emails_sent / emailer_message__sent_at / emailer_message__user_id),
+            #     "key" just isn't the real field for the metric identifier. Trying
+            #     "metric" (singular) instead - the sorts object below already uses
+            #     exactly that field name ({"metric": ..., "asc": ...}) and was accepted,
+            #     so this API reuses "metric" as its identifier key elsewhere.
             "date_range": {"modality": "last_30_days"},
             "group_bys": ["email_account_id"],
             "pivot_group_by": [],
             "metrics": [
-                {"key": "num_emails_sent",
+                {"metric": "num_emails_sent",
                  "smart_datetime_reference": "emailer_message__sent_at",
                  "smart_user_id_reference": "emailer_message__user_id"},
-                {"key": "num_emails_delivered",
+                {"metric": "num_emails_delivered",
                  "smart_datetime_reference": "emailer_message__delivered_at",
                  "smart_user_id_reference": "emailer_message__user_id"},
-                {"key": "num_emails_bounced",
+                {"metric": "num_emails_bounced",
                  "smart_datetime_reference": "emailer_message__bounced_at",
                  "smart_user_id_reference": "emailer_message__user_id"},
             ],
