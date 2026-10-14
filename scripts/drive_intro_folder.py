@@ -108,7 +108,8 @@ def sync(org: str, file_paths: list[str]) -> dict:
             missing.append(path_str)
             continue
         file_id = _upsert_markdown(drive, media_cls, org_folder_id, p.name, p.read_text())
-        uploaded.append({"name": p.name, "id": file_id})
+        uploaded.append({"name": p.name, "id": file_id,
+                          "url": f"https://drive.google.com/file/d/{file_id}/view"})
 
     if missing:
         print(f"WARNING: these files don't exist, skipped: {missing}", file=sys.stderr)

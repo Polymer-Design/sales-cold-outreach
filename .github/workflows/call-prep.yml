@@ -44,9 +44,10 @@ jobs:
 
             Follow the skill exactly, all 7 steps: match against data/, research the
             company/industry, refresh the tech-stack + sitemap scope, recommend a package,
-            write the briefing, email it via scripts/notify.py + commit it, and mirror it
-            (plus the matched sequence file, if any) into the org's Drive folder via
-            scripts/drive_intro_folder.py.
+            write the briefing, mirror it (plus the matched sequence file, if any) into the
+            org's Drive folder via scripts/drive_intro_folder.py, then email it via
+            scripts/notify.py + commit it - using the real Drive file link (or the GitHub
+            blob link if Drive failed) as the "Full briefing" link, never a bare repo path.
           claude_args: |
             --model claude-sonnet-5
             --max-turns 40

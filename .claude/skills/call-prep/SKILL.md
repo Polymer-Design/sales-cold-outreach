@@ -132,13 +132,44 @@ One or two sentences — given the track and what's known, what's the natural op
 thread to pull on. Not a script, just a running start.
 ```
 
-## Step 6 — Deliver it
+## Step 6 — Mirror to Drive (before the email, so the email can link to it)
+
+Every booking gets a Drive folder, matched or not - this is what lets a later automation
+(outside this repo) pick up the full context once someone signs, regardless of whether
+they came from outreach or booked directly off the website. Doing this **before** Step 7
+means the email can link straight to the real file instead of a repo path Ethan can't
+open from his phone.
+
+```
+python scripts/drive_intro_folder.py sync --org "{org}" \
+    --file data/call-prep/{the briefing file just written} \
+    [--file {the matched queue file from Step 1, if this was a real outreach lead}]
+```
+
+This creates (or reuses) a "Prospects" folder under the configured parent, then an org-named
+folder under that, and uploads/updates the briefing (plus the sent-sequence file with its
+research block, if matched) as plain markdown. Its JSON output includes a direct `url` per
+uploaded file (`https://drive.google.com/file/d/.../view`) - **use the briefing's own url
+as the "Full briefing" link in Step 7's email.**
+
+If the command errors (missing credentials, folder not shared, etc.), don't fail the whole
+run over it - the email + committed file are still the primary delivery. Fall back to the
+file's GitHub URL instead (this repo is public, so it renders for anyone):
+`https://github.com/Polymer-Design/sales-cold-outreach/blob/main/data/call-prep/{file}`.
+Also send a **separate, short, one-line-reason** notify email about the Drive failure
+(urgency: watch) rather than folding it into the call-prep email - e.g. "Drive sync
+failed: the Prospects parent folder isn't shared with our service account yet" - not the
+raw error text or a paragraph of troubleshooting steps. Same spirit as every other "don't
+crash the job over a secondary step" pattern in this repo.
+
+## Step 7 — Deliver it
 
 **The email is not the briefing file.** Ethan reads this on his phone between meetings and
 needs the point in 60-90 seconds — plain English, short sections, nothing he has to
 decode. File paths, script commands, ICP/track jargon, and the reasoning behind a
 judgment call belong in the committed `.md` file (Step 5), not the email. The email just
-says what matters and points to the file for anyone who wants the rest.
+says what matters and links out for anyone who wants the rest - **both links below must
+be real, clickable URLs Ethan can open on his phone, never a bare repo-relative path.**
 
 Email via `scripts/notify.py` (`urgency: info`), subject
 `Call prep: {name} @ {org} — {appointment_time in plain form, e.g. "Today 3:00pm ET"}`.
@@ -149,6 +180,8 @@ section to 1-2 lines, skip a section entirely rather than write "n/a":
 ```
 {org} — {what they do, one line}
 {name}, {their title}
+Site: {their website, as a real clickable URL (e.g. https://acme.com), or "not available"
+  if there genuinely was no site to check}
 
 WHEN: {plain date/time}
 SCORE: {tier} ({total}) — or, if unmatched: "Booked directly, not in our outreach system"
@@ -165,11 +198,12 @@ THEIR SITE
 SUGGESTED PACKAGE
 {package} — {one-line reasoning}
 
-Full briefing: data/call-prep/{file}
+Full briefing: {the real Drive file url from Step 6, or the GitHub blob url fallback}
 ```
 
 **Synthetic/test-data case** (see Step 5's note on recognizing this) — much shorter, no
-forensic writeup in the email body (that belongs in the committed file only):
+forensic writeup in the email body (that belongs in the committed file only), but still a
+real link, not a path:
 
 ```
 Heads up — this looks like test data, not a real booking.
@@ -180,7 +214,7 @@ Heads up — this looks like test data, not a real booking.
 Why: {one short plain-English reason}
 
 If this is actually on your calendar, double-check it directly - nothing here is real to
-prep from.
+prep from. Full file: {Drive or GitHub url}
 ```
 
 - Commit the briefing file — it's the durable record, same pattern as everything else
@@ -190,28 +224,6 @@ prep from.
   Ethan marks the call's outcome later (`funnel.py mark --outcome won|lost`) - remind him
   of that in plain English in the email ("Mark this won/lost after the call"), not as a
   copy-pasteable CLI command.
-
-## Step 7 — Mirror to Drive
-
-Every booking gets a Drive folder, matched or not - this is what lets a later automation
-(outside this repo) pick up the full context once someone signs, regardless of whether
-they came from outreach or booked directly off the website.
-
-```
-python scripts/drive_intro_folder.py sync --org "{org}" \
-    --file data/call-prep/{the briefing file just written} \
-    [--file {the matched queue file from Step 1, if this was a real outreach lead}]
-```
-
-This creates (or reuses) a "Prospects" folder under the configured parent, then an org-named
-folder under that, and uploads/updates the briefing (plus the sent-sequence file with its
-research block, if matched) as plain markdown. If the command errors (missing credentials,
-folder not shared, etc.), don't fail the whole run over it - the email + committed file are
-the primary delivery. Send a **separate, short, one-line-reason** notify email about the
-Drive failure (urgency: watch) rather than folding it into the call-prep email - e.g. "Drive
-sync failed: the Prospects parent folder isn't shared with our service account yet" - not
-the raw error text or a paragraph of troubleshooting steps. Same spirit as every other
-"don't crash the job over a secondary step" pattern in this repo.
 
 ## Never
 
