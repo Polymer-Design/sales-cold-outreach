@@ -133,11 +133,15 @@ def fetch_bounce_report(key: str, fixture: str | None) -> dict:
         timeout=30,
     )
     if resp.status_code >= 400:
+        # Full error goes to the job log for whoever's debugging this later - the email
+        # itself stays a short, plain reminder (Ethan's own request: he's fine not having
+        # this automated as long as he gets pinged to go check it himself).
+        print(f"sync_report {resp.status_code}: {resp.text[:1500]}", file=sys.stderr)
         notify_send(
-            "Inbox monitor could not reach Apollo's analytics API",
-            f"POST {BASE}/reports/sync_report returned {resp.status_code}: {resp.text[:1500]}\n"
-            "Confirm the request shape in scripts/apollo_inbox_health.py against "
-            "docs.apollo.io/reference/sync-report.",
+            "Couldn't pull mailbox bounce rates automatically",
+            "No numbers this run - check mailbox health yourself in Apollo "
+            "(Settings -> Email Accounts, or the Analytics tab) to see if anything needs "
+            "attention. (Full error is in this job's log if anyone wants to dig in.)",
             urgency="watch",
         )
         return {}
@@ -220,7 +224,14 @@ def main() -> None:
     try:
         groups = _extract_groups(report) if report else []
     except ValueError as e:
-        notify_send("Inbox monitor couldn't parse Apollo's analytics response", str(e), urgency="watch")
+        print(str(e), file=sys.stderr)
+        notify_send(
+            "Couldn't pull mailbox bounce rates automatically",
+            "No numbers this run - check mailbox health yourself in Apollo "
+            "(Settings -> Email Accounts, or the Analytics tab) to see if anything needs "
+            "attention. (Full details are in this job's log if anyone wants to dig in.)",
+            urgency="watch",
+        )
         groups = []
 
     statuses = build_status(accounts, groups, th)

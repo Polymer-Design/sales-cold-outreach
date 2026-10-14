@@ -36,6 +36,15 @@ Search, in this order, by email (case-insensitive) and by the org's domain:
 etc.) — say so plainly in the briefing rather than forcing a fit. Do a lighter live pass
 instead per Steps 2-3 below. Don't fabricate an outreach history that doesn't exist.
 
+**Recognizing synthetic/test data:** not every unmatched booking is a real direct booking -
+some are QA/test entries exercising this pipeline. Signals worth checking before doing a
+full research pass: an IANA-reserved domain (example.com/example.org/example.net, RFC
+2606), a name/org that's literally "Test ___" or similar, or a live check on the implied
+site turning up nothing (no platform markers, no sitemap, generic/default PageSpeed
+scores). One or two signals together is enough to call it test data in the email (Step 6)
+- say so plainly and skip the full research pass rather than writing a padded-out fake
+briefing for a booking that was never real.
+
 ## Step 2 — Research the company and industry
 
 Whether matched or not, make sure the briefing actually answers "who is this and why do
@@ -125,14 +134,62 @@ thread to pull on. Not a script, just a running start.
 
 ## Step 6 — Deliver it
 
-- Email it to Ethan via `scripts/notify.py` (`urgency: info`), subject
-  `Call prep: {name} @ {org} — {appointment_time}` so it's scannable in an inbox.
+**The email is not the briefing file.** Ethan reads this on his phone between meetings and
+needs the point in 60-90 seconds — plain English, short sections, nothing he has to
+decode. File paths, script commands, ICP/track jargon, and the reasoning behind a
+judgment call belong in the committed `.md` file (Step 5), not the email. The email just
+says what matters and points to the file for anyone who wants the rest.
+
+Email via `scripts/notify.py` (`urgency: info`), subject
+`Call prep: {name} @ {org} — {appointment_time in plain form, e.g. "Today 3:00pm ET"}`.
+
+**Normal case** (matched or not, as long as there's a real org to talk about) — keep every
+section to 1-2 lines, skip a section entirely rather than write "n/a":
+
+```
+{org} — {what they do, one line}
+{name}, {their title}
+
+WHEN: {plain date/time}
+SCORE: {tier} ({total}) — or, if unmatched: "Booked directly, not in our outreach system"
+
+WHAT WE SENT
+{one line per email, or omit this section if there's no history}
+
+WORTH KNOWING
+- {2-4 short bullets max: a trigger signal, something timely, a reply if they replied}
+
+THEIR SITE
+{platform} · {page count, or "not available"} · PageSpeed {perf}/{access}/{bp}/{seo}
+
+SUGGESTED PACKAGE
+{package} — {one-line reasoning}
+
+Full briefing: data/call-prep/{file}
+```
+
+**Synthetic/test-data case** (see Step 5's note on recognizing this) — much shorter, no
+forensic writeup in the email body (that belongs in the committed file only):
+
+```
+Heads up — this looks like test data, not a real booking.
+
+{name} <{email}>, {org}
+{plain date/time}
+
+Why: {one short plain-English reason}
+
+If this is actually on your calendar, double-check it directly - nothing here is real to
+prep from.
+```
+
 - Commit the briefing file — it's the durable record, same pattern as everything else
   in `data/`.
 - **Funnel:** record the booking so it counts toward the conversion rate:
   `python scripts/funnel.py record --email <email> --stage booked --icp <icp> --org <org>`.
-  (Ethan marks the call's outcome later with `python scripts/funnel.py mark --email <email>
-  --outcome won|lost` — the briefing email should remind him to do that after the call.)
+  Ethan marks the call's outcome later (`funnel.py mark --outcome won|lost`) - remind him
+  of that in plain English in the email ("Mark this won/lost after the call"), not as a
+  copy-pasteable CLI command.
 
 ## Step 7 — Mirror to Drive
 
@@ -150,8 +207,11 @@ This creates (or reuses) a "Prospects" folder under the configured parent, then 
 folder under that, and uploads/updates the briefing (plus the sent-sequence file with its
 research block, if matched) as plain markdown. If the command errors (missing credentials,
 folder not shared, etc.), don't fail the whole run over it - the email + committed file are
-the primary delivery; note the Drive failure in the notify email so Ethan knows to check it,
-same spirit as every other "don't crash the job over a secondary step" pattern in this repo.
+the primary delivery. Send a **separate, short, one-line-reason** notify email about the
+Drive failure (urgency: watch) rather than folding it into the call-prep email - e.g. "Drive
+sync failed: the Prospects parent folder isn't shared with our service account yet" - not
+the raw error text or a paragraph of troubleshooting steps. Same spirit as every other
+"don't crash the job over a secondary step" pattern in this repo.
 
 ## Never
 
@@ -164,3 +224,7 @@ same spirit as every other "don't crash the job over a secondary step" pattern i
 - If nothing matches and the live pass also comes up empty, send a short "booked, no
   background found" notice rather than a padded-out fake briefing — but still create the
   Drive folder; an empty-but-organized folder beats no folder at all.
+- Never put file paths, script/CLI commands, internal jargon (ICP, track, tier names a
+  first-time reader wouldn't know), or the reasoning behind a judgment call in the EMAIL
+  body - that's all fine in the committed `.md` file, but the email is Ethan's 60-90-second
+  scan on his phone, not a debug log. One link to the full file covers anyone who wants more.
