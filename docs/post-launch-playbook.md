@@ -9,7 +9,7 @@ exactly where each one lives.
 |---|---|---|
 | Whenever a lead replies "interested" | Approve (or edit) the booking email by **merging its PR**. Merging = sending. | GitHub PRs titled "Booking reply: …" |
 | ~Daily (2 min) | Skim the "Replies needing you" issue — referrals, objections, ambiguous replies. Each has a suggested response you can edit and send yourself. | GitHub issue, tagged `reply-flag` |
-| When an inbox alarm email arrives | Spin up + start warming a replacement inbox, and pause/slow the flagged one. | Email to ethan@hellopolymer.com; the mailbox lives in TrulyInbox + Apollo |
+| When an inbox alarm email arrives | Connect + start warming a replacement inbox (Apollo ramps new mailboxes itself), and pause/slow the flagged one. | Email to ethan@hellopolymer.com; bounce-rate data lives in Apollo, status in `data/inbox-health/latest.json` |
 | Every 2 weeks (10 min) | Read the self-review report. Approve or reject the **structural** recommendations (scoring weights, ICP filter changes, volume increases). Copy tweaks already auto-applied. | GitHub issue "Outreach review …" + `data/reports/` |
 | Hot-tier leads (75+) | Review email #1 before it sends (higher-value leads get a human glance). | PR "Hot tier drafts …" |
 

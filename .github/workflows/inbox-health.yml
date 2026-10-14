@@ -18,15 +18,15 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - name: Check TrulyInbox mailbox health
-        run: python scripts/trulyinbox_monitor.py
+      - name: Check mailbox health via Apollo
+        run: python scripts/apollo_inbox_health.py
         env:
-          TRULYINBOX_API_KEY: ${{ secrets.TRULYINBOX_API_KEY }}
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-      - name: Commit any notification log
+      - name: Commit health snapshot and any notification log
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/notifications/ 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "inbox health alert $(date -u +%F)"
+          git add data/inbox-health/ data/notifications/ 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "inbox health check $(date -u +%F)"
           git push || true

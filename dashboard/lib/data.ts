@@ -190,3 +190,33 @@ export function getLeadsFiles(): string[] {
   walk(dir);
   return out;
 }
+
+export type MailboxHealth = {
+  email: string;
+  sent_last_30d: number;
+  bounced_last_30d: number;
+  bounce_rate_pct: number | null;
+  status: "healthy" | "watch" | "alarm" | "insufficient_data";
+};
+
+export type InboxHealthReport = {
+  checkedAt: string | null;
+  mailboxes: MailboxHealth[];
+};
+
+// Written by scripts/apollo_inbox_health.py (daily via inbox-health.yml). The dashboard
+// never calls Apollo directly - same "everything commits to git" pattern as the rest of
+// data/.
+export function getInboxHealth(): InboxHealthReport {
+  const full = path.join(REPO_ROOT, "data/inbox-health/latest.json");
+  if (!fs.existsSync(full)) return { checkedAt: null, mailboxes: [] };
+  try {
+    const parsed = JSON.parse(fs.readFileSync(full, "utf-8"));
+    return {
+      checkedAt: parsed.checked_at ?? null,
+      mailboxes: Array.isArray(parsed.mailboxes) ? parsed.mailboxes : [],
+    };
+  } catch {
+    return { checkedAt: null, mailboxes: [] };
+  }
+}

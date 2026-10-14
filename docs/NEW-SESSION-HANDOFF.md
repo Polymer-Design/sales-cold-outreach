@@ -18,16 +18,18 @@ Context on what's built and decided:
 - Sends from `launchwithpolymer.com` (startups) and `integratedchurchwebsites.com` (churches).
   **Never** from hellopolymer.com.
 - Runs on **GitHub Actions cron**. Repository secrets: `ANTHROPIC_API_KEY`, `APOLLO_API_KEY`,
-  `TRULYINBOX_API_KEY`, `GOOGLEPAGESPEEDINSIGHTS_API_KEY`, `RESEND_API_KEY`.
-- Sending path: Apollo sequencer sending through TrulyInbox-warmed mailboxes (OAuth-connected),
-  not Apollo's shared servers. Resend is ONLY internal alert emails to me, never sales email.
+  `GOOGLEPAGESPEEDINSIGHTS_API_KEY`, `RESEND_API_KEY`.
+- Sending path: Apollo sequencer, mailboxes OAuth-connected to Apollo (Apollo both warms and
+  sends - no separate warming service). Resend is ONLY internal alert emails to me, never
+  sales email.
 - Pipeline: source → score → draft (my voice, zero AI tells) → **fact-check gate** → 3-email
   sequence → reply classification → interested replies get a Dubsado booking link,
   **approval-first** (merging a PR = sending).
 - **Hybrid split-test loop**: auto-applies copy winners to `config/playbook.yaml`, holds
   structural changes (scoring, ICP, sequence) for my approval.
-- **TrulyInbox** inbox-health failsafe emails me when a mailbox degrades (watch <90,
-  alarm <80 or blacklist/auth fail).
+- **Apollo mailbox health** (`scripts/apollo_inbox_health.py`) emails me when a mailbox's
+  bounce rate degrades (watch >3%, alarm >5% over the trailing 30 days). Replaced TrulyInbox
+  2026-10-14.
 - Everything is `mode: dry_run`; nothing sends until `scripts/preflight.py` passes.
 - **Next task:** wire Google PageSpeed (secret `GOOGLEPAGESPEEDINSIGHTS_API_KEY`) into
   lead scoring and the email's first line — a slow/non-mobile site becomes a scored signal

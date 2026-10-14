@@ -10,14 +10,14 @@ visualize. The Mermaid diagrams below render on GitHub automatically.
 | Brain | **Claude** (via GitHub Actions + the Claude Code Action) | Scores leads, researches companies, writes emails, fact-checks them, classifies replies, runs the biweekly review |
 | Lead data + sending + CRM | **Apollo** | Finds startup leads, holds all contacts, sends every cold email through connected mailboxes, detects replies |
 | Church lead sourcing | **Custom crawler** (`scripts/church_crawler.py`) | Finds churches via the Planning Center / churchcenter.com signal (Apollo's church data is thin) |
-| Mailbox warmup + deliverability | **TrulyInbox** | Warms the sending inboxes; the health API feeds the failsafe monitor |
+| Mailbox warmup + deliverability | **Apollo** | Warms newly connected mailboxes itself; bounce-rate data feeds the health monitor (`scripts/apollo_inbox_health.py`) |
 | Site-quality signal | **Google PageSpeed** | Scores each lead's website speed/mobile health → a scoring input and an email hook (being wired in) |
 | Internal alerts to Ethan | **Resend** | Emails Ethan inbox-health alarms and reply flags. Never sends sales email |
 | Scheduler + system of record | **GitHub Actions + this repo** | Runs the jobs on cron; the repo is the audit trail (leads, drafts, reports, logs) |
 
 **Sending, said once clearly:** every cold email (both ICPs) goes out through **Apollo's
-sequencer**, sending through your **TrulyInbox-warmed mailboxes** connected to Apollo by OAuth
-(not Apollo's shared servers). Startups send from `launchwithpolymer.com`, churches from
+sequencer**, through mailboxes connected to Apollo by OAuth - Apollo warms them itself, no
+separate service. Startups send from `launchwithpolymer.com`, churches from
 `integratedchurchwebsites.com`. Resend is only for alerts to you.
 
 ## The main pipeline
@@ -75,9 +75,9 @@ flowchart TD
     M1[Every Apollo write checks config/system.yaml mode] --> M2{Mode}
     M2 -->|dry_run| M3[Draft + queue only, nothing sends]
     M2 -->|live| M4[preflight.py must pass first:<br/>booking link, address, mailboxes connected, ICPs final]
-    N1[Inbox health check daily] --> N2{TrulyInbox score}
-    N2 -->|under 80 or blacklisted| N3[Email Ethan: pause + warm a replacement]
-    N2 -->|under 90| N4[Watch: ease that inbox's volume]
+    N1[Inbox health check daily] --> N2{Bounce rate, trailing 30 days}
+    N2 -->|over 5%| N3[Email Ethan: pause + connect/warm a replacement]
+    N2 -->|over 3%| N4[Watch: ease that inbox's volume]
 ```
 
 ## One-line summary

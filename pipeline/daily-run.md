@@ -37,8 +37,10 @@ For each draft with `status: ready`:
   bodies + subjects to contact custom fields, add to the ICP's Apollo sequence with a
   mailbox from `config/domains.yaml` (alternate between the 2 for load balance). Respect the
   per-mailbox cap from `config/system.yaml` `inbox_health.send_caps`: use `warmup_daily` for
-  any mailbox TrulyInbox still reports as warming, `healthy_daily` once healthy. Count what's
-  already scheduled on each mailbox today so the cap holds across the two ICPs.
+  any mailbox with fewer than `min_sends_to_evaluate` sends in the last 30 days (still
+  ramping - see `data/inbox-health/latest.json`, `status: insufficient_data`), `healthy_daily`
+  once past that. Count what's already scheduled on each mailbox today so the cap holds
+  across the two ICPs.
 - Set `status: pushed` + timestamp. In dry_run, leave `status: ready` and just report.
 - **Funnel:** for each contact actually added to a sequence (live mode), record it:
   `python scripts/funnel.py record --email <email> --stage emailed --icp <icp> --org <org>`.

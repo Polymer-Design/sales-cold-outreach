@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "group": {"email_account_id": "acct_startups_1"},
+      "metrics": {"num_emails_sent": 180, "num_emails_delivered": 176, "num_emails_bounced": 4}
+    },
+    {
+      "group": {"email_account_id": "acct_startups_2"},
+      "metrics": {"num_emails_sent": 175, "num_emails_delivered": 162, "num_emails_bounced": 13}
+    },
+    {
+      "group": {"email_account_id": "acct_churches_1"},
+      "metrics": {"num_emails_sent": 12, "num_emails_delivered": 12, "num_emails_bounced": 0}
+    },
+    {
+      "group": {"email_account_id": "acct_churches_2"},
+      "metrics": {"num_emails_sent": 0, "num_emails_delivered": 0, "num_emails_bounced": 0}
+    }
+  ]
+}

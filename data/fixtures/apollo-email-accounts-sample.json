@@ -1,0 +1,8 @@
+{
+  "email_accounts": [
+    {"id": "acct_startups_1", "email": "ethan@growwithpolymer.com", "type": "gmail", "active": true, "default": false},
+    {"id": "acct_startups_2", "email": "ehoover@growwithpolymer.com", "type": "gmail", "active": true, "default": false},
+    {"id": "acct_churches_1", "email": "ethan@integratedchurchwebsites.com", "type": "gmail", "active": true, "default": true},
+    {"id": "acct_churches_2", "email": "ehoover@integratedchurchwebsites.com", "type": "gmail", "active": true, "default": false}
+  ]
+}

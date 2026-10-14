@@ -1,4 +1,4 @@
-import { getQueueCounts, getReplyCount, getSystemMode } from "@/lib/data";
+import { getInboxHealth, getQueueCounts, getReplyCount, getSystemMode } from "@/lib/data";
 import { getDomainsConfig, getSystemConfig } from "@/lib/config";
 import { listBookingReplyPRs } from "@/lib/github";
 import Topbar from "../topbar";
@@ -9,6 +9,7 @@ export default async function SystemPage() {
   const domains = getDomainsConfig();
   const queue = getQueueCounts();
   const replies = getReplyCount();
+  const inboxHealth = getInboxHealth();
 
   const token = process.env.GITHUB_DISPATCH_TOKEN;
   let pendingApproval: number | null = null;
@@ -43,14 +44,18 @@ export default async function SystemPage() {
 
         <div className="cardgrid">
           <div className="card">
-            <div className="kicker">Inbox health ({cfg.inboxHealth.provider ?? "—"})</div>
+            <div className="kicker">Inbox health thresholds ({cfg.inboxHealth.provider ?? "—"})</div>
             <div className="kv">
-              <span className="k">Watch below</span>
-              <span className="v">{cfg.inboxHealth.watchBelow ?? "—"}</span>
+              <span className="k">Watch above (bounce rate)</span>
+              <span className="v">{cfg.inboxHealth.bounceWatchAbovePct ?? "—"}%</span>
             </div>
             <div className="kv">
-              <span className="k">Alarm below</span>
-              <span className="v">{cfg.inboxHealth.alarmBelow ?? "—"}</span>
+              <span className="k">Alarm above (bounce rate)</span>
+              <span className="v">{cfg.inboxHealth.bounceAlarmAbovePct ?? "—"}%</span>
+            </div>
+            <div className="kv">
+              <span className="k">Min sends to evaluate</span>
+              <span className="v">{cfg.inboxHealth.minSendsToEvaluate ?? "—"}</span>
             </div>
             <div className="kv">
               <span className="k">Warmup send cap</span>
@@ -85,6 +90,42 @@ export default async function SystemPage() {
               <span className="v">{replies}</span>
             </div>
           </div>
+        </div>
+
+        <div className="card">
+          <div className="cardhead">
+            <div className="kicker" style={{ marginBottom: 0 }}>
+              Mailbox health (bounce rate, trailing 30 days)
+            </div>
+            {inboxHealth.checkedAt && (
+              <span className="note" style={{ margin: 0 }}>
+                checked {new Date(inboxHealth.checkedAt).toLocaleString()}
+              </span>
+            )}
+          </div>
+          {inboxHealth.mailboxes.length === 0 ? (
+            <p className="empty">
+              No health data yet - scripts/apollo_inbox_health.py runs daily and writes
+              data/inbox-health/latest.json once it has.
+            </p>
+          ) : (
+            inboxHealth.mailboxes.map((m) => {
+              const pillClass =
+                m.status === "alarm" ? "crit" : m.status === "watch" ? "warn" : m.status === "healthy" ? "good" : "neutral";
+              const label =
+                m.status === "insufficient_data"
+                  ? `warming up (${m.sent_last_30d} sent)`
+                  : `${m.bounce_rate_pct}% bounce (${m.sent_last_30d} sent)`;
+              return (
+                <div className="kv" key={m.email}>
+                  <span className="k">{m.email}</span>
+                  <span className="v">
+                    <span className={`pill ${pillClass}`}>{label}</span>
+                  </span>
+                </div>
+              );
+            })
+          )}
         </div>
 
         <div className="card">

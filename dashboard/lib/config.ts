@@ -41,8 +41,9 @@ export type SystemConfig = {
   notifications: { channel: string | null; to: string | null; from: string | null };
   inboxHealth: {
     provider: string | null;
-    watchBelow: string | null;
-    alarmBelow: string | null;
+    bounceWatchAbovePct: string | null;
+    bounceAlarmAbovePct: string | null;
+    minSendsToEvaluate: string | null;
     warmupDaily: string | null;
     healthyDaily: string | null;
   };
@@ -95,8 +96,9 @@ export function getSystemConfig(): SystemConfig {
     },
     inboxHealth: {
       provider: field(inboxHealth, "provider"),
-      watchBelow: field(inboxHealth, "watch_below"),
-      alarmBelow: field(inboxHealth, "alarm_below"),
+      bounceWatchAbovePct: field(inboxHealth, "bounce_watch_above_pct"),
+      bounceAlarmAbovePct: field(inboxHealth, "bounce_alarm_above_pct"),
+      minSendsToEvaluate: field(inboxHealth, "min_sends_to_evaluate"),
       warmupDaily: field(inboxHealth, "warmup_daily"),
       healthyDaily: field(inboxHealth, "healthy_daily"),
     },

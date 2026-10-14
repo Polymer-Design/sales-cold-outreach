@@ -56,12 +56,16 @@ notifications:
   # data/notifications/. See scripts/notify.py.
 
 inbox_health:
-  provider: trulyinbox # scripts/trulyinbox_monitor.py, checked daily
+  provider: apollo # scripts/apollo_inbox_health.py, checked daily. TrulyInbox retired
+    # 2026-10-14 - Apollo handles warming itself, and this computes bounce rate from
+    # Apollo's own send data instead. Narrower than TrulyInbox (no blacklist/SPF/DKIM
+    # checks - Apollo's API has no equivalent), but needs no separate paid service.
   thresholds:
-    # TrulyInbox health score is 0-100. These are the starting lines; tune with real data.
-    watch_below: 90 # trending down: ease this mailbox's volume, include in digest
-    alarm_below: 80 # act now: pause sends, warm a replacement inbox
-  # Any blacklist listing or SPF/DKIM/DMARC failure is an immediate alarm regardless of score.
+    # Bounce rate %, not a 0-100 score. Starting lines per common cold-email guidance;
+    # tune once there's real send volume to learn from (mode is still dry_run).
+    bounce_watch_above_pct: 3 # trending risky: ease this mailbox's volume, include in digest
+    bounce_alarm_above_pct: 5 # act now: pause sends, connect + warm a replacement inbox
+    min_sends_to_evaluate: 20 # fewer sends than this and a bounce % is just noise
   send_caps:
     warmup_daily: 10 # per mailbox while still warming
     healthy_daily: 22 # per mailbox once healthy (reference doc says 20-25)
