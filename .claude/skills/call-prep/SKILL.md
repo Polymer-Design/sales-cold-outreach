@@ -39,11 +39,23 @@ instead per Steps 2-3 below. Don't fabricate an outreach history that doesn't ex
 **Recognizing synthetic/test data:** not every unmatched booking is a real direct booking -
 some are QA/test entries exercising this pipeline. Signals worth checking before doing a
 full research pass: an IANA-reserved domain (example.com/example.org/example.net, RFC
-2606), a name/org that's literally "Test ___" or similar, or a live check on the implied
-site turning up nothing (no platform markers, no sitemap, generic/default PageSpeed
-scores). One or two signals together is enough to call it test data in the email (Step 6)
-- say so plainly and skip the full research pass rather than writing a padded-out fake
-briefing for a booking that was never real.
+2606), a name/org that's literally "Test ___" or similar, a personal webmail address
+(gmail.com etc) with no org name captured, or a live check on the implied site turning up
+nothing (no platform markers, no sitemap, generic/default PageSpeed scores). One or two
+signals together is enough to call it test data - say so plainly and skip the full
+research pass rather than writing a padded-out fake briefing for a booking that was never
+real.
+
+**This changes where the output goes, not just what it says** - confirmed synthetic/test
+data must never look like real pipeline activity on the dashboard:
+- Write the briefing to `data/call-prep/_test/{date}--{name-slug}.md` (note the `_test`
+  subfolder), not the top-level `data/call-prep/` folder the dashboard counts from.
+- Skip the funnel record (`funnel.py record --stage booked`) entirely - this never
+  happened as a real booking, so it must never count toward the conversion rate.
+- Skip the Drive mirror (Step 6) entirely too - don't create a junk org folder in the
+  client's real Drive for fake data.
+- Still send the email (Step 7's synthetic-data template) and still commit the file - the
+  point is keeping an audit trail without it polluting real counts, not hiding it.
 
 ## Step 2 — Research the company and industry
 
@@ -97,7 +109,8 @@ that way in the briefing, and never state a price as if it's already been offere
 
 ## Step 5 — Write the briefing
 
-Write to `data/call-prep/{date}--{name-slug}.md`:
+Write to `data/call-prep/{date}--{name-slug}.md` - or, if Step 1 called this synthetic/
+test data, to `data/call-prep/_test/{date}--{name-slug}.md` instead (see Step 1):
 
 ```markdown
 # Call prep: {name} — {org}
@@ -134,11 +147,15 @@ thread to pull on. Not a script, just a running start.
 
 ## Step 6 — Mirror to Drive (before the email, so the email can link to it)
 
-Every booking gets a Drive folder, matched or not - this is what lets a later automation
-(outside this repo) pick up the full context once someone signs, regardless of whether
-they came from outreach or booked directly off the website. Doing this **before** Step 7
-means the email can link straight to the real file instead of a repo path Ethan can't
-open from his phone.
+**Skip this step entirely for confirmed synthetic/test data (Step 1)** - don't create a
+junk org folder in the client's real Drive for fake data. The email (Step 7) falls back
+to the GitHub blob link in that case, same as any other Drive-mirror failure.
+
+Every other booking gets a Drive folder, matched or not - this is what lets a later
+automation (outside this repo) pick up the full context once someone signs, regardless of
+whether they came from outreach or booked directly off the website. Doing this **before**
+Step 7 means the email can link straight to the real file instead of a repo path Ethan
+can't open from his phone.
 
 ```
 python scripts/drive_intro_folder.py sync --org "{org}" \
@@ -223,7 +240,8 @@ prep from. Full file: {Drive or GitHub url}
   `python scripts/funnel.py record --email <email> --stage booked --icp <icp> --org <org>`.
   Ethan marks the call's outcome later (`funnel.py mark --outcome won|lost`) - remind him
   of that in plain English in the email ("Mark this won/lost after the call"), not as a
-  copy-pasteable CLI command.
+  copy-pasteable CLI command. **Skip this entirely for confirmed synthetic/test data** -
+  see Step 1.
 
 ## Never
 
@@ -233,9 +251,17 @@ prep from. Full file: {Drive or GitHub url}
   suggestion to use or change on the call.
 - Never claim a PageSpeed comparison to Polymer's own sites (same rule as outreach emails —
   check `knowledge/pagespeed-benchmark.md`).
-- If nothing matches and the live pass also comes up empty, send a short "booked, no
-  background found" notice rather than a padded-out fake briefing — but still create the
-  Drive folder; an empty-but-organized folder beats no folder at all.
+- If nothing matches and the live pass also comes up empty **but this is still a real
+  booking** (not synthetic/test data), send a short "booked, no background found" notice
+  rather than a padded-out fake briefing — but still create the Drive folder; an
+  empty-but-organized folder beats no folder at all. This is different from confirmed
+  synthetic/test data (Step 1), which skips the Drive folder and the funnel record
+  entirely - "no background found" is a real lead with nothing on file yet; synthetic
+  data isn't a real lead at all.
+- Never let confirmed synthetic/test data write to the top-level `data/call-prep/`
+  folder or call `funnel.py record` - both are what the Booked Calls dashboard counts
+  from, and test data showing up there as if it were a real booking is exactly the
+  failure this whole `_test` subfolder split exists to prevent.
 - Never put file paths, script/CLI commands, internal jargon (ICP, track, tier names a
   first-time reader wouldn't know), or the reasoning behind a judgment call in the EMAIL
   body - that's all fine in the committed `.md` file, but the email is Ethan's 60-90-second
