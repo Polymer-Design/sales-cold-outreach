@@ -87,10 +87,26 @@ apollo_filters:
   person_locations: ["United States"]
   organization_num_employees_ranges: ["5,50"]
   contact_email_status: [verified]
-  # No vertical/keyword filter - vertical_signal.status is not_proven, don't fake one.
-  # Explicit exclusion: e-commerce/DTC. Apollo doesn't have a clean single filter for
-  # this - screen it out manually when qualifying candidates (company description/site).
-  not_organization_naics_codes: ["454"] # electronic shopping and mail-order houses (best-effort NAICS exclusion for DTC/ecommerce; verify against a real lead before trusting it)
+  # Tightened 2026-10-14 off the first real ingestion run (25 leads, all scored cold):
+  # the filter had no vertical signal by design, so title/seniority/employee-count alone
+  # surfaced a lot of non-fit noise - DTC/food-CPG brands, a 20yr-old steady-state
+  # business, consulting/web-design shops (direct competitors), a stale/acquired org.
+  # Not meant to replace scoring's manual screening (Apollo has no single clean filter for
+  # "growth-stage tech startup"), just to stop spending enrichment credits on the most
+  # obviously-wrong categories before they ever reach scoring.
+  organization_founded_year_range: {min: 2012} # cuts decades-old "steady-state" businesses
+    # that happen to fit the employee-count band but aren't growth-stage by any definition
+  organization_include_unknown_founded_year: true # don't lose a real lead just because
+    # Apollo hasn't recorded its founding year - only exclude a CONFIRMED old company
+  not_organization_naics_codes:
+    - "454"  # electronic shopping and mail-order houses (DTC/ecommerce)
+    - "5415" # computer systems design and related services - i.e. web/software dev
+      # shops, who ARE the build capability Polymer sells, not a buyer of it (caught a
+      # real one, Lightmark Media, in the first run)
+    - "5416" # management, scientific, and technical consulting
+    - "523"  # securities, commodity contracts, and other financial investments (VC/PE)
+  # No vertical/keyword filter beyond the above - vertical_signal.status is not_proven,
+  # don't fake one. Still screen out whatever this doesn't catch manually at scoring time.
 
 trigger_signals:
   - recent funding round (0-90 days strongest)
