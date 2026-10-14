@@ -47,7 +47,9 @@ export default async function ApprovalsPage() {
         <h1>Approvals</h1>
         <p className="sub">
           Interested-reply drafts waiting on you. Edit if needed, then Approve - that
-          merges the same PR the booking-reply skill opened, no GitHub UI needed.
+          merges the same PR the booking-reply skill opened, no GitHub UI needed. Remove
+          discards a draft without sending it (bot replies, spam, anything that isn&apos;t
+          a real interested lead).
         </p>
 
         {loadError && (

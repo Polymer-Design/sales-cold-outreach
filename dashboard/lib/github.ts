@@ -146,3 +146,22 @@ export async function approvePR(prNumber: number, token: string) {
   });
   if (!res.ok) throw new Error(`Failed to merge PR #${prNumber} (${res.status}): ${await res.text()}`);
 }
+
+// Discard a drafted reply without sending it - bot/autoresponder replies, spam, or
+// anything else that shouldn't get a booking-reply sent. Closes the PR unmerged (its
+// draft file lives only on that PR's branch, so nothing reaches main or ever sends) and
+// best-effort deletes the branch to keep things tidy. Branch deletion failing is never
+// fatal - the PR being closed is what actually matters.
+export async function rejectPR(prNumber: number, branch: string, token: string) {
+  const res = await fetch(`${API}/pulls/${prNumber}`, {
+    method: "PATCH",
+    headers: authHeaders(token),
+    body: JSON.stringify({ state: "closed" }),
+  });
+  if (!res.ok) throw new Error(`Failed to close PR #${prNumber} (${res.status}): ${await res.text()}`);
+
+  await fetch(`${API}/git/refs/heads/${encodeURIComponent(branch)}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+  }).catch(() => {});
+}

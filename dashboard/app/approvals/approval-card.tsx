@@ -13,7 +13,7 @@ type Item = {
   body: string;
 };
 
-type Status = "idle" | "saving" | "approving" | "approved" | "error";
+type Status = "idle" | "saving" | "approving" | "approved" | "rejecting" | "rejected" | "error";
 
 export default function ApprovalCard({ item }: { item: Item }) {
   const [subject, setSubject] = useState(item.subject);
@@ -63,14 +63,32 @@ export default function ApprovalCard({ item }: { item: Item }) {
     }
   }
 
-  if (status === "approved") {
+  async function onReject() {
+    if (!window.confirm("Remove this draft without sending it? This can't be undone.")) return;
+    setStatus("rejecting");
+    setMessage("");
+    try {
+      const res = await fetch(`/api/replies/${item.number}/reject`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `Remove failed (${res.status})`);
+      setStatus("rejected");
+      setMessage("Removed.");
+    } catch (err) {
+      setStatus("error");
+      setMessage(err instanceof Error ? err.message : "Remove failed.");
+    }
+  }
+
+  if (status === "approved" || status === "rejected") {
     return (
       <div className="listcard" id={`pr-${item.number}`}>
         <div className="listcardhead">
           <span className="title">
             {item.contact_name || "Unknown"} @ {item.organization || "?"}
           </span>
-          <span className="pill good">approved</span>
+          <span className={`pill ${status === "approved" ? "good" : "neutral"}`}>
+            {status === "approved" ? "approved" : "removed"}
+          </span>
         </div>
       </div>
     );
@@ -123,7 +141,7 @@ export default function ApprovalCard({ item }: { item: Item }) {
             type="button"
             className="logcallbtn"
             onClick={onApprove}
-            disabled={status === "approving" || status === "saving"}
+            disabled={status === "approving" || status === "saving" || status === "rejecting"}
           >
             {status === "approving" ? "Approving…" : "Approve"}
           </button>
@@ -132,11 +150,20 @@ export default function ApprovalCard({ item }: { item: Item }) {
               type="button"
               className="signout"
               onClick={onSave}
-              disabled={status === "saving" || status === "approving"}
+              disabled={status === "saving" || status === "approving" || status === "rejecting"}
             >
               {status === "saving" ? "Saving…" : "Save draft"}
             </button>
           )}
+          <button
+            type="button"
+            className="signout"
+            onClick={onReject}
+            disabled={status === "approving" || status === "saving" || status === "rejecting"}
+            title="Discard this draft without sending it - for bot replies, spam, etc."
+          >
+            {status === "rejecting" ? "Removing…" : "Remove"}
+          </button>
         </div>
         {message && <p className={`formmsg ${status === "error" ? "error" : "ok"}`}>{message}</p>}
       </div>
