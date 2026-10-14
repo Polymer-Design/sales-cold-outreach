@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Mirror call-prep context into Google Drive, organized by org name.
 
-Creates (or reuses) an "Intro" subfolder under a configured parent folder, then an
+Creates (or reuses) a "Prospects" subfolder under a configured parent folder, then an
 org-named subfolder under that, and uploads/updates markdown files into it - the
 call-prep briefing, and (if this lead came through outreach) the sequence file
 holding the research + the 3 emails that were sent. A separate automation (not in
@@ -30,7 +30,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCOPES = ["https://www.googleapis.com/auth/drive"]
-INTRO_SUBFOLDER_NAME = "Intro"
+PROSPECTS_SUBFOLDER_NAME = "Prospects"
 FOLDER_MIME = "application/vnd.google-apps.folder"
 
 
@@ -88,8 +88,8 @@ def _upsert_markdown(drive, media_cls, parent_id: str, filename: str, content: s
 
 def sync(org: str, file_paths: list[str]) -> dict:
     drive, parent_id, media_cls = _drive_client()
-    intro_folder_id = _ensure_folder(drive, parent_id, INTRO_SUBFOLDER_NAME)
-    org_folder_id = _ensure_folder(drive, intro_folder_id, org)
+    prospects_folder_id = _ensure_folder(drive, parent_id, PROSPECTS_SUBFOLDER_NAME)
+    org_folder_id = _ensure_folder(drive, prospects_folder_id, org)
 
     uploaded, missing = [], []
     for path_str in file_paths:

@@ -146,7 +146,7 @@ python scripts/drive_intro_folder.py sync --org "{org}" \
     [--file {the matched queue file from Step 1, if this was a real outreach lead}]
 ```
 
-This creates (or reuses) an "Intro" folder under the configured parent, then an org-named
+This creates (or reuses) a "Prospects" folder under the configured parent, then an org-named
 folder under that, and uploads/updates the briefing (plus the sent-sequence file with its
 research block, if matched) as plain markdown. If the command errors (missing credentials,
 folder not shared, etc.), don't fail the whole run over it - the email + committed file are

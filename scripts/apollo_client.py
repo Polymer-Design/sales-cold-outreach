@@ -8,6 +8,7 @@ Usage:
   python scripts/apollo_client.py email-accounts
   python scripts/apollo_client.py people-search --icp startups [--page 1]
   python scripts/apollo_client.py people-search --icp churches --domain firstchurch.org
+  python scripts/apollo_client.py people-search --icp startups --no-enrich  # free, masked results
   python scripts/apollo_client.py sequences
   python scripts/apollo_client.py add-to-sequence --sequence-id X --contact-ids a,b --mailbox you@domain.com
   python scripts/apollo_client.py upsert-contact --json '{"first_name": ...}'
@@ -69,13 +70,42 @@ def email_accounts(_args) -> dict:
 
 
 def people_search(args) -> dict:
+    """mixed_people/search is deprecated (422 SEARCH.ROUTING.LEGACY_PEOPLE_SEARCH_DEPRECATED).
+    Its replacement, mixed_people/api_search, has the same filter shape but withholds last
+    names (obfuscated, e.g. "Gi***i"), org domain/website, and email - those need a separate,
+    credit-costing People Enrichment call per match (people/bulk_match, max 10 ids per call,
+    1 credit per person actually matched - 0 for a miss). Enrichment runs by default since a
+    lead with a masked name and no email isn't usable downstream (scoring/drafting/Apollo
+    upsert all need the real values); pass --no-enrich for a cheap exploratory search."""
     icp = load_yaml(f"config/icp-{args.icp}.yaml")
     filters = {k: v for k, v in (icp.get("apollo_filters") or {}).items() if v}
     if args.domain:
         filters["q_organization_domains_list"] = [args.domain]
     filters["page"] = args.page
     filters["per_page"] = args.per_page
-    return _req("POST", "mixed_people/search", filters)
+    result = _req("POST", "mixed_people/api_search", filters)
+
+    people = result.get("people", [])
+    if args.no_enrich or not people:
+        return result
+
+    enriched = []
+    for i in range(0, len(people), 10):
+        batch = [p for p in people[i:i + 10] if p.get("id")]
+        if not batch:
+            continue
+        match = _req("POST", "people/bulk_match",
+                     {"details": [{"id": p["id"]} for p in batch]})
+        enriched.extend(match.get("matches") or match.get("people") or [])
+
+    if enriched:
+        print(f"Enriched {len(enriched)}/{len(people)} people "
+              f"(up to {len(enriched)} Apollo credits spent).", file=sys.stderr)
+        result["people"] = enriched
+    else:
+        print("WARNING: enrichment returned no matches - falling back to unenriched "
+              "(masked) search results.", file=sys.stderr)
+    return result
 
 
 def sequences(_args) -> dict:
@@ -136,6 +166,9 @@ def main() -> None:
     ps.add_argument("--domain")
     ps.add_argument("--page", type=int, default=1)
     ps.add_argument("--per-page", type=int, default=25)
+    ps.add_argument("--no-enrich", action="store_true",
+                     help="Skip the credit-costing enrichment call; results keep masked "
+                          "names and no email/domain.")
     sub.add_parser("sequences")
     ats = sub.add_parser("add-to-sequence")
     ats.add_argument("--sequence-id", required=True)

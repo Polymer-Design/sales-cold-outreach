@@ -76,29 +76,49 @@ def fetch_bounce_report(key: str, fixture: str | None) -> dict:
         f"{BASE}/reports/sync_report",
         headers={"X-Api-Key": key, "Content-Type": "application/json"},
         json={
-            # The real endpoint uses PLURAL field names that differ from both Apollo's
-            # own public reference doc and the MCP connector's equivalent tool (both show
-            # singular date_range/group_by/sort) - confirmed from two real 400s today
-            # (2026-10-14), the second with the full, untruncated error body:
-            # "...group_bys is required, pivot_group_by is required, metrics is required,
-            # sorts is required, filters is required, group_by_totals_selected is
-            # required, pivot_group_by_totals_selected is required, date_ranges is
-            # required, Skip group by values must be an array". The MCP tool evidently
-            # renames these server-side for its own auth path; a plain API key needs the
-            # real names explicit. This is the second, evidence-based attempt - if it's
-            # still wrong, the notify body below has the full response, not a guess.
-            "date_ranges": [{"modality": "last_30_days"}],
+            # Third evidence-based attempt (2026-10-14). The real endpoint's field names
+            # don't follow one consistent rule vs. Apollo's public doc / the MCP tool's
+            # schema - some are pluralized (group_by -> group_bys), some aren't
+            # (pivot_group_by stays singular) - confirmed because those two stopped
+            # erroring once set this way. What's still failing, and why, per the third
+            # 400's full body:
+            #   - "metrics is required" despite a non-empty list: the public doc says
+            #     each metrics entry is an OBJECT ("specifies which metric to measure and
+            #     which date/user columns to use"), not a bare string - switched to
+            #     {"name": ...} objects.
+            #   - "date_ranges is required": tried plural+list; reverting this one to the
+            #     doc's singular object form (date_range), since the pluralization rule
+            #     isn't uniform across fields (see above).
+            #   - "sorts"/"filters is required" with [] / {} sent: Rails treats empty
+            #     arrays/hashes as blank, which fails a presence check - sending a
+            #     minimal real value instead (sort by the metric we care about; filter to
+            #     the calling user, matching the MCP tool's own "my data" example).
+            #   - "group_by_totals_selected"/"pivot_group_by_totals_selected" are
+            #     "required" AND "not included in the list" simultaneously - consistent
+            #     with these being booleans, not arrays (an empty array is both blank and
+            #     not a member of [true, false]) - switched to real booleans.
+            #   - "is_super_analytics"/"send_granular_current_and_past_data"/
+            #     "past_data_granularity_level" only ever got "not included in the list",
+            #     never "required" - consistent with these being UI/session-only fields
+            #     this API path doesn't permit at all (Rails' generic unpermitted-param
+            #     message reads the same as an inclusion failure) - dropped them.
+            #   - "Skip group by values must be an array" persisted across both prior
+            #     attempts despite sending an array under this exact key - trying the
+            #     singular key name instead, following the same no-uniform-rule finding.
+            # If this is still wrong, the notify body has the full response, not a guess.
+            "date_range": {"modality": "last_30_days"},
             "group_bys": ["email_account_id"],
-            "metrics": ["num_emails_sent", "num_emails_delivered", "num_emails_bounced"],
             "pivot_group_by": [],
-            "sorts": [],
-            "filters": {},
-            "group_by_totals_selected": [],
-            "pivot_group_by_totals_selected": [],
-            "skip_group_by_values": [],
-            "is_super_analytics": False,
-            "send_granular_current_and_past_data": False,
-            "past_data_granularity_level": None,
+            "metrics": [
+                {"name": "num_emails_sent"},
+                {"name": "num_emails_delivered"},
+                {"name": "num_emails_bounced"},
+            ],
+            "sorts": [{"metric": "num_emails_sent", "asc": False}],
+            "filters": {"user_ids": ["current"]},
+            "group_by_totals_selected": False,
+            "pivot_group_by_totals_selected": False,
+            "skip_group_by_value": [],
         },
         timeout=30,
     )

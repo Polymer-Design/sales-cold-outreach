@@ -14,6 +14,10 @@ people search (`q_organization_domains_list` on the church's domain, titles from
 Skip orgs already in `data/leads/index.jsonl` (dedupe by domain). Take up to the daily cap
 (`limits.new_leads_scored_per_day`, split roughly evenly between ICPs).
 
+Both paths go through `scripts/apollo_client.py people-search`, which enriches every match
+by default (1 Apollo credit per person actually matched, 0 for a miss) - that's what fills
+in the real name/email/domain the rest of this pipeline needs. Don't pass `--no-enrich` here.
+
 Append every new lead to `data/leads/index.jsonl`:
 `{"org", "domain", "icp", "contacts": [{"name","title","email_status","apollo_id"}], "source", "added"}`
 
