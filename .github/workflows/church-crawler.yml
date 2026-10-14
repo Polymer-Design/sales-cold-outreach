@@ -6,8 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: "Max seeds to check"
+        description: "Max seeds to check (crawl mode only)"
         default: "50"
+      mode:
+        description: "crawl (seeds.csv) or probe (probe-slugs.csv) - see script docstring"
+        default: "crawl"
 
 permissions:
   contents: write
@@ -22,8 +25,14 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - name: Crawl seed list for Planning Center signal
-        run: python scripts/church_crawler.py crawl --limit "${{ github.event.inputs.limit || '50' }}"
+      - name: Crawl or probe for Planning Center signal
+        run: |
+          mode="${{ github.event.inputs.mode || 'crawl' }}"
+          if [ "$mode" = "probe" ]; then
+            python scripts/church_crawler.py probe
+          else
+            python scripts/church_crawler.py crawl --limit "${{ github.event.inputs.limit || '50' }}"
+          fi
       - name: Commit new candidates
         # Same fetch+rebase+retry discipline as daily-pipeline.yml - a bare `git push`
         # here lost a real run's results once already when another workflow pushed to
