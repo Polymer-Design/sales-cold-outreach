@@ -11,7 +11,14 @@ Two modes:
   crawl   Read data/leads/churches/seeds.csv (name,website,city,state), fetch each
           church's site (homepage + common paths), and look for churchcenter.com /
           Planning Center references. Seeds come from directories: Outreach 100,
-          denominational church finders (SBC, UMC, AG...), Google Places exports.
+          denominational church finders (SBC, UMC, AG...), Google Places exports, or
+          Apollo's own organization search (apollo_mixed_companies_search,
+          q_organization_keyword_tags: ["church", "christian church"], US, small
+          employee-count bands - 1 credit per search, returns real orgs with real
+          website_url/primary_domain - this is how the first real seed batch was built,
+          2026-10-14). Filter out denominational HQs, parachurch/networking orgs, and
+          vendors before writing to seeds.csv - a keyword search surfaces all of these
+          alongside real local congregations, and only the latter fit this ICP.
 
   probe   Read data/leads/churches/probe-slugs.csv (slug,name) and check whether
           {slug}.churchcenter.com resolves to a real Church Center instance.
