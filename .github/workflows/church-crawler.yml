@@ -25,9 +25,25 @@ jobs:
       - name: Crawl seed list for Planning Center signal
         run: python scripts/church_crawler.py crawl --limit "${{ github.event.inputs.limit || '50' }}"
       - name: Commit new candidates
+        # Same fetch+rebase+retry discipline as daily-pipeline.yml - a bare `git push`
+        # here lost a real run's results once already when another workflow pushed to
+        # main in the meantime (see that workflow's history for the postmortem).
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/leads/churches/
           git diff --cached --quiet || git commit -m "church crawler: new candidates $(date -u +%F)"
-          git push
+          for attempt in 1 2 3 4 5; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) - fetching + rebasing onto latest ${{ github.ref_name }}..."
+            git fetch origin "${{ github.ref_name }}"
+            if ! git rebase "origin/${{ github.ref_name }}"; then
+              git rebase --abort
+              echo "::error::Rebase conflict - this run's candidates could NOT be pushed."
+              exit 1
+            fi
+          done
+          echo "::error::Still rejected after 5 fetch+rebase attempts - giving up."
+          exit 1
