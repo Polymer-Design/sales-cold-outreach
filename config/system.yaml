@@ -1,6 +1,10 @@
 # Global system settings. Placeholders are marked REPLACE_ME and block live mode.
 
-mode: dry_run # dry_run | live. Preflight (scripts/preflight.py) must pass before live.
+mode: live # dry_run | live. Preflight (scripts/preflight.py) must pass before live.
+  # Flipped live 2026-10-14 - preflight passed clean, Drive sync/case studies/filters/
+  # push-race bugs all fixed and verified live this session. Start conservative: watch
+  # the next couple of daily-pipeline + biweekly-review cycles closely before assuming
+  # steady state.
 
 timezone: America/New_York
 
