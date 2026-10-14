@@ -18,3 +18,5 @@ First Christian Church Murfreesboro AR,https://fccmboro.org,,,fccmurfreesboro,ch
 White Oak Christian Church,https://thewocc.com,,,thewocc,churchcenter_subdomain,new,2026-10-14
 Tomoka Christian Church,https://tomoka.cc,,,tomoka,churchcenter_subdomain,new,2026-10-14
 The Refinery Christian Church,https://therefinerycc.com,,,therefinerycc,churchcenter_subdomain,new,2026-10-14
+SUSPECTED FALSE POSITIVE - shared across 3 unrelated churches (Lakeside,https://js.churchcenter.com,,,js,churchcenter_probe,new,2026-10-14
+Cornerstone Church (known-good control - distinct per-church slug),https://cornerstonecrystal.churchcenter.com,,,cornerstonecrystal,churchcenter_probe,new,2026-10-14
