@@ -48,9 +48,30 @@ jobs:
         # token, then revokes it right after its step ends - before this step runs.
         # A plain `git push` here fails auth silently if it relies on that credential.
         # Push against an explicit, fresh URL using this job's own github.token instead.
+        #
+        # This job can run for up to an hour - long enough for another workflow or a
+        # human to push to main in the meantime, which rejects a plain push outright
+        # (confirmed live 2026-10-14: a real run's lead data was lost this way - 41 turns
+        # and real API spend, discarded because the push step never re-checked origin).
+        # Fetch + rebase + retry before giving up, same as the git discipline used
+        # everywhere else in this repo.
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           git add data/
           git diff --cached --quiet || git commit -m "daily run $(date -u +%F) (workflow sweep)"
-          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "HEAD:${{ github.ref_name }}"
+          for attempt in 1 2 3 4 5; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) - fetching + rebasing onto latest ${{ github.ref_name }}..."
+            git fetch origin "${{ github.ref_name }}"
+            if ! git rebase "origin/${{ github.ref_name }}"; then
+              git rebase --abort
+              echo "::error::Rebase conflict against origin/${{ github.ref_name }} - this run's data/ changes could NOT be pushed. Manual resolution needed."
+              exit 1
+            fi
+          done
+          echo "::error::Still rejected after 5 fetch+rebase attempts - giving up."
+          exit 1
