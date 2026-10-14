@@ -82,37 +82,31 @@ def fetch_bounce_report(key: str, fixture: str | None) -> dict:
             # (pivot_group_by stays singular) - confirmed because those two stopped
             # erroring once set this way. What's still failing, and why, per the third
             # 400's full body:
-            #   - "metrics is required" despite a non-empty list: the public doc says
-            #     each metrics entry is an OBJECT ("specifies which metric to measure and
-            #     which date/user columns to use"), not a bare string - switched to
-            #     {"name": ...} objects.
-            #   - "date_ranges is required": tried plural+list; reverting this one to the
-            #     doc's singular object form (date_range), since the pluralization rule
-            #     isn't uniform across fields (see above).
-            #   - "sorts"/"filters is required" with [] / {} sent: Rails treats empty
-            #     arrays/hashes as blank, which fails a presence check - sending a
-            #     minimal real value instead (sort by the metric we care about; filter to
-            #     the calling user, matching the MCP tool's own "my data" example).
-            #   - "group_by_totals_selected"/"pivot_group_by_totals_selected" are
-            #     "required" AND "not included in the list" simultaneously - consistent
-            #     with these being booleans, not arrays (an empty array is both blank and
-            #     not a member of [true, false]) - switched to real booleans.
-            #   - "is_super_analytics"/"send_granular_current_and_past_data"/
-            #     "past_data_granularity_level" only ever got "not included in the list",
-            #     never "required" - consistent with these being UI/session-only fields
-            #     this API path doesn't permit at all (Rails' generic unpermitted-param
-            #     message reads the same as an inclusion failure) - dropped them.
-            #   - "Skip group by values must be an array" persisted across both prior
-            #     attempts despite sending an array under this exact key - trying the
-            #     singular key name instead, following the same no-uniform-rule finding.
-            # If this is still wrong, the notify body has the full response, not a guess.
+            #   - Everything below except metrics is now CONFIRMED correct: the fourth
+            #     live 400 (2026-10-14) stopped complaining about date_range, group_bys,
+            #     pivot_group_by, sorts, filters, group_by_totals_selected,
+            #     pivot_group_by_totals_selected, and skip_group_by_value entirely - only
+            #     metrics errored, 3x over ("Metrics must have key value, Metrics must
+            #     have smart datetime reference, Metrics must have smart user id
+            #     reference"). So each metrics entry needs key (not name) plus both
+            #     reference fields. Apollo's own CLI docs show one real working example:
+            #     num_emails_sent pairs with smart_datetime_reference
+            #     "emailer_message__sent_at" and smart_user_id_reference
+            #     "emailer_message__user_id" - applied that pattern to the other two
+            #     emailer_message-based metrics (delivered_at/bounced_at), same user ref.
             "date_range": {"modality": "last_30_days"},
             "group_bys": ["email_account_id"],
             "pivot_group_by": [],
             "metrics": [
-                {"name": "num_emails_sent"},
-                {"name": "num_emails_delivered"},
-                {"name": "num_emails_bounced"},
+                {"key": "num_emails_sent",
+                 "smart_datetime_reference": "emailer_message__sent_at",
+                 "smart_user_id_reference": "emailer_message__user_id"},
+                {"key": "num_emails_delivered",
+                 "smart_datetime_reference": "emailer_message__delivered_at",
+                 "smart_user_id_reference": "emailer_message__user_id"},
+                {"key": "num_emails_bounced",
+                 "smart_datetime_reference": "emailer_message__bounced_at",
+                 "smart_user_id_reference": "emailer_message__user_id"},
             ],
             "sorts": [{"metric": "num_emails_sent", "asc": False}],
             "filters": {"user_ids": ["current"]},
