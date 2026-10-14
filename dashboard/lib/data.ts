@@ -31,6 +31,9 @@ export type FunnelEvent = {
   icp?: string;
   org?: string;
   note?: string;
+  // Only meaningful on a "booked" event: "outreach" (call-prep matched them in Step 1)
+  // or "direct" (booked with nothing on file - referral, organic, the website).
+  source?: string;
 };
 
 const STAGE_KEYS = ["emailed", "replied", "interested", "booked", "won", "lost"] as const;
@@ -53,11 +56,13 @@ export function getFunnelStats(icpFilter?: "startups" | "churches") {
   );
 
   const reached = new Map<string, Set<StageKey>>();
+  const source = new Map<string, string>(); // email -> source, from its "booked" event
   for (const e of events) {
     const stage = e.stage as StageKey;
     const set = reached.get(e.email) ?? new Set<StageKey>();
     for (const s of REACHES[stage] ?? [stage]) set.add(s);
     reached.set(e.email, set);
+    if (e.source) source.set(e.email, e.source);
   }
 
   const counts = Object.fromEntries(
@@ -67,7 +72,29 @@ export function getFunnelStats(icpFilter?: "startups" | "churches") {
   const bookedRate = counts.emailed ? Math.round((counts.booked / counts.emailed) * 1000) / 10 : null;
   const closeRate = counts.booked ? Math.round((counts.won / counts.booked) * 1000) / 10 : null;
 
-  return { counts, bookedRate, closeRate, leadsTotal: reached.size };
+  // Two-layer booked breakdown: total intros booked, and the slice that came through
+  // our own outreach vs. direct/organic. Same logic as scripts/funnel.py's stats(), so
+  // the dashboard and the CLI agree.
+  const bookedEmails = [...reached.entries()].filter(([, s]) => s.has("booked")).map(([em]) => em);
+  const bookedBySource: Record<string, number> = {};
+  for (const em of bookedEmails) {
+    const src = source.get(em) || "unknown";
+    bookedBySource[src] = (bookedBySource[src] ?? 0) + 1;
+  }
+  const bookedFromOutreach = bookedBySource["outreach"] ?? 0;
+  const bookedFromOutreachPct = counts.booked
+    ? Math.round((bookedFromOutreach / counts.booked) * 1000) / 10
+    : null;
+
+  return {
+    counts,
+    bookedRate,
+    closeRate,
+    leadsTotal: reached.size,
+    bookedBySource,
+    bookedFromOutreach,
+    bookedFromOutreachPct,
+  };
 }
 
 export function getQueueCounts() {

@@ -56,12 +56,18 @@ def _now() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
-def record(email: str, stage: str, icp: str = "", org: str = "", note: str = "") -> dict:
+def record(email: str, stage: str, icp: str = "", org: str = "", note: str = "",
+           source: str = "") -> dict:
     if stage not in STAGES:
         sys.exit(f"Unknown stage '{stage}'. One of: {', '.join(STAGES)}")
     LOG.parent.mkdir(parents=True, exist_ok=True)
+    # source is only meaningful on a "booked" event: did this call come from our own
+    # outreach (call-prep matched them in data/leads/index.jsonl etc, per Step 1 of the
+    # call-prep skill) or direct/organic (booked with no outreach history on file)?
+    # "emailed"/"replied"/"interested" are by definition outreach-sourced, so source is
+    # left blank there rather than redundantly set.
     event = {"at": _now(), "email": email.strip().lower(), "stage": stage,
-             "icp": icp, "org": org, "note": note}
+             "icp": icp, "org": org, "note": note, "source": source}
     with open(LOG, "a") as f:
         f.write(json.dumps(event) + "\n")
     return event
@@ -94,7 +100,8 @@ def stats(since: str | None, icp: str | None) -> dict:
     for e in events:
         email = e["email"]
         reached.setdefault(email, set()).update(REACHES.get(e["stage"], {e["stage"]}))
-        meta.setdefault(email, {}).update({k: e[k] for k in ("icp", "org") if e.get(k)})
+        meta.setdefault(email, {}).update(
+            {k: e[k] for k in ("icp", "org", "source") if e.get(k)})
 
     def count(stage: str) -> int:
         return sum(1 for s in reached.values() if stage in s)
@@ -104,6 +111,18 @@ def stats(since: str | None, icp: str | None) -> dict:
 
     def rate(num: int, den: int) -> float | None:
         return round(100 * num / den, 1) if den else None
+
+    # Two-layer booked breakdown: total intros booked, and the slice that came through
+    # our own outreach (call-prep matched them, per the skill's Step 1) vs. direct/
+    # organic (booked with nothing on file - referral, website, etc). Pre-source events
+    # (recorded before this field existed) fall under "unknown" rather than being
+    # silently dropped or miscounted either way.
+    booked_emails = [em for em, s in reached.items() if "booked" in s]
+    booked_by_source: dict[str, int] = {}
+    for em in booked_emails:
+        src = meta.get(em, {}).get("source") or "unknown"
+        booked_by_source[src] = booked_by_source.get(src, 0) + 1
+    booked_from_outreach = booked_by_source.get("outreach", 0)
 
     # Booked calls still awaiting a won/lost mark - the "needs you" list.
     awaiting = [
@@ -117,6 +136,8 @@ def stats(since: str | None, icp: str | None) -> dict:
         "counts": counts,
         "booked_call_rate_pct": rate(booked, emailed),   # booked / emailed
         "close_rate_pct": rate(won, booked),             # won / booked
+        "booked_by_source": booked_by_source,
+        "booked_from_outreach_pct": rate(booked_from_outreach, booked),
         "awaiting_outcome": awaiting,
         "filters": {"since": since, "icp": icp},
     }
@@ -133,6 +154,12 @@ def _print_stats(s: dict) -> None:
     cr = s["close_rate_pct"]
     print(f"  booked-call rate (booked/emailed): {br if br is not None else 'n/a'}%")
     print(f"  close rate (won/booked):           {cr if cr is not None else 'n/a'}%")
+    if c["booked"]:
+        op = s["booked_from_outreach_pct"]
+        print(f"\n  booked by source (of {c['booked']} total):")
+        for src, n in sorted(s["booked_by_source"].items(), key=lambda kv: -kv[1]):
+            print(f"    {src:10} {n}")
+        print(f"  -> {op if op is not None else 'n/a'}% of booked calls came from our outreach")
     if s["awaiting_outcome"]:
         print(f"\n  {len(s['awaiting_outcome'])} booked call(s) awaiting a won/lost mark:")
         for a in s["awaiting_outcome"]:
@@ -151,6 +178,9 @@ def main() -> None:
     r.add_argument("--icp", default="")
     r.add_argument("--org", default="")
     r.add_argument("--note", default="")
+    r.add_argument("--source", default="", choices=["", "outreach", "direct"],
+                   help="Only meaningful on --stage booked: did this come from our own "
+                        "outreach (matched in Step 1 of call-prep) or direct/organic?")
 
     m = sub.add_parser("mark", help="record a call's outcome (won/lost)")
     m.add_argument("--email", required=True)
@@ -165,7 +195,8 @@ def main() -> None:
     args = p.parse_args()
 
     if args.cmd == "record":
-        print(json.dumps(record(args.email, args.stage, args.icp, args.org, args.note)))
+        print(json.dumps(record(args.email, args.stage, args.icp, args.org, args.note,
+                                 args.source)))
     elif args.cmd == "mark":
         print(json.dumps(record(args.email, args.outcome, note=args.note)))
     elif args.cmd == "stats":

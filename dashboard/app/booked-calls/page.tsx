@@ -4,7 +4,7 @@ import LogCallForm from "./log-call-form";
 
 export default async function BookedCallsPage() {
   const briefs = getCallPrepBriefs();
-  const { counts } = getFunnelStats();
+  const { counts, bookedFromOutreach, bookedFromOutreachPct } = getFunnelStats();
 
   return (
     <main>
@@ -15,14 +15,31 @@ export default async function BookedCallsPage() {
 
         <div className="stats">
           <div className="stat">
-            <div className="label">Booked (funnel-tracked)</div>
+            <div className="label">Total intros booked</div>
             <div className="val">{counts.booked}</div>
+          </div>
+          <div className="stat">
+            <div className="label">From our outreach</div>
+            <div className="val">
+              {bookedFromOutreach}
+              {counts.booked > 0 && (
+                <span style={{ fontSize: "0.5em", marginLeft: 8, opacity: 0.7 }}>
+                  ({bookedFromOutreachPct ?? 0}%)
+                </span>
+              )}
+            </div>
           </div>
           <div className="stat">
             <div className="label">Call-prep briefs on file</div>
             <div className="val">{briefs.length}</div>
           </div>
         </div>
+        {counts.booked > 0 && (
+          <p className="sub" style={{ marginTop: -16 }}>
+            The rest came direct/organic (referral, the website, etc - no outreach history
+            on file) or from a booking recorded before source tracking existed.
+          </p>
+        )}
 
         <div className="card">
           <div className="kicker">Log a booked call (manual fallback)</div>

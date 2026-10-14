@@ -236,12 +236,16 @@ prep from. Full file: {Drive or GitHub url}
 
 - Commit the briefing file — it's the durable record, same pattern as everything else
   in `data/`.
-- **Funnel:** record the booking so it counts toward the conversion rate:
-  `python scripts/funnel.py record --email <email> --stage booked --icp <icp> --org <org>`.
-  Ethan marks the call's outcome later (`funnel.py mark --outcome won|lost`) - remind him
-  of that in plain English in the email ("Mark this won/lost after the call"), not as a
-  copy-pasteable CLI command. **Skip this entirely for confirmed synthetic/test data** -
-  see Step 1.
+- **Funnel:** record the booking so it counts toward the conversion rate, including
+  which of the two tracking layers it belongs to - `--source outreach` if Step 1 matched
+  them against our own system, `--source direct` if not (referral, organic, the
+  website - booked with nothing on file):
+  `python scripts/funnel.py record --email <email> --stage booked --icp <icp> --org <org> --source outreach|direct`.
+  This is what lets the dashboard show total intros booked alongside the slice that came
+  from our own outreach, and the percentage between them. Ethan marks the call's outcome
+  later (`funnel.py mark --outcome won|lost`) - remind him of that in plain English in
+  the email ("Mark this won/lost after the call"), not as a copy-pasteable CLI command.
+  **Skip this entirely for confirmed synthetic/test data** - see Step 1.
 
 ## Never
 
