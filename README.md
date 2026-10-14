@@ -17,7 +17,7 @@ FACT-CHECK      Every draft passes .claude/skills/fact-check-email before it can
                 move forward. Fails go back for rewrite.
 SEND            Contacts added to the ICP's Apollo sequence, sent from the
                 matching domain (config/domains.yaml). Startups send from
-                launchwithpolymer.com, churches from integratedchurchwebsites.com.
+                growwithpolymer.com, churches from integratedchurchwebsites.com.
 REPLY           Apollo auto-pauses the sequence. .claude/skills/classify-reply
                 buckets the reply. Interested -> booking email drafted via
                 .claude/skills/booking-reply and held for approval (PR merge = send).

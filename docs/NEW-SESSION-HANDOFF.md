@@ -15,7 +15,7 @@ Context on what's built and decided:
 - Two ICPs, max 2 decision makers each: **startups** (Series A–C, vertical still TBD) and
   **churches** (500–10k attendance, found via the Planning Center / churchcenter.com signal).
   Definitions in `config/icp-*.yaml`, still `status: draft`.
-- Sends from `launchwithpolymer.com` (startups) and `integratedchurchwebsites.com` (churches).
+- Sends from `growwithpolymer.com` (startups) and `integratedchurchwebsites.com` (churches).
   **Never** from hellopolymer.com.
 - Runs on **GitHub Actions cron**. Repository secrets: `ANTHROPIC_API_KEY`, `APOLLO_API_KEY`,
   `GOOGLEPAGESPEEDINSIGHTS_API_KEY`, `RESEND_API_KEY`.

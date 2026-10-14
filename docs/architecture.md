@@ -17,7 +17,7 @@ visualize. The Mermaid diagrams below render on GitHub automatically.
 
 **Sending, said once clearly:** every cold email (both ICPs) goes out through **Apollo's
 sequencer**, through mailboxes connected to Apollo by OAuth - Apollo warms them itself, no
-separate service. Startups send from `launchwithpolymer.com`, churches from
+separate service. Startups send from `growwithpolymer.com`, churches from
 `integratedchurchwebsites.com`. Resend is only for alerts to you.
 
 ## The main pipeline
