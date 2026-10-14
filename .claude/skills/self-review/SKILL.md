@@ -75,5 +75,12 @@ Write `data/reports/YYYY-MM-DD-review.md`:
 Then open a GitHub issue titled "Outreach review YYYY-MM-DD" with the TLDR and a link to
 the report, labeled `biweekly-review`.
 
+Also email Ethan the TLDR via `scripts/notify.py` (`urgency: info`, subject
+`Outreach review: {date} — {the one-sentence takeaway}`). Same plain-English, short-section
+rule as every other operator-facing email in this repo (see the call-prep skill) — the
+3-sentence TLDR, the numbers that actually moved, and the one thing to do, not the full
+report. Link the full report/issue for anyone who wants more, same pattern as call-prep's
+"Full briefing: {path}" line.
+
 Success metrics (starter targets, recalibrate with real data): delivery >97%,
 reply rate >2%, positive reply rate >0.5%, booked calls the north star.
