@@ -10,14 +10,26 @@ Apollo's API has no equivalent for, so this is a deliberately narrower signal
 
 Data source: POST /v1/reports/sync_report, grouped by email_account_id. Confirmed real,
 public, and free (0 credit cost) against Apollo's own API reference
-(docs.apollo.io/reference/sync-report). The first real run (2026-10-14) 400'd - the
-live endpoint needs a few fields beyond what the public doc and the MCP connector's
-equivalent tool both show, added below with the exact error text explaining why. If it
-400s again, the error notification now includes the full response body (was truncated
-to 300 chars before - long enough to miss the actual reason), so the next fix won't be
-another guess. Either way, the bug is isolated to fetch_bounce_report()/_extract_groups()
-below - nothing else needs touching. Same isolation pattern the old TrulyInbox script
-used for its own unconfirmed parts.
+(docs.apollo.io/reference/sync-report).
+
+STATUS (2026-10-14): six live round-trips today got the request almost entirely right -
+date_range, group_bys, pivot_group_by, sorts, filters, both totals-selected booleans, and
+skip_group_by_value are all confirmed correct (stopped erroring once set as they are
+below), and within each metrics entry the smart_datetime_reference/smart_user_id_reference
+fields are confirmed correct too (verified against a real working example in Apollo's own
+CLI docs). The ONE thing still unresolved: whatever field identifies which metric a
+metrics entry is for still 400s as blank ("Metrics must have key value") - tried both
+"key" and "metric" as the field name with the same value (the public/MCP-facing metric
+name, e.g. "num_emails_sent") and got the identical error either way, so the real blocker
+is most likely the VALUE this API wants there, not the field name - probably a different
+internal metric identifier than what Apollo's own docs/MCP tool expose publicly. Paused
+here rather than keep guessing blind; see fetch_bounce_report()'s comment for the exact
+next step (copy the real request from Apollo Analytics' own UI network tab) if revisited.
+Until then this fails safe: every mailbox reports insufficient_data and a watch alert
+fires with the full error text - nothing silently reports healthy. Also worth noting: as
+of today there's 0 real send volume in the lookback window anyway (confirmed via a
+successful equivalent call through the Apollo MCP connector), so fixing this won't change
+today's numbers either way - it matters once real sending starts.
 
 Thresholds (bounce rate %, not a 0-100 score) live in config/system.yaml
 `inbox_health.thresholds` - starting lines per that file's own comment, tune with
@@ -82,30 +94,33 @@ def fetch_bounce_report(key: str, fixture: str | None) -> dict:
             # (pivot_group_by stays singular) - confirmed because those two stopped
             # erroring once set this way. What's still failing, and why, per the third
             # 400's full body:
-            #   - Everything below except metrics is now CONFIRMED correct - 4+ live runs
-            #     today stopped complaining about date_range, group_bys, pivot_group_by,
-            #     sorts, filters, both totals-selected booleans, and skip_group_by_value
-            #     entirely. metrics took two more rounds: {"name": ...} got "metrics is
-            #     required" (whole array ignored); {"key": ..., smart_datetime_reference,
-            #     smart_user_id_reference} got the two reference fields accepted (no
-            #     error) but "Metrics must have key value" x3 - the two reference field
-            #     NAMES are right (confirmed via Apollo's own CLI docs example:
-            #     num_emails_sent / emailer_message__sent_at / emailer_message__user_id),
-            #     "key" just isn't the real field for the metric identifier. Trying
-            #     "metric" (singular) instead - the sorts object below already uses
-            #     exactly that field name ({"metric": ..., "asc": ...}) and was accepted,
-            #     so this API reuses "metric" as its identifier key elsewhere.
+            #   - STOPPED HERE (2026-10-14) after 6 live round-trips - see the module
+            #     docstring "STATUS" note for why and what's confirmed vs. still unknown.
+            #     Everything below except the metric-identifying field inside `metrics`
+            #     is confirmed correct (date_range, group_bys, pivot_group_by, sorts,
+            #     filters, both totals-selected booleans, skip_group_by_value, and the
+            #     two smart_*_reference fields all stopped erroring). Only the value under
+            #     whatever that identifying field is called still 400s as blank - tried
+            #     both "key" and "metric" as the field name with the same literal value
+            #     ("num_emails_sent" etc, the public/MCP-facing name) and got the identical
+            #     error either way, so the real blocker is probably the VALUE, not the
+            #     field name - this API likely wants a different internal metric
+            #     identifier than the one its own docs and MCP tool expose. Left as "key"
+            #     since that's what the error text's humanized attribute name actually
+            #     says. Next step if revisited: Apollo Analytics -> build the same report
+            #     from scratch in the UI -> copy the network request it sends (the docs'
+            #     own suggested method) rather than guessing further blind.
             "date_range": {"modality": "last_30_days"},
             "group_bys": ["email_account_id"],
             "pivot_group_by": [],
             "metrics": [
-                {"metric": "num_emails_sent",
+                {"key": "num_emails_sent",
                  "smart_datetime_reference": "emailer_message__sent_at",
                  "smart_user_id_reference": "emailer_message__user_id"},
-                {"metric": "num_emails_delivered",
+                {"key": "num_emails_delivered",
                  "smart_datetime_reference": "emailer_message__delivered_at",
                  "smart_user_id_reference": "emailer_message__user_id"},
-                {"metric": "num_emails_bounced",
+                {"key": "num_emails_bounced",
                  "smart_datetime_reference": "emailer_message__bounced_at",
                  "smart_user_id_reference": "emailer_message__user_id"},
             ],
