@@ -27,9 +27,25 @@ jobs:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       - name: Commit queue state
+        # fetch+rebase+retry before giving up on a rejected push, same as every other
+        # workflow in this repo - this one tracks what was actually sent, so losing it
+        # risks a double-send next run, not just a missing record.
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/queue/
           git diff --cached --quiet || git commit -m "process approved booking replies"
-          git push
+          for attempt in 1 2 3 4 5; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) - fetching + rebasing onto latest ${{ github.ref_name }}..."
+            git fetch origin "${{ github.ref_name }}"
+            if ! git rebase "origin/${{ github.ref_name }}"; then
+              git rebase --abort
+              echo "::error::Rebase conflict - this run's queue state could NOT be pushed."
+              exit 1
+            fi
+          done
+          echo "::error::Still rejected after 5 fetch+rebase attempts - giving up."
+          exit 1

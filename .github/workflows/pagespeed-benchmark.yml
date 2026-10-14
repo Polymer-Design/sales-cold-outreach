@@ -26,9 +26,24 @@ jobs:
           GOOGLEPAGESPEEDINSIGHTS_API_KEY: ${{ secrets.GOOGLEPAGESPEEDINSIGHTS_API_KEY }}
 
       - name: Commit the refreshed benchmark
+        # fetch+rebase+retry before giving up on a rejected push, same as every other
+        # workflow in this repo.
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
           git add knowledge/pagespeed-benchmark.md
           git diff --cached --quiet || git commit -m "refresh PageSpeed benchmark $(date -u +%F)"
-          git push
+          for attempt in 1 2 3 4 5; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) - fetching + rebasing onto latest ${{ github.ref_name }}..."
+            git fetch origin "${{ github.ref_name }}"
+            if ! git rebase "origin/${{ github.ref_name }}"; then
+              git rebase --abort
+              echo "::error::Rebase conflict - the refreshed benchmark could NOT be pushed."
+              exit 1
+            fi
+          done
+          echo "::error::Still rejected after 5 fetch+rebase attempts - giving up."
+          exit 1

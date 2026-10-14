@@ -47,9 +47,26 @@ jobs:
         # token, then revokes it right after its step ends - before this step runs.
         # A plain `git push` here fails auth silently if it relies on that credential.
         # Push against an explicit, fresh URL using this job's own github.token instead.
+        #
+        # Same fetch+rebase+retry fix already proven live on daily-pipeline.yml - a bare
+        # push here would lose this run's report the same way.
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           git add data/
           git diff --cached --quiet || git commit -m "biweekly review $(date -u +%F) (workflow sweep)"
-          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "HEAD:${{ github.ref_name }}"
+          for attempt in 1 2 3 4 5; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) - fetching + rebasing onto latest ${{ github.ref_name }}..."
+            git fetch origin "${{ github.ref_name }}"
+            if ! git rebase "origin/${{ github.ref_name }}"; then
+              git rebase --abort
+              echo "::error::Rebase conflict - this run's changes could NOT be pushed."
+              exit 1
+            fi
+          done
+          echo "::error::Still rejected after 5 fetch+rebase attempts - giving up."
+          exit 1

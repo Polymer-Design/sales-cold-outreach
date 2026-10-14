@@ -63,10 +63,27 @@ jobs:
         # ends - before this step runs. A plain `git push` here silently fails auth
         # (previously masked by `|| true`). Push against an explicit, fresh URL using
         # this job's own github.token so it doesn't depend on what that action left behind.
+        #
+        # Confirmed live 2026-10-14: a real run's briefing was lost this exact way (push
+        # rejected because another workflow pushed to main first, no fetch/rebase to
+        # recover) - same bug already fixed in daily-pipeline.yml/church-crawler.yml,
+        # just missed here. Fetch+rebase+retry before giving up.
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           git add data/call-prep/
           git diff --cached --quiet || git commit -m "call prep briefing $(date -u +%FT%H:%M)"
-          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "HEAD:${{ github.ref_name }}" \
-            || echo "::warning::Failed to push the call-prep briefing file - check this step's log"
+          for attempt in 1 2 3 4 5; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) - fetching + rebasing onto latest ${{ github.ref_name }}..."
+            git fetch origin "${{ github.ref_name }}"
+            if ! git rebase "origin/${{ github.ref_name }}"; then
+              git rebase --abort
+              echo "::warning::Rebase conflict - the call-prep briefing could NOT be pushed. Manual resolution needed."
+              exit 0
+            fi
+          done
+          echo "::warning::Still rejected after 5 fetch+rebase attempts - check this step's log"

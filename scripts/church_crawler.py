@@ -155,8 +155,29 @@ def crawl(args) -> None:
             print(f"HIT  {seed.get('name')}: {signal} {slug}")
         else:
             print(f"miss {seed.get('name')}")
+
+    # A genuine churchcenter_slug is per-church, so the exact same non-empty slug
+    # showing up for 2+ different seeds in one run means the regex almost certainly
+    # matched a shared/generic asset host (confirmed live 2026-10-14: "js" hit on 3
+    # unrelated churches - a direct page-content check couldn't settle it either way,
+    # since Church Center doesn't 404 on a bad slug the way probe_slug()'s check
+    # assumes, so this count-based signal is the reliable one). Flag instead of
+    # silently trusting - needs a human look, not an auto-exclude, in case a slug
+    # genuinely is shared (e.g. a multi-campus church using one instance).
+    slug_counts: dict[str, int] = {}
+    for row in found:
+        if row["churchcenter_slug"]:
+            slug_counts[row["churchcenter_slug"]] = slug_counts.get(row["churchcenter_slug"], 0) + 1
+    flagged = 0
+    for row in found:
+        if slug_counts.get(row["churchcenter_slug"], 0) > 1:
+            row["status"] = "needs_review"
+            row["signal"] = "shared_slug_suspected_false_positive"
+            flagged += 1
+
     append_candidates(found)
-    print(f"\nChecked {checked} seeds, found {len(found)} with Planning Center signal. "
+    print(f"\nChecked {checked} seeds, found {len(found)} with Planning Center signal "
+          f"({flagged} flagged needs_review - shared slug, likely false positive). "
           f"Appended to {CANDIDATES.relative_to(REPO_ROOT)}")
 
 
