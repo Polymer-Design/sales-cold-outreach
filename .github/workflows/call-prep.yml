@@ -1,7 +1,8 @@
 name: Call prep briefing
 
-# Fired by a Zapier webhook (Dubsado booking event -> Zapier -> GitHub repository_dispatch)
-# the moment someone books a call. See docs/call-prep-zapier-setup.md for the exact Zap.
+# Fired by Cal.com's native webhook (dashboard/app/api/webhooks/cal) or the dashboard's
+# manual "Log a booked call" button, both via repository_dispatch, the moment someone
+# books a call. See dashboard/README.md for the Cal.com webhook setup.
 on:
   repository_dispatch:
     types: [call_booked]
@@ -26,7 +27,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt google-api-python-client google-auth
 
       - name: Build the call-prep briefing with Claude
         uses: anthropics/claude-code-action@v1
@@ -41,8 +42,11 @@ jobs:
             appointment_time: ${{ github.event.client_payload.appointment_time || github.event.inputs.appointment_time }}
             org_name: ${{ github.event.client_payload.org_name || github.event.inputs.org_name }}
 
-            Follow the skill exactly: match against data/, refresh the tech-stack read,
-            write the briefing, email it via scripts/notify.py, and commit the file.
+            Follow the skill exactly, all 7 steps: match against data/, research the
+            company/industry, refresh the tech-stack + sitemap scope, recommend a package,
+            write the briefing, email it via scripts/notify.py + commit it, and mirror it
+            (plus the matched sequence file, if any) into the org's Drive folder via
+            scripts/drive_intro_folder.py.
           claude_args: |
             --model claude-sonnet-5
             --max-turns 40
@@ -50,6 +54,8 @@ jobs:
         env:
           GOOGLEPAGESPEEDINSIGHTS_API_KEY: ${{ secrets.GOOGLEPAGESPEEDINSIGHTS_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          INTRO_SALES_DRIVE_FOLDER_ID: ${{ secrets.INTRO_SALES_DRIVE_FOLDER_ID }}
 
       - name: Push the briefing file
         # anthropics/claude-code-action rewrites the git remote to use its own

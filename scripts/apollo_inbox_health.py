@@ -8,13 +8,16 @@ retired - it exposed a 0-100 composite score plus blacklist/SPF/DKIM checks that
 Apollo's API has no equivalent for, so this is a deliberately narrower signal
 (bounce rate only), not a like-for-like replacement.
 
-Data source: POST /v1/reports/sync_report, grouped by email_account_id. Confirmed
-real, public, and free (0 credit cost) against Apollo's own API reference
-(docs.apollo.io/reference/sync-report) - but the exact response envelope hasn't
-been exercised against a live NON-EMPTY report yet, because mode is still dry_run
-and there have been zero real sends to query. If this errors on the first real
-run, the bug is isolated to _extract_groups() below - nothing else needs touching.
-Same caution the old TrulyInbox script flagged for itself, same isolation pattern.
+Data source: POST /v1/reports/sync_report, grouped by email_account_id. Confirmed real,
+public, and free (0 credit cost) against Apollo's own API reference
+(docs.apollo.io/reference/sync-report). The first real run (2026-10-14) 400'd - the
+live endpoint needs a few fields beyond what the public doc and the MCP connector's
+equivalent tool both show, added below with the exact error text explaining why. If it
+400s again, the error notification now includes the full response body (was truncated
+to 300 chars before - long enough to miss the actual reason), so the next fix won't be
+another guess. Either way, the bug is isolated to fetch_bounce_report()/_extract_groups()
+below - nothing else needs touching. Same isolation pattern the old TrulyInbox script
+used for its own unconfirmed parts.
 
 Thresholds (bounce rate %, not a 0-100 score) live in config/system.yaml
 `inbox_health.thresholds` - starting lines per that file's own comment, tune with
@@ -76,13 +79,28 @@ def fetch_bounce_report(key: str, fixture: str | None) -> dict:
             "date_range": {"modality": "last_30_days"},
             "group_by": ["email_account_id"],
             "metrics": ["num_emails_sent", "num_emails_delivered", "num_emails_bounced"],
+            # The fields below aren't in Apollo's public reference doc, but the first real
+            # run (2026-10-14) 400'd without them: "Group by totals selected is not
+            # included in the list, Pivot group by totals selected ..., Is super analytics
+            # ..., Send granular current and past data ..., Past data granularity level
+            # ... is not included in the list". The MCP connector's equivalent tool
+            # succeeds with just date_range/group_by/metrics, implying it fills these in
+            # server-side for that auth path; a plain API key apparently needs them
+            # explicit. Best-effort reconstruction from the error text, not confirmed
+            # against docs - if this 400s again, the error truncation below is now long
+            # enough to show the FULL message, not just the first 300 characters.
+            "group_by_totals_selected": [],
+            "pivot_group_by_totals_selected": [],
+            "is_super_analytics": False,
+            "send_granular_current_and_past_data": False,
+            "past_data_granularity_level": None,
         },
         timeout=30,
     )
     if resp.status_code >= 400:
         notify_send(
             "Inbox monitor could not reach Apollo's analytics API",
-            f"POST {BASE}/reports/sync_report returned {resp.status_code}: {resp.text[:300]}\n"
+            f"POST {BASE}/reports/sync_report returned {resp.status_code}: {resp.text[:1500]}\n"
             "Confirm the request shape in scripts/apollo_inbox_health.py against "
             "docs.apollo.io/reference/sync-report.",
             urgency="watch",
