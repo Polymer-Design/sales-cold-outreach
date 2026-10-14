@@ -2,9 +2,15 @@
 """Detect a lead's website platform and route them to a pitch track.
 
 Both ICPs (config/icp-startups.yaml, config/icp-churches.yaml) now hinge on this: a lead
-already on Webflow gets the subscription_track pitch ($3k/mo retainer), everyone else gets
-new_build_track. Church leads on Subsplash get a distinct angle within new_build_track (see
-the outreach-email skill) since Subsplash already implies budget + sophistication.
+already on Webflow gets the subscription_track pitch (a monthly plan - tiers/prices in
+knowledge/business-overview.md, not here), everyone else gets new_build_track. Church
+leads on Subsplash get a distinct angle within new_build_track (see the outreach-email
+skill) since Subsplash already implies budget + sophistication.
+
+Known gap: knowledge/business-overview.md also routes Astro/Vercel/other custom-code
+sites to the monthly-plan pitch, but this script has no marker for them yet, so they fall
+through to new_build_track like any unrecognized platform. Not handled here - see the
+outreach-email skill's Step 0 for how a drafter should catch this during research.
 
 Detection is regex/marker based on the page's HTML, same lightweight approach as
 scripts/church_crawler.py (checks generator meta tag + known asset-host fingerprints).

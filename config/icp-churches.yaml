@@ -51,7 +51,8 @@ secondary_technographic_signals_roadmap:
 # the Planning Center technographic signal above, which is about their ChMS, not their
 # marketing site). This determines which pitch/track the drafter uses.
 website_platform_routing:
-  webflow: subscription_track # already on Webflow -> $3k/mo retainer pitch, NOT a rebuild pitch.
+  webflow: subscription_track # already on Webflow -> monthly plan pitch (Care/Grow),
+    # NOT a rebuild pitch. Tiers/prices in knowledge/business-overview.md, not here.
     # Needs its own sequence copy + case studies (ongoing-partnership stories, not
     # before/after launch). NOT WRITTEN YET - see knowledge/case-studies/README.md.
   squarespace: new_build_track # "outgrown the DIY builder" angle
