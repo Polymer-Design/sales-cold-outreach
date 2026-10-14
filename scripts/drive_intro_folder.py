@@ -55,10 +55,19 @@ def _drive_client():
 
 
 def _find_child(drive, parent_id: str, name: str, mime: str | None = None) -> str | None:
+    # supportsAllDrives/includeItemsFromAllDrives are required once the parent lives in a
+    # Shared Drive (confirmed here - the service account holds a Shared-Drive-only
+    # "fileOrganizer" role on this folder, not the "writer" a My Drive share would give).
+    # Without these, the API silently returns zero results instead of erroring, which is
+    # how this stayed broken through a "the folder IS shared" report - the share was real,
+    # these two params just weren't being sent.
     q = f"'{parent_id}' in parents and name = {json.dumps(name)} and trashed = false"
     if mime:
         q += f" and mimeType = '{mime}'"
-    resp = drive.files().list(q=q, fields="files(id, name)", pageSize=5).execute()
+    resp = drive.files().list(
+        q=q, fields="files(id, name)", pageSize=5,
+        supportsAllDrives=True, includeItemsFromAllDrives=True,
+    ).execute()
     files = resp.get("files", [])
     return files[0]["id"] if files else None
 
@@ -69,7 +78,7 @@ def _ensure_folder(drive, parent_id: str, name: str) -> str:
         return existing
     created = drive.files().create(
         body={"name": name, "mimeType": FOLDER_MIME, "parents": [parent_id]},
-        fields="id",
+        fields="id", supportsAllDrives=True,
     ).execute()
     return created["id"]
 
@@ -78,10 +87,11 @@ def _upsert_markdown(drive, media_cls, parent_id: str, filename: str, content: s
     media = media_cls(content.encode("utf-8"), mimetype="text/markdown")
     existing = _find_child(drive, parent_id, filename)
     if existing:
-        drive.files().update(fileId=existing, media_body=media).execute()
+        drive.files().update(fileId=existing, media_body=media, supportsAllDrives=True).execute()
         return existing
     created = drive.files().create(
         body={"name": filename, "parents": [parent_id]}, media_body=media, fields="id",
+        supportsAllDrives=True,
     ).execute()
     return created["id"]
 

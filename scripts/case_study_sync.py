@@ -56,7 +56,13 @@ def _list_docs(drive, folder_id: str) -> list[dict]:
     while True:
         resp = drive.files().list(
             q=q, fields="nextPageToken, files(id, name, modifiedTime)",
-            pageToken=page, pageSize=100).execute()
+            pageToken=page, pageSize=100,
+            # Required once the folder lives in a Shared Drive - confirmed true here
+            # (the service account holds a Shared-Drive-only "fileOrganizer" role on
+            # it). Without these the API returns zero results, not an error, so a real
+            # share can look broken ("nothing to sync") when it's actually just these
+            # two missing params.
+            supportsAllDrives=True, includeItemsFromAllDrives=True).execute()
         docs.extend(resp.get("files", []))
         page = resp.get("nextPageToken")
         if not page:
