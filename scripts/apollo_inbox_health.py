@@ -76,21 +76,26 @@ def fetch_bounce_report(key: str, fixture: str | None) -> dict:
         f"{BASE}/reports/sync_report",
         headers={"X-Api-Key": key, "Content-Type": "application/json"},
         json={
-            "date_range": {"modality": "last_30_days"},
-            "group_by": ["email_account_id"],
+            # The real endpoint uses PLURAL field names that differ from both Apollo's
+            # own public reference doc and the MCP connector's equivalent tool (both show
+            # singular date_range/group_by/sort) - confirmed from two real 400s today
+            # (2026-10-14), the second with the full, untruncated error body:
+            # "...group_bys is required, pivot_group_by is required, metrics is required,
+            # sorts is required, filters is required, group_by_totals_selected is
+            # required, pivot_group_by_totals_selected is required, date_ranges is
+            # required, Skip group by values must be an array". The MCP tool evidently
+            # renames these server-side for its own auth path; a plain API key needs the
+            # real names explicit. This is the second, evidence-based attempt - if it's
+            # still wrong, the notify body below has the full response, not a guess.
+            "date_ranges": [{"modality": "last_30_days"}],
+            "group_bys": ["email_account_id"],
             "metrics": ["num_emails_sent", "num_emails_delivered", "num_emails_bounced"],
-            # The fields below aren't in Apollo's public reference doc, but the first real
-            # run (2026-10-14) 400'd without them: "Group by totals selected is not
-            # included in the list, Pivot group by totals selected ..., Is super analytics
-            # ..., Send granular current and past data ..., Past data granularity level
-            # ... is not included in the list". The MCP connector's equivalent tool
-            # succeeds with just date_range/group_by/metrics, implying it fills these in
-            # server-side for that auth path; a plain API key apparently needs them
-            # explicit. Best-effort reconstruction from the error text, not confirmed
-            # against docs - if this 400s again, the error truncation below is now long
-            # enough to show the FULL message, not just the first 300 characters.
+            "pivot_group_by": [],
+            "sorts": [],
+            "filters": {},
             "group_by_totals_selected": [],
             "pivot_group_by_totals_selected": [],
+            "skip_group_by_values": [],
             "is_super_analytics": False,
             "send_granular_current_and_past_data": False,
             "past_data_granularity_level": None,
