@@ -2,7 +2,9 @@ name: Reply check
 
 on:
   schedule:
-    - cron: "0 13,15,17,19,21 * * 1-5" # every 2h, 9a-5p ET weekdays
+    - cron: "0 13,16,19 * * 1-5" # every 3h, 9a-3p ET weekdays (was every 2h - cut ~40%
+      # of this workflow's runs for cost, since cold-email replies aren't minute-sensitive;
+      # see system.yaml's live-mode note, 2026-10-14)
   workflow_dispatch: {}
 
 permissions:
