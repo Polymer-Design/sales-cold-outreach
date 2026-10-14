@@ -50,7 +50,7 @@ jobs:
           claude_args: |
             --model claude-sonnet-5
             --max-turns 40
-            --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch"
+            --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
         env:
           GOOGLEPAGESPEEDINSIGHTS_API_KEY: ${{ secrets.GOOGLEPAGESPEEDINSIGHTS_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
