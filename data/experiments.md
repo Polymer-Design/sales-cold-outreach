@@ -22,6 +22,14 @@ Root cause now identified: Apollo Free plan has blocked `mixed_people/search` si
 2026-08-03 (issue #3), stalling ingestion independent of mailbox/case-study status. See
 `data/reports/2026-10-01-review.md`.
 
+Reviewed 2026-10-15 (biweekly review): `mode` flipped to `live` 2026-10-14, issue #3 is
+resolved, and ingestion now works end to end (59 leads: 50 startups + 9 churches). Still
+nothing to start, but for a new reason: all 25 scored startup leads came back `cold` (top
+score 45 vs. `warm_min: 50`) — no drafts exist yet to assign an arm to. Root cause is
+`icp-startups.yaml` pulling off-ICP firmographic noise (no vertical filter by design); see
+`data/reports/2026-10-15-review.md` recommendation 1. First experiment still opens once a
+real batch clears the warm-tier cutoff and drafting starts.
+
 ## Backlog (ideas, not started)
 
 - Subject: 2-3 word noun phrase vs. question form
