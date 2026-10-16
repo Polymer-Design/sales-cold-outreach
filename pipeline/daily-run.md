@@ -10,9 +10,14 @@ Read `CLAUDE.md` hard rules first. Check `config/system.yaml` `mode` before ever
 people search (`q_organization_domains_list` on the church's domain, titles from
 `config/icp-churches.yaml`). Max 2 people per org, priority-ordered by title list.
 
-**Startups:** Apollo people search with `config/icp-startups.yaml` `apollo_filters`.
+**Startups:** Apollo people search with `config/icp-startups.yaml` `apollo_filters`, PLUS a
+second channel on the same ICP using `apollo_filters_yc` (`scripts/apollo_client.py
+people-search --icp startups --filter-set apollo_filters_yc`) - Y Combinator companies,
+sourced via Apollo's own "Y Combinator"/"YC" org keyword tags. Run both channels; dedupe
+against each other and against `data/leads/index.jsonl` (by domain) before scoring either.
 Skip orgs already in `data/leads/index.jsonl` (dedupe by domain). Take up to the daily cap
-(`limits.new_leads_scored_per_day`, split roughly evenly between ICPs).
+(`limits.new_leads_scored_per_day`, split roughly evenly between ICPs, broad + YC channels
+sharing the startups-ICP half rather than each getting a full half).
 
 Both paths go through `scripts/apollo_client.py people-search`, which enriches every match
 by default (1 Apollo credit per person actually matched, 0 for a miss) - that's what fills

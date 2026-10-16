@@ -9,6 +9,7 @@ Usage:
   python scripts/apollo_client.py people-search --icp startups [--page 1]
   python scripts/apollo_client.py people-search --icp churches --domain firstchurch.org
   python scripts/apollo_client.py people-search --icp startups --no-enrich  # free, masked results
+  python scripts/apollo_client.py people-search --icp startups --filter-set apollo_filters_yc  # YC channel
   python scripts/apollo_client.py sequences
   python scripts/apollo_client.py add-to-sequence --sequence-id X --contact-ids a,b --mailbox you@domain.com
   python scripts/apollo_client.py upsert-contact --json '{"first_name": ...}'
@@ -78,7 +79,10 @@ def people_search(args) -> dict:
     lead with a masked name and no email isn't usable downstream (scoring/drafting/Apollo
     upsert all need the real values); pass --no-enrich for a cheap exploratory search."""
     icp = load_yaml(f"config/icp-{args.icp}.yaml")
-    filters = {k: v for k, v in (icp.get("apollo_filters") or {}).items() if v}
+    filter_key = args.filter_set
+    if filter_key not in icp:
+        sys.exit(f"No '{filter_key}' block in config/icp-{args.icp}.yaml.")
+    filters = {k: v for k, v in (icp.get(filter_key) or {}).items() if v}
     if args.domain:
         filters["q_organization_domains_list"] = [args.domain]
     filters["page"] = args.page
@@ -163,6 +167,9 @@ def main() -> None:
     sub.add_parser("email-accounts")
     ps = sub.add_parser("people-search")
     ps.add_argument("--icp", required=True, choices=["startups", "churches"])
+    ps.add_argument("--filter-set", default="apollo_filters",
+                     help="Which named filter block in config/icp-{icp}.yaml to use - "
+                          "e.g. apollo_filters_yc for the Y Combinator sourcing channel.")
     ps.add_argument("--domain")
     ps.add_argument("--page", type=int, default=1)
     ps.add_argument("--per-page", type=int, default=25)

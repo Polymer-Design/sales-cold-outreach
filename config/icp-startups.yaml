@@ -131,6 +131,37 @@ apollo_filters:
     # not lacking growth. Watch the next real run's results before tightening further.
   organization_headcount_growth_past_n_months: 12
 
+# A SECOND, additional sourcing channel - not a replacement for apollo_filters above, run
+# alongside it (see pipeline/daily-run.md). Added 2026-10-16 per Ethan's explicit request.
+# Apollo's own org data tags Y Combinator batch companies directly (confirmed live: many
+# literally carry "(YC W24)"/"(YC S23)"/etc in their Apollo company name), which makes this
+# a real, repeatable, free-to-search channel - not a one-off scrape. YC already does the
+# growth-stage/legitimacy vetting, so this channel needs less defensive filtering than the
+# broad channel above; same decision-maker titles/seniorities since it's still this ICP,
+# just a different source query. organization_founded_year_range enforces "the past few
+# years" as Ethan asked, rather than relying on incidental batch-recency distribution.
+# Known noise this doesn't fully filter out: YC-adjacent VC funds and accelerator programs
+# that get swept in by the same keyword match (e.g. "Rebel Fund," "Orange Collective," a
+# university accelerator) - the NAICS/SIC exclusions below catch the investment-fund ones;
+# accelerator programs don't have a clean industry code to exclude on, so expect
+# lead-scoring's existing judgment to catch those the same way it already caught an
+# unrelated VC firm in the broad channel ("wrong business model for this ICP").
+apollo_filters_yc:
+  person_titles: ["head of marketing", "head of growth", "founder", "ceo", "coo", "head of ops"]
+  person_seniorities: [founder, c_suite, vp, head]
+  person_locations: ["United States"]
+  organization_num_employees_ranges: ["5,50"]
+  contact_email_status: [verified]
+  q_organization_keyword_tags: ["Y Combinator", "YC"]
+  organization_founded_year_range: {min: 2019}
+  organization_include_unknown_founded_year: true
+  not_organization_naics_codes:
+    - "5231"   # investment offices (VC funds caught by the same YC keyword match)
+    - "523940" # portfolio management / investment advice
+  not_organization_sic_codes:
+    - "6726" # investment offices, NEC
+    - "6732" # investment offices (the SIC-coded equivalent some funds carry instead)
+
 trigger_signals:
   - recent funding round (0-90 days strongest)
   - new marketing/growth hire (see trigger_signal_titles above)
