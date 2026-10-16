@@ -100,6 +100,12 @@ The four-part structure maps onto a very short email; the parts are beats, not p
    closes ("worth 15 minutes?" not "grab time on my calendar here"). Previewing that a
    scheduler link will follow if they're interested ("let me know and I'll send over a
    scheduler link!") is also on-voice - it's still not putting the link in email 1.
+   **Rotate the actual phrasing lead to lead** - "worth 15 minutes?", "up for a quick call?",
+   "want to jump on a call?", "open to chatting this week?", "make sense to connect?" are all
+   on-voice. The two examples above are illustrations, not a fixed script - the same exact
+   sentence sent hundreds of times is itself a detectable bulk-sender fingerprint (see
+   `knowledge/voice-and-tone.md` "Surviving AI inbox triage"), so don't let any single phrase
+   become the default.
 
 **Constraints:** body 50-85 words, aim under 80 - external benchmark data (elite cold-email
 performers average under 80 words on first touch) matches our own "extremely economical"

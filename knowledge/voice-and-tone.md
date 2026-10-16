@@ -65,6 +65,40 @@ The core voice above holds for both ICPs. Two things shift by ICP:
   still get "God Bless," instead of a generic close. Never "Best regards" or anything stiffer
   than the cold email itself.
 
+## Surviving AI inbox triage (Gemini/Copilot/Grok-style assistants, not just human readers)
+
+A growing share of decision makers have an AI layer in front of their inbox now - summarizing,
+prioritizing, or auto-filing before a human ever sees the subject line. Those tools are
+trained on exactly what mass cold-outreach looks like, so the defense isn't a new rule, it's
+taking the existing rules in this file more seriously, plus a few additions that target
+pattern-matching specifically:
+
+- **Vary structure across leads, not just the facts.** Swapping `{company}` into an otherwise
+  identical sentence skeleton is the single most detectable fingerprint of a sequence tool -
+  an AI triage model sees the structure across thousands of training examples, not just the
+  words. Two emails to two different leads should differ in sentence construction and rhythm,
+  not just which proper nouns are plugged in. This is already implied by "impossible to send
+  to any other company" (outreach-email skill, Step 3) - read it as a structural requirement,
+  not just a content one.
+- **Don't let a CTA phrase become a signature move.** "Worth 15 minutes?" repeated verbatim
+  across every email ever sent is itself a fingerprint once it's gone out hundreds of times.
+  Rotate genuinely different phrasings lead to lead (see outreach-email skill Step 3, part 4
+  for the current options) - the point is variety, not a single memorized line.
+- **Plain text over formatting.** No images, no logo, no colored buttons, no tracking-pixel
+  signature graphics. A signature is a name, maybe a title and phone number - nothing that
+  renders like a marketing template.
+- **Minimize links.** Already true for email 1 (no booking link - see "Call to action" in
+  outreach-email skill Step 3). Keep later emails just as link-light; every extra link raises
+  both spam-filter score and "this is bulk" pattern confidence.
+- **Reply-able, not broadcast-feeling.** Sent from a real named person's mailbox with a real
+  reply-to (already true - see `config/domains.yaml`), not a "no-reply" or "team@" address.
+  Never add a second CTA, a forwarded-to-someone-else option, or anything that reads like it
+  came from a tool rather than a person.
+- The CAN-SPAM footer (physical address + unsubscribe, `config/system.yaml` `can_spam`) is a
+  legal requirement and stays - don't try to hide or shrink it to look less "bulk." That
+  tension is accepted; everything above is about not adding extra bulk-mail signals on top of
+  the one that's legally required.
+
 ## Self-test before shipping any draft
 
 - [ ] Zero banned words/clichés/openers

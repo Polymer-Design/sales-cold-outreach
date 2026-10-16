@@ -61,12 +61,21 @@ For each draft with `status: ready`:
   "Hot tier drafts YYYY-MM-DD" instead of pushing; merging pushes them next run.
 - **Warm tier**: via `scripts/apollo_client.py` — upsert the contact, write the three email
   bodies + subjects to contact custom fields, add to the ICP's Apollo sequence with a
-  mailbox from `config/domains.yaml` (alternate between the 2 for load balance). Respect the
-  per-mailbox cap from `config/system.yaml` `inbox_health.send_caps`: use `warmup_daily` for
-  any mailbox with fewer than `min_sends_to_evaluate` sends in the last 30 days (still
-  ramping - see `data/inbox-health/latest.json`, `status: insufficient_data`), `healthy_daily`
-  once past that. Count what's already scheduled on each mailbox today so the cap holds
-  across the two ICPs.
+  mailbox from `config/domains.yaml` (alternate between the 2 for load balance). The
+  sequence MUST carry `sequence.emailer_schedule_id` from `config/system.yaml` ("Normal
+  Business Hours": Mon-Fri 8am-5pm recipient-local, no weekends, holidays skipped) - this is
+  what keeps sends inside business hours, confirm it's set on the sequence before relying on
+  it, don't assume a prior run already attached it. **Known gap as of 2026-10-16: no Apollo
+  sequence or the contact custom fields it needs exist yet** - this step will fail until
+  that one-time setup happens (6 long-text CONTACT custom fields for the 3 steps'
+  subject+body, then 2 sequences built on them with the schedule above attached, inactive
+  until Ethan approves activation). If you hit this, stop and report it rather than
+  improvising a workaround. Respect the per-mailbox cap from `config/system.yaml`
+  `inbox_health.send_caps`: use `warmup_daily` for any mailbox with fewer than
+  `min_sends_to_evaluate` sends in the last 30 days (still ramping - see
+  `data/inbox-health/latest.json`, `status: insufficient_data`), `healthy_daily` once past
+  that. Count what's already scheduled on each mailbox today so the cap holds across the two
+  ICPs.
 - Set `status: pushed` + timestamp. In dry_run, leave `status: ready` and just report.
 - **Funnel:** for each contact actually added to a sequence (live mode), record it:
   `python scripts/funnel.py record --email <email> --stage emailed --icp <icp> --org <org>`.

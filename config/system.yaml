@@ -47,6 +47,14 @@ sequence:
   wait_days: [3, 4]
   # No-reply after step 3: tag for recycle, re-enter with a fresh angle after this many days.
   recycle_after_days: 90
+  # Checked live 2026-10-16: Apollo's own "Normal Business Hours" schedule already matches
+  # what we want - Mon-Fri 8am-5pm, `use_contacts_time_zone: true` (sends in the RECIPIENT's
+  # local time, not the sender's, which is the right behavior), `skip_holidays: true`, and no
+  # weekend hours at all. It's also already the account's default schedule. Recorded here
+  # explicitly (rather than relying on "omit emailer_schedule_id to use the default") so a
+  # future Apollo default change can't silently start sending outside business hours - any
+  # sequence this pipeline creates/updates must pass this id as emailer_schedule_id.
+  emailer_schedule_id: "6a451bf4d7415900209cdb47" # "Normal Business Hours"
 
 can_spam:
   physical_address: "239 Betsey Scull Rd, Egg Harbor Twp, NJ 08234"
