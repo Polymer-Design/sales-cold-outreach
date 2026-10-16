@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-16T15:51:20.399933+00:00",
+  "checked_at": "2026-10-16T17:12:59.273507+00:00",
   "window_days": 30,
   "thresholds": {
     "bounce_watch_above_pct": 3,
@@ -21,14 +21,14 @@
       "status": "insufficient_data"
     },
     {
-      "email": "ehoover@integratedchurchwebsites.com",
+      "email": "ethan@integratedchurchwebsites.com",
       "sent_last_30d": 0,
       "bounced_last_30d": 0,
       "bounce_rate_pct": null,
       "status": "insufficient_data"
     },
     {
-      "email": "ethan@integratedchurchwebsites.com",
+      "email": "ehoover@integratedchurchwebsites.com",
       "sent_last_30d": 0,
       "bounced_last_30d": 0,
       "bounce_rate_pct": null,
