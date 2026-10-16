@@ -56,6 +56,20 @@ sequence:
   # sequence this pipeline creates/updates must pass this id as emailer_schedule_id.
   emailer_schedule_id: "6a451bf4d7415900209cdb47" # "Normal Business Hours"
 
+# Apollo CONTACT custom field ids, created 2026-10-16. Each sequence step's email content is
+# delivered via these as merge variables ({{cold_email_1_body}} etc in the sequence template)
+# rather than an Apollo-templated/AI-generated body - the pipeline writes each lead's own
+# outreach-email-skill-drafted, fact-checked text into these fields right before enrollment,
+# so every send is the real individually-researched email, never a mail-merge token-fill.
+# See config/domains.yaml `sequence_id` (per ICP) for the sequences that reference them.
+apollo_custom_fields:
+  cold_email_1_subject: "6ad28acaa2e894000cfd1b0c"
+  cold_email_1_body: "6ad28ade39f93b0020074189"
+  cold_email_2_subject: "6ad28aed26c8d50014312b5f"
+  cold_email_2_body: "6ad28af9a2e894000cfd1f29"
+  cold_email_3_subject: "6ad28b0474c0f10010e51400"
+  cold_email_3_body: "6ad28b15dc1764000c722b79"
+
 can_spam:
   physical_address: "239 Betsey Scull Rd, Egg Harbor Twp, NJ 08234"
   unsubscribe: apollo_opt_out_link

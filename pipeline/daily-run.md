@@ -59,23 +59,25 @@ Take the highest-scored undrafted leads, hot tier first then warm, up to
 For each draft with `status: ready`:
 - **Hot tier**: requires human review of email 1 — open/append to a PR titled
   "Hot tier drafts YYYY-MM-DD" instead of pushing; merging pushes them next run.
-- **Warm tier**: via `scripts/apollo_client.py` — upsert the contact, write the three email
-  bodies + subjects to contact custom fields, add to the ICP's Apollo sequence with a
-  mailbox from `config/domains.yaml` (alternate between the 2 for load balance). The
-  sequence MUST carry `sequence.emailer_schedule_id` from `config/system.yaml` ("Normal
-  Business Hours": Mon-Fri 8am-5pm recipient-local, no weekends, holidays skipped) - this is
-  what keeps sends inside business hours, confirm it's set on the sequence before relying on
-  it, don't assume a prior run already attached it. **Known gap as of 2026-10-16: no Apollo
-  sequence or the contact custom fields it needs exist yet** - this step will fail until
-  that one-time setup happens (6 long-text CONTACT custom fields for the 3 steps'
-  subject+body, then 2 sequences built on them with the schedule above attached, inactive
-  until Ethan approves activation). If you hit this, stop and report it rather than
-  improvising a workaround. Respect the per-mailbox cap from `config/system.yaml`
-  `inbox_health.send_caps`: use `warmup_daily` for any mailbox with fewer than
-  `min_sends_to_evaluate` sends in the last 30 days (still ramping - see
-  `data/inbox-health/latest.json`, `status: insufficient_data`), `healthy_daily` once past
-  that. Count what's already scheduled on each mailbox today so the cap holds across the two
-  ICPs.
+- **Warm tier**: via `scripts/apollo_client.py` / direct Apollo calls —
+  1. Upsert the contact (`apollo_client.py upsert-contact`), writing each drafted email's
+     subject/body into the matching `config/system.yaml` `apollo_custom_fields` id
+     (`cold_email_1_subject`/`_body`, `_2_`, `_3_`) via `typed_custom_fields`.
+  2. Add the contact to `config/domains.yaml` `sequence_id` for that ICP (`add-to-sequence`),
+     with a mailbox from that ICP's `mailboxes` list (alternate between the 2 for load
+     balance). Both sequences already carry `sequence.emailer_schedule_id` ("Normal Business
+     Hours": Mon-Fri 8am-5pm recipient-local, no weekends, holidays skipped) - built in at
+     creation 2026-10-16, no need to re-set it per contact.
+  3. **Both sequences are created INACTIVE.** Before the first real contact is ever added to
+     either one, confirm with Ethan that it's been reviewed and approved for activation
+     (`apollo_emailer_campaigns_approve`) - adding contacts to an inactive sequence just
+     queues them with no effect, but don't activate without that explicit go-ahead.
+
+  Respect the per-mailbox cap from `config/system.yaml` `inbox_health.send_caps`: use
+  `warmup_daily` for any mailbox with fewer than `min_sends_to_evaluate` sends in the last 30
+  days (still ramping - see `data/inbox-health/latest.json`, `status: insufficient_data`),
+  `healthy_daily` once past that. Count what's already scheduled on each mailbox today so the
+  cap holds across the two ICPs.
 - Set `status: pushed` + timestamp. In dry_run, leave `status: ready` and just report.
 - **Funnel:** for each contact actually added to a sequence (live mode), record it:
   `python scripts/funnel.py record --email <email> --stage emailed --icp <icp> --org <org>`.

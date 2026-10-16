@@ -8,9 +8,18 @@ startups:
   mailboxes:
     - ethan@growwithpolymer.com
     - ehoover@growwithpolymer.com
+  # Created 2026-10-16: 3 auto_email steps (0/3/4 day wait, matching config/system.yaml
+  # sequence.wait_days), each step's content is a contact custom-field merge variable (see
+  # that file's apollo_custom_fields) so every lead gets their own individually-researched
+  # email, not an Apollo-templated one. Business-hours schedule attached
+  # (sequence.emailer_schedule_id). Created INACTIVE - do not add contacts or activate
+  # without Ethan's explicit review of sender/schedule/a real drafted email first.
+  sequence_id: "6ad28b65a6a0fa00109ddd73" # "Startups Cold Outreach"
 
 churches:
   domain: integratedchurchwebsites.com
   mailboxes:
     - ethan@integratedchurchwebsites.com
     - ehoover@integratedchurchwebsites.com
+  # Same structure/caveats as startups.sequence_id above.
+  sequence_id: "6ad28b7142dff600148906c8" # "Churches Cold Outreach"
