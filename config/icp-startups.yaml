@@ -105,8 +105,31 @@ apollo_filters:
       # real one, Lightmark Media, in the first run)
     - "5416" # management, scientific, and technical consulting
     - "523"  # securities, commodity contracts, and other financial investments (VC/PE)
-  # No vertical/keyword filter beyond the above - vertical_signal.status is not_proven,
-  # don't fake one. Still screen out whatever this doesn't catch manually at scoring time.
+  # Tightened again 2026-10-16 off the first real scoring run: 0 of 25 scored leads
+  # cleared warm (best score 45/50). Checked the actual score_notes for all 25 before
+  # changing anything - this ICP does NOT require literal SaaS/software (only
+  # e-commerce/DTC is a real hard exclusion per lead-scoring/SKILL.md Step 0, and Step 3
+  # explicitly says NOT to score vertical - "No proven vertical-fit signal exists...
+  # score 0/neutral, not a guess"). The actual pattern in the noise (real estate
+  # investment, property management, auto dealership, restaurant, glass fabrication,
+  # freight/logistics, jewelry manufacturing, a 1948 machinery business) isn't "wrong
+  # vertical" - it's "not growth-stage at all": local/legacy small businesses that
+  # happen to match on title+seniority+employee-count, which is too loose a proxy for
+  # "Series A-C or well-funded seed/bootstrapped," the ICP's actual firmographic
+  # definition (icp-startups.yaml description, lead-scoring Step 2). A software-keyword
+  # requirement would fix this noise but wrongly cut real adjacent-vertical tech-enabled
+  # startups (health-tech, fintech, proptech, edtech, etc.) that don't happen to use
+  # those exact words - exactly the over-narrowing risk flagged when this file was first
+  # tightened. Filtering for actual growth trajectory instead directly matches the ICP's
+  # own definition without that risk - a 50-year-old glass fabrication shop or a local
+  # auto dealership essentially never shows double-digit headcount growth, while a real
+  # scaling startup almost always does, in any vertical.
+  organization_headcount_growth_range: {min: 5} # modest floor on purpose - Apollo's
+    # growth data can be sparse for small private companies, and there's no "include
+    # unknown" companion flag for this filter (unlike founded_year_range above), so too
+    # high a floor risks silently losing real leads that just lack tracked growth data,
+    # not lacking growth. Watch the next real run's results before tightening further.
+  organization_headcount_growth_past_n_months: 12
 
 trigger_signals:
   - recent funding round (0-90 days strongest)
