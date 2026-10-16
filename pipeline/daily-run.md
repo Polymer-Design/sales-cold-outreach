@@ -68,10 +68,9 @@ For each draft with `status: ready`:
      balance). Both sequences already carry `sequence.emailer_schedule_id` ("Normal Business
      Hours": Mon-Fri 8am-5pm recipient-local, no weekends, holidays skipped) - built in at
      creation 2026-10-16, no need to re-set it per contact.
-  3. **Both sequences are created INACTIVE.** Before the first real contact is ever added to
-     either one, confirm with Ethan that it's been reviewed and approved for activation
-     (`apollo_emailer_campaigns_approve`) - adding contacts to an inactive sequence just
-     queues them with no effect, but don't activate without that explicit go-ahead.
+  3. Both sequences are ACTIVE (Ethan approved 2026-10-16) - adding a warm-tier contact is
+     enough on its own, no per-run or per-contact approval needed. That's the design: only
+     hot tier (above) and interested-reply booking emails need human review.
 
   Respect the per-mailbox cap from `config/system.yaml` `inbox_health.send_caps`: use
   `warmup_daily` for any mailbox with fewer than `min_sends_to_evaluate` sends in the last 30

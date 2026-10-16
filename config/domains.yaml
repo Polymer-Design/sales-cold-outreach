@@ -12,8 +12,9 @@ startups:
   # sequence.wait_days), each step's content is a contact custom-field merge variable (see
   # that file's apollo_custom_fields) so every lead gets their own individually-researched
   # email, not an Apollo-templated one. Business-hours schedule attached
-  # (sequence.emailer_schedule_id). Created INACTIVE - do not add contacts or activate
-  # without Ethan's explicit review of sender/schedule/a real drafted email first.
+  # (sequence.emailer_schedule_id). ACTIVE as of 2026-10-16 (Ethan approved) - the pipeline
+  # can add contacts freely; warm-tier is fully automated by design (only hot-tier email 1
+  # and interested-reply booking emails need human review - see CLAUDE.md hard rules).
   sequence_id: "6ad28b65a6a0fa00109ddd73" # "Startups Cold Outreach"
 
 churches:
@@ -21,5 +22,5 @@ churches:
   mailboxes:
     - ethan@integratedchurchwebsites.com
     - ehoover@integratedchurchwebsites.com
-  # Same structure/caveats as startups.sequence_id above.
+  # Same structure/status as startups.sequence_id above - also ACTIVE as of 2026-10-16.
   sequence_id: "6ad28b7142dff600148906c8" # "Churches Cold Outreach"
