@@ -28,7 +28,31 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
 
+      - name: Check weekly cost cap
+        # Soft guardrail (config/system.yaml cost_caps.weekly_usd, set by Ethan 2026-10-17):
+        # if the trailing 7 days of real recorded spend is already at/over the cap, skip
+        # today's run entirely rather than let costs compound unchecked. This can't stop a
+        # run already in progress from overspending (see scripts/cost_tracker.py's own
+        # docstring) - it only gates the NEXT run from starting.
+        id: cost_check
+        run: |
+          if python3 scripts/cost_tracker.py check --window week; then
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            python3 scripts/notify.py \
+              --subject "Daily pipeline skipped - weekly cost cap reached" \
+              --body "Today's daily-pipeline run was skipped because the trailing 7-day Claude spend is at or over the configured cap (config/system.yaml cost_caps.weekly_usd). No new leads were scored or ingested, and no new emails went out today. Raise the cap in config/system.yaml if this is expected, or wait for the week to roll off." \
+              --urgency alarm
+          fi
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+
       - name: Run daily pipeline with Claude
+        if: steps.cost_check.outputs.proceed == 'true'
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -36,19 +60,31 @@ jobs:
             Read CLAUDE.md, then execute pipeline/daily-run.md end to end.
             Commit data/ changes as instructed. Use `gh` (GH_TOKEN is set) for any
             issues or PRs the instructions call for.
+          # max-turns raised 150->200 2026-10-17 - a run that genuinely finished the full
+          # 15-lead score+ingest+draft+push cycle (real success, 9 warm leads pushed live)
+          # still got marked "failure" by the action's own wrapper for landing at 173 turns -
+          # nothing was lost (if:always() below saved it anyway) but a real success showing
+          # red is confusing. Headroom, not a new ceiling to grow into.
           claude_args: |
             --model claude-sonnet-5
             --max-turns 200
-            # raised from 150 2026-10-17 - a run that genuinely finished the full 15-lead
-            # score + ingest + draft + push cycle (real success, 9 warm leads pushed live)
-            # still got marked "failure" by the action's own wrapper for landing at 173
-            # turns, 23 over the cap - nothing was lost (if:always() below saved it anyway)
-            # but a real success showing red is confusing. Headroom, not a new ceiling to grow into.
             --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
         env:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
           GOOGLEPAGESPEEDINSIGHTS_API_KEY: ${{ secrets.GOOGLEPAGESPEEDINSIGHTS_API_KEY }}
           GH_TOKEN: ${{ github.token }}
+
+      - name: Record run cost
+        # Feeds the weekly cap check above. Reads the SDK's own execution log (written by
+        # the action regardless of the run's own outcome) rather than anything self-reported
+        # by Claude - the agent can't read its own final cost from inside its own run, since
+        # that value isn't known until the SDK finalizes, after the agent's last turn. Safe
+        # to run even when the prior step was skipped (cap already hit) or crashed - the
+        # script just finds nothing to record and exits quietly.
+        if: always()
+        run: |
+          python3 scripts/cost_tracker.py record --workflow daily-pipeline \
+            --log /home/runner/work/_temp/claude-execution-output.json || true
 
       - name: Push any uncommitted data changes
         # anthropics/claude-code-action rewrites the git remote to its own short-lived

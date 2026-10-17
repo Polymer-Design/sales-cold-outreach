@@ -41,6 +41,16 @@ scoring:
   # Cold (<50) leads are tagged and skipped for now; revisit after calibration.
   draft_cold_tier: false
 
+cost_caps:
+  # Soft weekly ceiling on daily-pipeline's real Claude spend (scripts/cost_tracker.py),
+  # checked before each run starts. Set by Ethan 2026-10-17: start conservative at $20/week
+  # ($100/mo extra on top of Apollo's existing ~$100/mo), raise once the lower lead/email
+  # volume at this budget proves out. Not a hard real-time circuit breaker - it can't stop a
+  # run already in progress from overspending, but it stops the NEXT scheduled run once the
+  # trailing 7 days are at/over this - see daily-pipeline.yml's "Check weekly cost cap" step.
+  # A skipped run notifies (scripts/notify.py), never just silently stalls lead flow.
+  weekly_usd: 20
+
 sequence:
   steps: 3
   # Days after the previous step. Step 1 sends immediately on sequence entry.

@@ -36,6 +36,14 @@ skill (via `scripts/platform_detect.py`). This changes the OFFER, not just the w
 
 ## Step 1 — Research (before writing a word)
 
+**Start from the lead's `score_notes` (lead-scoring already ran, and its Step 4 did real
+funding/hiring/press research with sources) instead of researching from zero** - reuse
+whatever's already cited there as 1-2 of your 3-6 facts, and only search for what's
+genuinely still missing (the specific personalization hook, a site-content detail, anything
+scoring didn't need). Re-researching a signal that's already sourced and dated is wasted
+cost (added 2026-10-17 per Ethan - this and lead-scoring's own research gate are the two
+places that control what WebSearch-heavy research actually costs per lead).
+
 Collect 3-6 concrete, current facts about the lead. Every fact needs a source URL.
 - Their website (what's on it, what's broken, what's dated, what platform it runs on)
 - Churches: their churchcenter.com pages (what modules they use: giving, events, groups,

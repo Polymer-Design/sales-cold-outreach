@@ -66,6 +66,28 @@ Full 30 for stage+size match; deduct for edges.
   manufacture a differentiator - score 0/neutral on vertical, not a guess. Revisit only if
   Ethan confirms a real shipped-work cluster (e.g. a fintech pattern beyond Fispoke).
 
+## Before Step 4 — cheap gate, do this first to control cost
+
+Step 4 is the only category that needs real open-ended research (WebSearch for funding/
+hiring/press signals) - everything else (Steps 2, 3, 5) comes from data already in hand:
+Apollo's own fields, the church crawler's output, `platform_detect.py`. Score those three
+FIRST, using only that already-available data - zero extra searches. Then check: even a
+perfect 30 on Step 4, added to what you already have, would this lead clear `warm_min` (50)?
+If not, it CANNOT reach warm regardless of what Step 4's research finds - skip the research,
+score Step 4 as 0 with `score_notes: "skipped - firmographic+technographic+reachability
+already preclude warm even at a perfect intent score"`, and move on. This is a real,
+material cost control (added 2026-10-17 per Ethan - WebSearch-heavy research is the
+single biggest cost driver in scoring): a large share of the backlog is firmographically
+weak (wrong stage/size, no real technographic signal) and was always going to land cold no
+matter what Step 4 turned up - don't spend search budget confirming something the cheap
+data already told you. Only do Step 4's research on leads that have a real shot at warm.
+
+When Step 4 research IS warranted, keep it tight: 2-3 targeted searches is normally enough
+(one for funding/press, one for hiring if the firmographic data didn't already show a
+marketing/growth hire) - this isn't open-ended research, it's confirming/dating one or two
+specific signals. If nothing turns up in that budget, score it 0 rather than broadening the
+search further; a cold or low-intent score from a quick check is a fine, honest outcome.
+
 ## Step 4 — Intent / trigger signal (30 pts) — drives personalization believability
 
 **Startups** — watch for a **marketing/growth hire** specifically (Head of Growth, Head of
