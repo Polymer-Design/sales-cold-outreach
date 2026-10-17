@@ -38,7 +38,12 @@ jobs:
             issues or PRs the instructions call for.
           claude_args: |
             --model claude-sonnet-5
-            --max-turns 150
+            --max-turns 200
+            # raised from 150 2026-10-17 - a run that genuinely finished the full 15-lead
+            # score + ingest + draft + push cycle (real success, 9 warm leads pushed live)
+            # still got marked "failure" by the action's own wrapper for landing at 173
+            # turns, 23 over the cap - nothing was lost (if:always() below saved it anyway)
+            # but a real success showing red is confusing. Headroom, not a new ceiling to grow into.
             --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
         env:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
