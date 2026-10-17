@@ -6,7 +6,8 @@ icp: churches
 apollo_contact_id: 63dd2f00070fed0001000fa9
 score_total: 59
 tier: warm
-status: ready
+status: pushed
+pushed_at: 2026-10-17T14:50:00Z
 drafted_at: 2026-10-17
 ---
 
