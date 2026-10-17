@@ -1,20 +1,20 @@
 name,website,city,state,churchcenter_slug,signal,status,found_at
-Cornerstone Church,https://cornerstonecrystal.org,,,cornerstonecrystal,churchcenter_subdomain,ingested,2026-10-14
+Cornerstone Church,https://cornerstonecrystal.org,,,cornerstonecrystal,churchcenter_subdomain,scored,2026-10-14
 Trinity Church,https://trinitychurch.com,,,thetrinitychurch,churchcenter_subdomain,no_decision_makers_found,2026-10-14
 Lakeside Christian Church,https://lakeside.org,,,js,shared_slug_suspected_false_positive,needs_review,2026-10-14
-Southside Church,https://southsidechurchva.org,,,southside-church-26809,churchcenter_subdomain,ingested,2026-10-14
+Southside Church,https://southsidechurchva.org,,,southside-church-26809,churchcenter_subdomain,scored,2026-10-14
 Redeemer Christian Church,https://redeemerchristianchurch.com,,,redeemerchristian,churchcenter_subdomain,no_decision_makers_found,2026-10-14
-Southeast Christian Church in Denver,https://southeastcc.org,,,southeastcc,churchcenter_subdomain,ingested,2026-10-14
+Southeast Christian Church in Denver,https://southeastcc.org,,,southeastcc,churchcenter_subdomain,scored,2026-10-14
 Journey Christian Church,https://journeyrva.com,,,js,shared_slug_suspected_false_positive,needs_review,2026-10-14
 Discovery A Christian Church,https://discovery-church.org,,,discoverychurch,churchcenter_subdomain,no_decision_makers_found,2026-10-14
-Ten Mile Christian Church,https://tenmilecc.com,,,tmc,churchcenter_subdomain,ingested,2026-10-14
+Ten Mile Christian Church,https://tenmilecc.com,,,tmc,churchcenter_subdomain,scored,2026-10-14
 Vizion Church,https://vizionchurch.com,,,vizionchurch,churchcenter_subdomain,no_decision_makers_found,2026-10-14
-First Christian Church of Malvern,https://fccmonline.org,,,,planning_center_mention,ingested,2026-10-14
-Opendoor Church,https://opendoorchurch.com,,,opendoorchurch,churchcenter_subdomain,ingested,2026-10-14
-Northshore Community Church,https://northshore.church,,,northshore,churchcenter_subdomain,ingested,2026-10-14
+First Christian Church of Malvern,https://fccmonline.org,,,,planning_center_mention,scored,2026-10-14
+Opendoor Church,https://opendoorchurch.com,,,opendoorchurch,churchcenter_subdomain,scored,2026-10-14
+Northshore Community Church,https://northshore.church,,,northshore,churchcenter_subdomain,scored,2026-10-14
 Christ Chapel Church,https://christchapel.org,,,christchapel,churchcenter_subdomain,no_decision_makers_found,2026-10-14
 Mosaic Christian Church,https://mosaiccc.com,,,js,shared_slug_suspected_false_positive,needs_review,2026-10-14
 First Christian Church Murfreesboro AR,https://fccmboro.org,,,fccmurfreesboro,churchcenter_subdomain,no_decision_makers_found,2026-10-14
 White Oak Christian Church,https://thewocc.com,,,thewocc,churchcenter_subdomain,no_decision_makers_found,2026-10-14
-Tomoka Christian Church,https://tomoka.cc,,,tomoka,churchcenter_subdomain,ingested,2026-10-14
-The Refinery Christian Church,https://therefinerycc.com,,,therefinerycc,churchcenter_subdomain,ingested,2026-10-14
+Tomoka Christian Church,https://tomoka.cc,,,tomoka,churchcenter_subdomain,scored,2026-10-14
+The Refinery Christian Church,https://therefinerycc.com,,,therefinerycc,churchcenter_subdomain,scored,2026-10-14
