@@ -14,25 +14,26 @@ got the chance to clear warm tier).
 
 Run the **lead-scoring** skill on every unscored lead already sitting in
 `data/leads/index.jsonl` (`status: ingested`) and every `status: ingested` row in
-`data/leads/churches/candidates.csv`. Pull up to **30 leads per run** into scope (raised
-from 15 on 2026-10-17 - see why below), well under `limits.new_leads_scored_per_day`'s 50
-(the DAILY cap across however many runs happen that day, not a single run's budget). If the
-backlog is bigger than 30, score that slice and leave the rest for the next run - a
-predictable, affordable daily drain beats a single expensive run that blows its budget.
-Write scores to the index (and Apollo custom fields in live mode).
+`data/leads/churches/candidates.csv`. Cap this step at **15 leads per run**, well under
+`limits.new_leads_scored_per_day`'s 50 (the DAILY cap across however many runs happen that
+day, not a single run's budget). If the backlog is bigger than 15, score that slice and
+leave the rest for the next run - a predictable, affordable daily drain beats a single
+expensive run that blows its budget.  Write scores to the index (and Apollo custom fields
+in live mode).
 
-**Why 30 now costs about what 15 used to:** most of a lead's scoring cost is Step 4's
-WebSearch-heavy research (see the lead-scoring skill's "Before Step 4" gate) - Steps 2/3/5
-are now near-free lookups against data already captured at ingestion (`org_data`, the
-church crawler's output, Apollo contact fields), so a lead that's firmographically hopeless
-gets scored cold with ~zero extra tool calls instead of consuming the same budget as a real
-candidate. Confirmed live 2026-10-17 as the reason a run attempting the full 50 at the OLD
-per-lead cost hit `error_max_turns` after 151 turns / $9.33 - that was before this gate
-existed. **Treat 30 as a hypothesis, not a settled number**: watch `data/costs.jsonl` (via
-`scripts/cost_tracker.py check`) over the next several runs - if actual cost per run is
-running meaningfully above the old 15-lead baseline (roughly $2-4), the gate isn't saving
-what it should and the cap should drop back toward 15-20 until that's fixed, not just
-absorbed as a higher bill.
+**History on this number, so it isn't re-litigated from scratch:** tried raising this to 30
+on 2026-10-17 on the theory that Steps 2/3/5 are now near-free lookups against data
+captured at ingestion (`org_data`, the church crawler's output, Apollo contact fields - see
+the lead-scoring skill's "Before Step 4" gate), so a firmographically-hopeless lead should
+cost ~nothing to screen out. Real result: $10.46 for one 30-lead run, well above the old
+15-lead baseline (~$2-7), because that batch (prioritized toward YC/growth-filtered leads
+per the rule below) was mostly leads that genuinely earned real research - the gate had
+little to skip, which is CORRECT behavior, not a bug, just not the cost savings hoped for
+on that particular batch. Pulled back to 15 the same day rather than let that ride.
+**Revisit raising this again once `data/costs.jsonl` (`scripts/cost_tracker.py check`)
+shows several consecutive 15-lead runs landing comfortably under the old baseline** - that
+would mean the gate is earning real savings on the backlog mix at the time, and headroom
+exists to raise the per-run cap again. Don't raise it on theory alone a second time.
 
 **Within the startups backlog specifically, score `source` containing `:yc:` or dated
 2026-10-16 or later FIRST, the pre-growth-filter backlog (dated 2026-10-15 or earlier,

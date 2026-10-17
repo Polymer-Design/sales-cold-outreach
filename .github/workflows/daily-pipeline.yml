@@ -18,9 +18,10 @@ concurrency:
 jobs:
   daily:
     runs-on: ubuntu-latest
-    timeout-minutes: 120 # 60->90 2026-10-16 (scoring needs real headroom now that step 1
-      # scores backlog before ingesting); 90->120 2026-10-17 alongside the 15->30 per-run
-      # scoring batch increase - see pipeline/daily-run.md
+    timeout-minutes: 90 # raised from 60 2026-10-16 - scoring needs real headroom now that
+      # step 1 scores backlog before ingesting. Briefly 120 on 2026-10-17 for a 30-lead
+      # batch experiment that got rolled back same day (see pipeline/daily-run.md) -
+      # reverted alongside it.
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -60,17 +61,15 @@ jobs:
             Read CLAUDE.md, then execute pipeline/daily-run.md end to end.
             Commit data/ changes as instructed. Use `gh` (GH_TOKEN is set) for any
             issues or PRs the instructions call for.
-          # max-turns history: 150->200 2026-10-17 (a run that genuinely finished the full
-          # 15-lead cycle - real success, 9 warm leads pushed live - still got marked
+          # max-turns raised 150->200 2026-10-17 - a run that genuinely finished the full
+          # 15-lead cycle (real success, 9 warm leads pushed live) still got marked
           # "failure" by the action's own wrapper for landing at 173 turns; nothing was
-          # lost, if:always() below saved it anyway, but a real success showing red is
-          # confusing). 200->260 same day when the per-run scoring batch rose 15->30 (see
-          # pipeline/daily-run.md) - the real $ cost is bounded by the weekly cap check
-          # above regardless of turn count, so this is just headroom against another false
-          # "failure" on a legitimately bigger run, not a new spending ceiling.
+          # lost (if:always() below saved it anyway) but a real success showing red is
+          # confusing. Briefly 260 same day for a 30-lead batch experiment that got rolled
+          # back (see pipeline/daily-run.md) - reverted alongside it.
           claude_args: |
             --model claude-sonnet-5
-            --max-turns 260
+            --max-turns 200
             --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
         env:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}

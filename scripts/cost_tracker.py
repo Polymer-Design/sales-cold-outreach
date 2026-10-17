@@ -14,6 +14,7 @@ Usage:
 
 import argparse
 import json
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -22,6 +23,7 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LEDGER = REPO_ROOT / "data/costs.jsonl"
+_COST_RE = re.compile(r'"total_cost_usd"\s*:\s*(-?[0-9]+(?:\.[0-9]+)?)')
 
 
 def _load_cap() -> float:
@@ -30,40 +32,37 @@ def _load_cap() -> float:
 
 
 def _extract_cost(log_path: str) -> float | None:
-    """The claude-code-action's SDK log holds a stream of JSON objects (the exact
-    formatting - one per line vs pretty-printed - isn't guaranteed, so parse with
-    raw_decode instead of assuming line boundaries). The final type:"result" object
-    carries total_cost_usd for the whole run; take the LAST one found, in case the
-    stream somehow contains more than one."""
+    """Find total_cost_usd in the SDK's execution log. A full real run on 2026-10-17
+    ($10.46, 233 turns) exposed that a strict JSON-structural parse (raw_decode, byte-by-
+    byte resync on any decode error) silently found nothing against the real file - the
+    exact cause wasn't diagnosed (the runner's temp file is gone by the time you'd go
+    looking), but a real multi-MB transcript with tool output and any non-JSON framing is
+    enough to break that approach in ways a small synthetic test file won't reveal. A
+    plain regex for the literal `"total_cost_usd": <number>` substring is far more
+    robust - it doesn't care about the surrounding structure at all, only that this exact
+    key:value pair appears somewhere in the file, which every run's final result message
+    has confirmed it does. Takes the LAST match, in case the stream has more than one."""
     try:
         text = Path(log_path).read_text(errors="replace")
     except OSError:
         return None
-    decoder = json.JSONDecoder()
-    i, n = 0, len(text)
-    found = None
-    while i < n:
-        while i < n and text[i] in " \t\r\n":
-            i += 1
-        if i >= n:
-            break
-        try:
-            obj, end = decoder.raw_decode(text, i)
-            i = end
-        except json.JSONDecodeError:
-            i += 1  # skip a stray byte (e.g. ANSI color codes some wrappers leave in) and resync
-            continue
-        if isinstance(obj, dict) and "total_cost_usd" in obj:
-            found = obj["total_cost_usd"]
-    return float(found) if found is not None else None
+    matches = _COST_RE.findall(text)
+    return float(matches[-1]) if matches else None
 
 
 def record(args) -> None:
     cost = _extract_cost(args.log)
     if cost is None:
-        print(f"[cost_tracker] no total_cost_usd found in {args.log} - nothing recorded "
-              f"(this happens if the run failed before Claude produced any result at all; "
-              f"not an error).", file=sys.stderr)
+        try:
+            size = Path(args.log).stat().st_size
+        except OSError as e:
+            size = f"<stat failed: {e}>"
+        print(f"[cost_tracker] no total_cost_usd found in {args.log} (size={size}) - "
+              f"nothing recorded. Expected if the run failed before Claude produced any "
+              f"result at all; if that's not what happened here, the extraction regex "
+              f"itself needs a look - check this file against a real log next time one is "
+              f"reachable (the runner's temp files don't survive past the job).",
+              file=sys.stderr)
         return
     LEDGER.parent.mkdir(parents=True, exist_ok=True)
     entry = {
