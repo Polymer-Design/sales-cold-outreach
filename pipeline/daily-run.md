@@ -14,15 +14,25 @@ got the chance to clear warm tier).
 
 Run the **lead-scoring** skill on every unscored lead already sitting in
 `data/leads/index.jsonl` (`status: ingested`) and every `status: ingested` row in
-`data/leads/churches/candidates.csv`. Cap this step at **15 leads per run** (well under
-`limits.new_leads_scored_per_day`'s 50 - that's the DAILY cap across however many runs
-happen that day, not a single run's budget). Confirmed live 2026-10-17: a run attempting
-the full 50 in one go hit `error_max_turns` after 151 turns / $9.33 and crashed before
-writing anything - real per-lead research costs more turns than a flat per-lead estimate
-suggests. If the backlog is bigger than 15, score a slice and leave the rest for the next
-run - a predictable, affordable daily drain beats a single expensive run that blows its
-budget and produces nothing. Write scores to the index (and Apollo custom fields in live
-mode).
+`data/leads/churches/candidates.csv`. Pull up to **30 leads per run** into scope (raised
+from 15 on 2026-10-17 - see why below), well under `limits.new_leads_scored_per_day`'s 50
+(the DAILY cap across however many runs happen that day, not a single run's budget). If the
+backlog is bigger than 30, score that slice and leave the rest for the next run - a
+predictable, affordable daily drain beats a single expensive run that blows its budget.
+Write scores to the index (and Apollo custom fields in live mode).
+
+**Why 30 now costs about what 15 used to:** most of a lead's scoring cost is Step 4's
+WebSearch-heavy research (see the lead-scoring skill's "Before Step 4" gate) - Steps 2/3/5
+are now near-free lookups against data already captured at ingestion (`org_data`, the
+church crawler's output, Apollo contact fields), so a lead that's firmographically hopeless
+gets scored cold with ~zero extra tool calls instead of consuming the same budget as a real
+candidate. Confirmed live 2026-10-17 as the reason a run attempting the full 50 at the OLD
+per-lead cost hit `error_max_turns` after 151 turns / $9.33 - that was before this gate
+existed. **Treat 30 as a hypothesis, not a settled number**: watch `data/costs.jsonl` (via
+`scripts/cost_tracker.py check`) over the next several runs - if actual cost per run is
+running meaningfully above the old 15-lead baseline (roughly $2-4), the gate isn't saving
+what it should and the cap should drop back toward 15-20 until that's fixed, not just
+absorbed as a higher bill.
 
 **Within the startups backlog specifically, score `source` containing `:yc:` or dated
 2026-10-16 or later FIRST, the pre-growth-filter backlog (dated 2026-10-15 or earlier,
@@ -38,8 +48,8 @@ worked. Nothing in the old backlog is discarded, it's just deprioritized, not sk
 data/leads/index.jsonl data/leads/churches/candidates.csv && git commit -m "score: {org}"`
 (then push - fetch/rebase/retry on rejection, same as the workflow's own push step). This
 run can still end early for reasons outside your control (turn cap, timeout); a crash
-after lead 12 of 15 should keep those 12 scores, not lose them. Don't batch all the commits
-for the end of the step.
+partway through the batch should keep whatever scores already happened, not lose them.
+Don't batch all the commits for the end of the step.
 
 **Score every lead directly in this same session - do not dispatch background subagents to
 parallelize this.** See `CLAUDE.md` hard rule 8: this run has no way to resume after a
@@ -73,8 +83,17 @@ Both paths go through `scripts/apollo_client.py people-search`, which enriches e
 by default (1 Apollo credit per person actually matched, 0 for a miss) - that's what fills
 in the real name/email/domain the rest of this pipeline needs. Don't pass `--no-enrich` here.
 
+**Keep the organization fields Apollo's enrichment response already includes - don't just
+extract contacts and throw the rest away.** Added 2026-10-17 per Ethan (cost-reduction
+request): the SAME enrichment call already returns `organization.estimated_num_employees`,
+`organization.founded_year`, and sometimes headcount growth / industry fields - this is data
+scoring's firmographic step would otherwise have to re-research later, for free, since it's
+already sitting in a response you already paid the Apollo credit for. Store whatever the
+response actually has (some orgs have sparse data, that's fine - not every field will be
+present) under `org_data` on the lead record:
+
 Append every new lead to `data/leads/index.jsonl`:
-`{"org", "domain", "icp", "contacts": [{"name","title","email_status","apollo_id"}], "source", "added"}`
+`{"org", "domain", "icp", "contacts": [{"name","title","email_status","apollo_id"}], "source", "added", "org_data": {"estimated_num_employees", "founded_year", "industry", "...whatever else the response has"}}`
 
 ## 3. Draft
 

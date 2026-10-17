@@ -30,14 +30,23 @@ digital sophistication. Note this on the lead so the drafter picks the right ang
 
 ## Step 2 — Firmographic fit (30 pts)
 
+**Startups: read this from the lead's `org_data` first (`estimated_num_employees`,
+`founded_year`, and whatever else Apollo's enrichment returned) - no search needed.**
+`org_data` comes from the same Apollo response already paid for at ingestion (see
+`pipeline/daily-run.md` step 2); re-researching it is pure waste. Score team size (5-50)
+directly off `estimated_num_employees` when present. Funding stage is the one piece Apollo's
+data is genuinely often sparse on for small private companies - when `org_data` doesn't have
+a usable funding signal, don't guess and don't search for it specifically; score team size
+alone and note `funding stage: not available`, this isn't a gap worth spending research
+budget to fill on its own (Step 4's research, when it happens, often surfaces a funding
+signal as a side effect anyway - if so, credit it there too).
+
 **Churches:** attendance vs. the 250 floor. Full points near the productive middle of the
 range (churches well past 250 with clear staff capacity); taper near the floor itself since
 250 is a hard qualifying line, not a sweet spot. Estimate attendance from proxies (staff
 count on site, service count, seating, campus count) when not stated, and note the proxy.
 Multi-site: +3 (capped at 30).
 
-**Startups:** funding stage (Series A-C typical; well-funded seed and profitable
-bootstrapped both fit; Series D+ can fit via embedded-team framing), team size 5-50.
 Full 30 for stage+size match; deduct for edges.
 
 ## Step 3 — Technographic fit (20 pts)
