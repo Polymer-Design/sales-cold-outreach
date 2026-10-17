@@ -14,15 +14,25 @@ got the chance to clear warm tier).
 
 Run the **lead-scoring** skill on every unscored lead already sitting in
 `data/leads/index.jsonl` (`status: ingested`) and every `status: ingested` row in
-`data/leads/churches/candidates.csv`, **oldest `added`/`found_at` first**. Cap this step at
-**15 leads per run** (well under `limits.new_leads_scored_per_day`'s 50 - that's the DAILY
-cap across however many runs happen that day, not a single run's budget). Confirmed live
-2026-10-17: a run attempting the full 50 in one go hit `error_max_turns` after 151 turns /
-$9.33 and crashed before writing anything - real per-lead research (platform detection +
-funding/hiring signals) costs more turns than a flat per-lead estimate suggests. If the
-backlog is bigger than 15, score the oldest slice and leave the rest for the next run - a
-predictable, affordable daily drain beats a single expensive run that blows its budget and
-produces nothing. Write scores to the index (and Apollo custom fields in live mode).
+`data/leads/churches/candidates.csv`. Cap this step at **15 leads per run** (well under
+`limits.new_leads_scored_per_day`'s 50 - that's the DAILY cap across however many runs
+happen that day, not a single run's budget). Confirmed live 2026-10-17: a run attempting
+the full 50 in one go hit `error_max_turns` after 151 turns / $9.33 and crashed before
+writing anything - real per-lead research costs more turns than a flat per-lead estimate
+suggests. If the backlog is bigger than 15, score a slice and leave the rest for the next
+run - a predictable, affordable daily drain beats a single expensive run that blows its
+budget and produces nothing. Write scores to the index (and Apollo custom fields in live
+mode).
+
+**Within the startups backlog specifically, score `source` containing `:yc:` or dated
+2026-10-16 or later FIRST, the pre-growth-filter backlog (dated 2026-10-15 or earlier,
+`config/icp-startups.yaml` `apollo_filters` before the growth-trajectory filter was added)
+LAST.** Churches: oldest `found_at` first as before, no similar filter-change exists there.
+Reasoning (2026-10-17): the pre-filter startup backlog is already well-represented in
+scoring data (30+ leads scored, 1 warm) and strict oldest-first would keep burying the
+newer, better-sourced YC and growth-filtered channels behind it for days - spending scoring
+budget re-confirming what's already known instead of answering whether the fixes actually
+worked. Nothing in the old backlog is discarded, it's just deprioritized, not skipped.
 
 **Commit and push after EVERY lead is scored, not once at the end.** `git add
 data/leads/index.jsonl data/leads/churches/candidates.csv && git commit -m "score: {org}"`
