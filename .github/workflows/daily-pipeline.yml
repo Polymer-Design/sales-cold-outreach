@@ -57,6 +57,15 @@ jobs:
         # and real API spend, discarded because the push step never re-checked origin).
         # Fetch + rebase + retry before giving up, same as the git discipline used
         # everywhere else in this repo.
+        #
+        # if: always() added 2026-10-17 - a run that hits error_max_turns (scoring a big
+        # backlog can genuinely take more turns than expected) was ending this step
+        # "skipped" by GitHub's default (only runs after a successful prior step), which
+        # threw away every real score/edit the agent made before running out of turns -
+        # confirmed live: a run spent 151 turns / $9.33 of real research, crashed on the
+        # turn cap, and committed nothing. Whatever got written to data/ before a crash is
+        # still real work and should never be discarded.
+        if: always()
         run: |
           git config user.name "outreach-bot"
           git config user.email "actions@users.noreply.github.com"

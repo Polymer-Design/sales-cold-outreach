@@ -15,11 +15,21 @@ got the chance to clear warm tier).
 Run the **lead-scoring** skill on every unscored lead already sitting in
 `data/leads/index.jsonl` (`status: ingested`) and every `status: ingested` row in
 `data/leads/churches/candidates.csv`, **oldest `added`/`found_at` first**. Cap this step at
-`limits.new_leads_scored_per_day` (currently 50) per run. If the backlog is bigger than
-that cap, score the oldest slice and leave the rest for the next run - don't try to clear
-the whole backlog in one run just because it's grown large; a predictable daily drain beats
-an attempt that blows the turn budget and scores nothing. Write scores to the index (and
-Apollo custom fields in live mode).
+**15 leads per run** (well under `limits.new_leads_scored_per_day`'s 50 - that's the DAILY
+cap across however many runs happen that day, not a single run's budget). Confirmed live
+2026-10-17: a run attempting the full 50 in one go hit `error_max_turns` after 151 turns /
+$9.33 and crashed before writing anything - real per-lead research (platform detection +
+funding/hiring signals) costs more turns than a flat per-lead estimate suggests. If the
+backlog is bigger than 15, score the oldest slice and leave the rest for the next run - a
+predictable, affordable daily drain beats a single expensive run that blows its budget and
+produces nothing. Write scores to the index (and Apollo custom fields in live mode).
+
+**Commit and push after EVERY lead is scored, not once at the end.** `git add
+data/leads/index.jsonl data/leads/churches/candidates.csv && git commit -m "score: {org}"`
+(then push - fetch/rebase/retry on rejection, same as the workflow's own push step). This
+run can still end early for reasons outside your control (turn cap, timeout); a crash
+after lead 12 of 15 should keep those 12 scores, not lose them. Don't batch all the commits
+for the end of the step.
 
 **Score every lead directly in this same session - do not dispatch background subagents to
 parallelize this.** See `CLAUDE.md` hard rule 8: this run has no way to resume after a
