@@ -32,12 +32,6 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          # TEMP 2026-10-16: two consecutive runs (65, 66) finished "success", spent real
-          # turns/cost, and committed ZERO data/ changes despite a confirmed 59-lead unscored
-          # backlog. Normal logs hide the actual turn-by-turn tool calls, so there's no way to
-          # see where/why it's stalling. Turning this on for one diagnostic run - revert once
-          # the cause is found, this should not stay on permanently (full tool I/O in logs).
-          show_full_output: true
           prompt: |
             Read CLAUDE.md, then execute pipeline/daily-run.md end to end.
             Commit data/ changes as instructed. Use `gh` (GH_TOKEN is set) for any

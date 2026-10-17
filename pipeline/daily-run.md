@@ -21,6 +21,14 @@ the whole backlog in one run just because it's grown large; a predictable daily 
 an attempt that blows the turn budget and scores nothing. Write scores to the index (and
 Apollo custom fields in live mode).
 
+**Score every lead directly in this same session - do not dispatch background subagents to
+parallelize this.** See `CLAUDE.md` hard rule 8: this run has no way to resume after a
+background task completes. Confirmed live 2026-10-16 - three straight runs dispatched
+parallel scoring subagents, said "I'll continue once they report back," and the run just
+ended there with nothing written, real cost spent for zero result. One lead at a time,
+looping through the batch, is slower but is the only thing that actually produces output
+here.
+
 ## 2. Ingest new leads (only with cap room left over from step 1)
 
 If step 1 already used the full `limits.new_leads_scored_per_day` cap scoring backlog,

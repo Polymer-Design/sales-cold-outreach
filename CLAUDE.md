@@ -20,6 +20,18 @@ for the pipeline map. Scheduled jobs execute the instructions in `pipeline/`.
    mode) and log it. Never re-add them.
 7. Send only from mailboxes on the domains in `config/domains.yaml`, routed by ICP.
    Never send cold email from hellopolymer.com.
+8. **Never dispatch background/async subagents (the Agent tool's default `run_in_background`
+   behavior) from a scheduled workflow run.** Confirmed live 2026-10-16: a scheduled run is a
+   single, non-interactive invocation with no mechanism to resume after a background task
+   completes - unlike an interactive session, nothing delivers the "it's done" notification
+   back into the run. Three consecutive daily-pipeline runs dispatched parallel background
+   scoring subagents, said "I'll continue once they report back," and then the run simply
+   ended - real turns and Apollo research spent, zero results ever written or committed. If a
+   task benefits from parallelizing across many items (e.g. scoring a lead backlog), do the
+   work directly in the same session - sequentially, or via direct tool calls - not through
+   dispatched agents of any kind, foreground or background. The one exception: a human-run
+   interactive session (not a scheduled job) can use foreground subagents
+   (`run_in_background: false`) if it will actually wait on the result in the same turn.
 
 ## Where things live
 
