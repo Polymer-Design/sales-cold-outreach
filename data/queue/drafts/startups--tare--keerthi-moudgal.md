@@ -25,13 +25,13 @@ subject: tare.ai after the raise
 body: |
   Hey Keerthi,
 
-  Congrats on the $13.25M seed, a serious vote of confidence for an on-chain credit platform.
+  Congrats on the $13.25M seed!
 
-  tare.ai is already a well-built Astro site, genuinely fast. What usually breaks as a team like yours scales isn't the stack, it's keeping new pages, state compliance content, and product updates shipping without pulling an engineer off the core product.
+  tare.ai is fast and well-built, but it doesn't yet feel as credible or distinct as the company behind it. Your mission (credit as a road full of toll booths) is a great story, and right now it's buried halfway down the page.
 
-  We run a monthly plan built for exactly that gap.
+  We help funded startups look like the company they're becoming, and fast. Then we stay on as your web partner as you scale.
 
-  Worth 15 minutes?
+  Worth 15 minutes next week?
 
   Ethan
 
