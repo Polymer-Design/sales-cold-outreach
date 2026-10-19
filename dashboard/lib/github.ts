@@ -165,3 +165,84 @@ export async function rejectPR(prNumber: number, branch: string, token: string) 
     headers: authHeaders(token),
   }).catch(() => {});
 }
+
+// --- Hot-tier lead review (dashboard "Hot Leads" tab) ---------------------------------
+// daily-run.md step 4 opens one "Hot tier drafts YYYY-MM-DD" PR per run, which can hold
+// MULTIPLE leads' draft files at once (unlike booking-reply, one PR per reply) - so these
+// helpers operate at the PR level for listing/approving and at the individual-file level
+// for editing/removing a single lead out of a shared batch.
+
+// The pipeline always titles this PR "Hot tier drafts ..." and its files always live
+// under data/queue/drafts/ - filtering on both keeps this from ever touching an unrelated
+// open PR, same discipline as listBookingReplyPRs.
+export async function listHotTierPRs(token: string): Promise<OpenPR[]> {
+  const res = await fetch(`${API}/pulls?state=open&per_page=50`, {
+    headers: authHeaders(token),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Failed to list PRs (${res.status}): ${await res.text()}`);
+  const prs: OpenPR[] = await res.json();
+  const titled = prs.filter((pr) => pr.title.startsWith("Hot tier drafts"));
+
+  const checked = await Promise.all(
+    titled.map(async (pr) => {
+      const filesRes = await fetch(`${API}/pulls/${pr.number}/files`, {
+        headers: authHeaders(token),
+        cache: "no-store",
+      });
+      if (!filesRes.ok) return null;
+      const files: { filename: string }[] = await filesRes.json();
+      const touchesQueue = files.some((f) => f.filename.startsWith("data/queue/drafts/"));
+      return touchesQueue ? pr : null;
+    })
+  );
+  return checked.filter((pr): pr is OpenPR => pr !== null);
+}
+
+export async function getHotTierPR(prNumber: number, token: string): Promise<OpenPR> {
+  const prs = await listHotTierPRs(token);
+  const pr = prs.find((p) => p.number === prNumber);
+  if (!pr) throw new Error(`PR #${prNumber} not found, not open, or not a hot-tier batch.`);
+  return pr;
+}
+
+// Plural version of getPRDraftFile - a hot-tier PR can hold several leads' files at once.
+export async function getPRDraftFiles(pr: OpenPR, token: string): Promise<PRDraftFile[]> {
+  const filesRes = await fetch(`${API}/pulls/${pr.number}/files`, {
+    headers: authHeaders(token),
+    cache: "no-store",
+  });
+  if (!filesRes.ok) throw new Error(`Failed to list PR files (${filesRes.status})`);
+  const files: { filename: string }[] = await filesRes.json();
+  const matches = files.filter((f) => f.filename.startsWith("data/queue/drafts/"));
+
+  return Promise.all(
+    matches.map(async (f) => {
+      const contentRes = await fetch(
+        `${API}/contents/${encodeURIComponent(f.filename)}?ref=${encodeURIComponent(pr.head.ref)}`,
+        { headers: authHeaders(token), cache: "no-store" }
+      );
+      if (!contentRes.ok) throw new Error(`Failed to read ${f.filename} (${contentRes.status})`);
+      const data: { content: string; sha: string; encoding: string } = await contentRes.json();
+      const content = Buffer.from(data.content, data.encoding as BufferEncoding).toString("utf-8");
+      return { path: f.filename, sha: data.sha, content };
+    })
+  );
+}
+
+// Removes ONE lead's file from a shared hot-tier PR branch without touching any sibling
+// lead also waiting in that same PR - a real commit on the still-unmerged branch, so
+// nothing reaches main and nothing sends. If this was the last file in the PR, the PR has
+// nothing left to merge; callers close it the same way rejectPR does.
+export async function deletePRFile(path: string, branch: string, sha: string, token: string) {
+  const res = await fetch(`${API}/contents/${encodeURIComponent(path)}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+    body: JSON.stringify({
+      message: `Remove hot-tier draft ${path} via Outreach Command Center`,
+      sha,
+      branch,
+    }),
+  });
+  if (!res.ok) throw new Error(`Failed to remove ${path} (${res.status}): ${await res.text()}`);
+}

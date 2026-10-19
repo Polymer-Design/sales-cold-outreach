@@ -104,14 +104,28 @@ Take the highest-scored undrafted leads, hot tier first then warm, up to
 
 ## 4. Push ready drafts (live mode only)
 
+**First, check for already-approved hot-tier leads from a PREVIOUS run:** any draft under
+`data/queue/drafts/` with `status: hot_approved` sitting on `main` (meaning its PR already
+merged - see below) gets pushed to Apollo right now via the same mechanism as warm tier,
+then set to `status: pushed`.
+
 For each draft with `status: ready`:
-- **Hot tier**: requires human review of email 1 — don't push. Open a branch, set that
-  draft's frontmatter `status: hot_approved` (see `data/queue/README.md`), and open/append to
-  a PR titled "Hot tier drafts YYYY-MM-DD" so Ethan reviews the actual email content in the
-  diff. Merging the PR is the approval - it's what lands `status: hot_approved` on main.
-  **Each run also checks `drafts/` for any hot-tier draft already at `status: hot_approved`**
-  (meaning a past run's PR was merged since) and pushes those via the same Apollo steps as
-  warm tier below, then sets `status: pushed`.
+- **Hot tier**: requires human review of email 1 before anything touches Apollo.
+  - Set that draft's own frontmatter `status: hot_approved` (not `ready`) when writing the
+    file - merging the PR is the entire approval step, nothing else needs to change on
+    merge.
+  - Open a new PR titled "Hot tier drafts YYYY-MM-DD" (or append another file to today's
+    existing one if it's still open) containing the file(s), body listing each lead's name/
+    org/score and a reminder to review each one's `email_1`.
+  - **Notify Ethan the PR is waiting** - right after opening/updating it, call
+    `scripts/notify.py` (`urgency: info`), subject `Hot lead(s) waiting for review:
+    {org1, org2, ...}`, body a one-line summary per lead (name, org, score) plus a link to
+    `https://outreach.hellopolymer.com/hot-leads#pr-{pr_number}` (the dashboard's Hot Leads
+    tab, not the raw GitHub PR URL - he reviews/edits/removes/approves from there, same
+    pattern as booking-reply's approval notification). Don't notify again for leads already
+    included in an earlier notification for the same still-open PR.
+  - Never call any send API directly from this step - the PUSH check above is what actually
+    reaches Apollo, and only after a human merge.
 - **Warm tier**: via `scripts/apollo_client.py` / direct Apollo calls —
   1. Upsert the contact (`apollo_client.py upsert-contact`), writing each drafted email's
      subject/body into the matching `config/system.yaml` `apollo_custom_fields` id

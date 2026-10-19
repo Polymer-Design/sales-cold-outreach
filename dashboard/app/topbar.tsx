@@ -10,6 +10,7 @@ const TABS = [
   { key: "overview", href: "/", label: "Overview" },
   { key: "leads", href: "/leads", label: "Leads" },
   { key: "approvals", href: "/approvals", label: "Approvals" },
+  { key: "hot-leads", href: "/hot-leads", label: "Hot Leads" },
   { key: "booked-calls", href: "/booked-calls", label: "Booked Calls" },
   { key: "insights", href: "/insights", label: "Insights" },
   { key: "system", href: "/system", label: "System" },
