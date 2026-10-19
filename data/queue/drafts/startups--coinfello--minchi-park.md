@@ -25,13 +25,13 @@ subject: Fello 2 and the site behind it
 body: |
   Hey Minchi,
 
-  Fello 2 launching to HackerNoon and Decrypt coverage is the kind of moment that pulls a lot of new eyes to coinfello.com fast.
+  Congrats on Fello 2. HackerNoon and Decrypt coverage pulls a lot of new eyes fast.
 
-  That site already loads in 4.4 seconds on mobile, solid for a crypto product, which says a lot about how much traffic you're already pulling.
+  The product story is sharp, but the site doesn't yet feel like a company backed by MetaMask and Delphi. It reads like strong sections more than one confident story.
 
-  We recently rebuilt a fintech company's site from scratch on Webflow: a CMS their own team runs, no developer needed for every update.
+  We help startups look like the company they're becoming. We recently rebuilt a fintech site on Webflow that their own team now runs without a developer.
 
-  Worth 15 minutes to see if it'd fit CoinFello?
+  Worth 15 minutes next week?
 
   Ethan
 
