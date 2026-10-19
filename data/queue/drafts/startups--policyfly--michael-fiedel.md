@@ -25,13 +25,13 @@ subject: the NYT write-up, then what
 body: |
   Hey Michael,
 
-  Congrats on the New York Times piece on PolicyFly, that kind of coverage sends people straight to your homepage.
+  Congrats on the New York Times piece. Coverage like that sends people straight to your homepage.
 
-  Right now it takes 6.2 seconds to load on a phone, long enough that some of that traffic bounces before it sees the product.
+  The product is clearly built for serious insurers, but the site undersells it. Lines like "cutting edge technology solutions" could describe anyone, and it takes 6.2 seconds to load on a phone.
 
-  We recently moved a fintech company off a slow, no-CMS site onto a Webflow build their own team can publish from, no developer needed.
+  We help startups look like the company they're becoming. We recently rebuilt a fintech site that's faster, sharper, and run by their own team.
 
-  Worth 15 minutes to see if it'd fit PolicyFly?
+  Worth 15 minutes next week?
 
   Ethan
 
