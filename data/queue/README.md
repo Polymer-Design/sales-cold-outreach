@@ -5,7 +5,11 @@ Every outreach draft is a markdown file with YAML frontmatter. `status` drives e
 ```
 drafts/           status: drafted        just written, awaiting fact-check
                   status: needs_rewrite  failed fact-check, back to the drafter (max 2 cycles)
-                  status: ready          passed fact-check; in live mode gets pushed to Apollo
+                  status: ready          passed fact-check; warm tier gets pushed to Apollo in
+                                         live mode, hot tier waits for a "Hot tier drafts" PR
+                  status: hot_approved   hot tier only: email 1 reviewed by Ethan via the PR,
+                                         merge lands this status on main - next run pushes it
+                                         to Apollo and sets status: pushed
                   status: pushed         live in an Apollo sequence
                   status: skipped        dropped, reason in fact_check notes
 
