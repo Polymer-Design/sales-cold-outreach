@@ -43,13 +43,21 @@ scoring:
 
 cost_caps:
   # Soft weekly ceiling on daily-pipeline's real Claude spend (scripts/cost_tracker.py),
-  # checked before each run starts. Set by Ethan 2026-10-17: start conservative at $20/week
-  # ($100/mo extra on top of Apollo's existing ~$100/mo), raise once the lower lead/email
-  # volume at this budget proves out. Not a hard real-time circuit breaker - it can't stop a
-  # run already in progress from overspending, but it stops the NEXT scheduled run once the
+  # checked before each run starts. Baseline set by Ethan 2026-10-17: $20/week ($100/mo
+  # extra on top of Apollo's existing ~$100/mo).
+  #
+  # TEMP bump to $40 for the week of 2026-10-19 only, per Ethan's explicit request - this
+  # week's real total was inflated by manually re-triggering runs to build/test the Hot
+  # Leads dashboard feature (~$16 in one day from that alone), not normal operation, and
+  # the $20 baseline would otherwise have blocked real Tue-Fri scheduled runs before the
+  # week even got going. Revert to 20 starting the week of 2026-10-26 (a reminder is
+  # scheduled for Monday 2026-10-26) unless real steady-state usage says otherwise by then.
+  #
+  # Not a hard real-time circuit breaker - it can't stop a run already in progress from
+  # overspending, but it stops the NEXT scheduled run once the
   # trailing 7 days are at/over this - see daily-pipeline.yml's "Check weekly cost cap" step.
   # A skipped run notifies (scripts/notify.py), never just silently stalls lead flow.
-  weekly_usd: 20
+  weekly_usd: 40
 
 sequence:
   steps: 3
