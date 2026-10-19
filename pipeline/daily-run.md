@@ -105,8 +105,13 @@ Take the highest-scored undrafted leads, hot tier first then warm, up to
 ## 4. Push ready drafts (live mode only)
 
 For each draft with `status: ready`:
-- **Hot tier**: requires human review of email 1 — open/append to a PR titled
-  "Hot tier drafts YYYY-MM-DD" instead of pushing; merging pushes them next run.
+- **Hot tier**: requires human review of email 1 — don't push. Open a branch, set that
+  draft's frontmatter `status: hot_approved` (see `data/queue/README.md`), and open/append to
+  a PR titled "Hot tier drafts YYYY-MM-DD" so Ethan reviews the actual email content in the
+  diff. Merging the PR is the approval - it's what lands `status: hot_approved` on main.
+  **Each run also checks `drafts/` for any hot-tier draft already at `status: hot_approved`**
+  (meaning a past run's PR was merged since) and pushes those via the same Apollo steps as
+  warm tier below, then sets `status: pushed`.
 - **Warm tier**: via `scripts/apollo_client.py` / direct Apollo calls —
   1. Upsert the contact (`apollo_client.py upsert-contact`), writing each drafted email's
      subject/body into the matching `config/system.yaml` `apollo_custom_fields` id
