@@ -6,8 +6,9 @@ icp: startups
 apollo_contact_id: 66f165a731188600017cf8ef
 score_total: 72
 tier: warm
-status: ready
+status: pushed
 drafted_at: 2026-10-19
+pushed_at: 2026-10-19T18:54:55Z
 ---
 
 ## research
