@@ -142,13 +142,27 @@ def upsert_contact(args) -> dict:
 
 
 def replies(args) -> dict:
-    # Emailer messages of type reply since a timestamp. NOTE: verify the exact filter
-    # names against a real response once mailboxes are connected; Apollo's emailer
-    # endpoints are the least-documented part of their public API.
-    payload = {"page": 1, "per_page": 100, "email_message_types": ["reply"]}
+    # Verified live 2026-10-20: `email_message_types: ["reply"]` has no effect - Apollo
+    # returns every outreach_automatic_email send regardless (confirmed identical type
+    # distribution with and without the filter, across both a windowed and full-history
+    # query). Replies surface as the `replied` flag on the original outbound message
+    # instead, so filter client-side and page through the full result set since there's
+    # no server-side narrowing to rely on.
+    payload = {"per_page": 100}
     if args.since:
         payload["created_at_after"] = args.since
-    return _req("POST", "emailer_messages/search", payload)
+    scanned = []
+    page = 1
+    while True:
+        payload["page"] = page
+        result = _req("POST", "emailer_messages/search", payload)
+        batch = result.get("emailer_messages", [])
+        scanned.extend(batch)
+        if len(batch) < payload["per_page"] or page >= 20:
+            break
+        page += 1
+    return {"emailer_messages": [m for m in scanned if m.get("replied")],
+            "scanned_count": len(scanned)}
 
 
 def stats(_args) -> dict:
