@@ -2,7 +2,7 @@ name: Inbox health check
 
 on:
   schedule:
-    - cron: "0 12 * * *" # daily 8am ET, before the pipeline runs
+    - cron: "0 12 * * 1" # weekly, Monday 8am ET, before the pipeline runs
   workflow_dispatch: {}
 
 permissions:

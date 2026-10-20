@@ -100,7 +100,7 @@ notifications:
   # data/notifications/. See scripts/notify.py.
 
 inbox_health:
-  provider: apollo # scripts/apollo_inbox_health.py, checked daily. TrulyInbox retired
+  provider: apollo # scripts/apollo_inbox_health.py, checked weekly. TrulyInbox retired
     # 2026-10-14 - Apollo handles warming itself, and this computes bounce rate from
     # Apollo's own send data instead. Narrower than TrulyInbox (no blacklist/SPF/DKIM
     # checks - Apollo's API has no equivalent), but needs no separate paid service.
