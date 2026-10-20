@@ -47,7 +47,7 @@ body: |
   Ethan
 
 ## email_3
-subject: last one on this
+subject: closing the loop
 body: |
   Hey Ryan,
 
@@ -71,3 +71,4 @@ notes:
 - word counts: email_1 75w, email_2 65w, email_3 32w - all within band
 - sign-off: plain "Ethan", no "God Bless" (startups)
 - CTA phrasing cross-checked against this batch's other drafts ("Worth 15 minutes?" / "Up for a quick call?" used in the Aibrary draft) - revised to "Want to jump on a call?", "Make sense to connect this week?", "worth a quick call?" to avoid repeating the same CTA phrase across leads in the same batch (see knowledge/voice-and-tone.md "Surviving AI inbox triage")
+- email_3's subject was also changed from "last one on this" to "closing the loop" after spotting that generic closer subject repeated verbatim in the Aibrary draft in the same batch

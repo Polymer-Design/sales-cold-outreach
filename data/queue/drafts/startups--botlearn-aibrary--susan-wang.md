@@ -47,7 +47,7 @@ body: |
   Ethan
 
 ## email_3
-subject: last one on this
+subject: one last thought
 body: |
   Hey Susan,
 
@@ -71,4 +71,4 @@ notes:
 - word counts: email_1 74w, email_2 63w, email_3 36w - all within band, brevity escalates toward email_3
 - sign-off: plain "Ethan", no "God Bless" (startups per knowledge/voice-and-tone.md)
 - track consistency: new_build_track lead, pitches a rebuild, proof case study tagged track: new_build - consistent
-- subject lines and structure checked against other drafts in this batch - distinct hooks and phrasing, no repeated CTA phrasing across this batch's emails so far
+- subject lines and structure checked against other drafts in this batch - distinct hooks and phrasing; email_3's subject was changed from a generic "last one on this" to "one last thought" after spotting the same generic closer subject recurring across this batch's drafts (anti-fingerprint rule, knowledge/voice-and-tone.md)
