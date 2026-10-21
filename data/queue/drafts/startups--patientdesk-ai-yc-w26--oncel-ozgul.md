@@ -3,12 +3,15 @@ contact_name: Oncel Ozgul
 contact_title: Co-founder & CEO
 organization: Patientdesk.ai (YC W26)
 icp: startups
-apollo_contact_id: 69881bc5e6e66d0001b4969a
+apollo_person_id: 69881bc5e6e66d0001b4969a
+apollo_contact_id: 6ad901eb5d1457001c884184
 score_total: 60
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-21
+pushed_at: 2026-10-21T18:18:26Z
+mailbox: ehoover@growwithpolymer.com
 ---
 
 ## research
