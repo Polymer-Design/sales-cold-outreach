@@ -43,8 +43,11 @@ per ICP).
   reports the comparison once sample size allows; it does not get auto-applied into a
   permanent pipeline change without Ethan's sign-off, unlike a `config/playbook.yaml` copy
   winner.
-- **Started:** 2026-10-21. **Status:** running, 0 sends either arm yet (starts with the next
-  drafting run).
+- **Started:** 2026-10-21. **Status:** running. First drafting run under this experiment
+  happened 2026-10-21 (daily pipeline): 6 startups leads drafted and pushed live, 1 on the
+  `light` arm (Sunlight YC S22), 5 on `deep` (Patientdesk.ai, Parametric, SendtoWin, Intryc,
+  The Travel Foundry) - arm assigned per the deterministic hash, not chosen. Still far below
+  the 100/200-per-arm bar needed before reading anything into results.
 
 Reviewed 2026-08-15 (biweekly review): still pre-launch, zero sends, nothing to start yet.
 See `data/reports/2026-08-15-review.md`.
