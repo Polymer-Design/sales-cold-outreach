@@ -3,12 +3,15 @@ contact_name: Trey Evans
 contact_title: Co-Founder, Head of Growth
 organization: The Travel Foundry
 icp: startups
-apollo_contact_id: 54a741d374686975f88edb23
+apollo_person_id: 54a741d374686975f88edb23
+apollo_contact_id: 6ad9023bbb3ffb0020e6fa74
 score_total: 56
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-21
+pushed_at: 2026-10-21T18:19:43Z
+mailbox: ehoover@growwithpolymer.com
 ---
 
 ## research
