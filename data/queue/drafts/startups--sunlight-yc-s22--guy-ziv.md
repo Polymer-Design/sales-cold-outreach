@@ -3,12 +3,15 @@ contact_name: Guy Ziv
 contact_title: Co-founder & CEO
 organization: Sunlight (YC S22)
 icp: startups
-apollo_contact_id: 6ad589889de1cd00017ef9fa
+apollo_person_id: 6ad589889de1cd00017ef9fa
+apollo_contact_id: 6ad901c219a1f500181dc6c2
 score_total: 57
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-21
+pushed_at: 2026-10-21T18:17:48Z
+mailbox: ethan@growwithpolymer.com
 ---
 
 ## research
