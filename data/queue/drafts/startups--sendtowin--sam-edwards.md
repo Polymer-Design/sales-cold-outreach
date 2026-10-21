@@ -3,12 +3,15 @@ contact_name: Sam Edwards
 contact_title: Chief Operating Officer
 organization: SendtoWin
 icp: startups
-apollo_contact_id: 6accf5642b32660001eb0015
+apollo_person_id: 6accf5642b32660001eb0015
+apollo_contact_id: 6ad90213bb3ffb0020e6ed58
 score_total: 57
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-21
+pushed_at: 2026-10-21T18:19:04Z
+mailbox: ehoover@growwithpolymer.com
 ---
 
 ## research
