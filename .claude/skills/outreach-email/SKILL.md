@@ -36,13 +36,33 @@ skill (via `scripts/platform_detect.py`). This changes the OFFER, not just the w
 
 ## Step 1 — Research (before writing a word)
 
+**Check `data/experiments.md` for EXP-001 (drafting research depth) first.** If it's
+`running`, compute this lead's arm before doing anything else:
+
+```
+python3 -c "import hashlib,sys; print(int(hashlib.md5(sys.argv[1].encode()).hexdigest(),16)%2)" "{icp}--{org-slug}--{person-slug}"
+```
+
+`0` = **deep** (control), `1` = **light** (treatment). Record `research_arm: deep` or
+`research_arm: light` in the draft's frontmatter either way, so every draft is attributable
+even after the experiment closes. If EXP-001 isn't `running` (closed or not yet started),
+treat every lead as `deep` and skip the arm field.
+
 **Start from the lead's `score_notes` (lead-scoring already ran, and its Step 4 did real
 funding/hiring/press research with sources) instead of researching from zero** - reuse
-whatever's already cited there as 1-2 of your 3-6 facts, and only search for what's
-genuinely still missing (the specific personalization hook, a site-content detail, anything
-scoring didn't need). Re-researching a signal that's already sourced and dated is wasted
-cost (added 2026-10-17 per Ethan - this and lead-scoring's own research gate are the two
-places that control what WebSearch-heavy research actually costs per lead).
+whatever's already cited there as 1-2 of your 3-6 facts. This applies to BOTH arms (added
+2026-10-17 per Ethan - re-researching a signal that's already sourced and dated is wasted
+cost regardless of which arm a lead draws).
+
+**`research_arm: light`** - stop here on research. Do not run any new search. Build the
+email from `score_notes` facts plus whatever's already free and on hand: `org_data`,
+`platform_detect.py`'s output (Step 0), Apollo's own contact/org fields. If that's not
+enough for one fact that couldn't be sent to any other company, flag the lead for skip
+rather than reaching for a new search - reaching for "just one more search" defeats the
+point of the arm. Skip Step 2's PageSpeed call too unless scoring already ran it. Proceed
+to Step 2 (pick the proof) with whatever you have.
+
+**`research_arm: deep`** (or no experiment running) - continue below, same as always.
 
 Collect 3-6 concrete, current facts about the lead. Every fact needs a source URL.
 - Their website (what's on it, what's broken, what's dated, what platform it runs on)
@@ -143,6 +163,7 @@ icp: startups | churches
 apollo_contact_id: # if known
 score_total:
 tier:
+research_arm: # deep | light - only set while EXP-001 is running, see Step 1
 status: drafted
 drafted_at:
 ---

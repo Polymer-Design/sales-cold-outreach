@@ -147,7 +147,10 @@ For each draft with `status: ready`:
 - Set `status: pushed` + timestamp. In dry_run, leave `status: ready` and just report.
 - **Funnel:** for each contact actually added to a sequence (live mode), record it:
   `python scripts/funnel.py record --email <email> --stage emailed --icp <icp> --org <org>`.
-  This is the denominator for the booked-call conversion rate.
+  This is the denominator for the booked-call conversion rate. **If the draft carries a
+  `research_arm` (EXP-001 running, see `data/experiments.md`), pass it along:** `--arm deep`
+  or `--arm light` - this is the only place that arm gets attached to the funnel record, and
+  without it self-review can't break results out by arm later.
 
 ## 5. Recycle check
 

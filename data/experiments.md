@@ -6,7 +6,45 @@ per ICP).
 
 ## Running
 
-*(none yet — first experiments start once sending begins)*
+### EXP-001: Drafting research depth (deep vs. light)
+
+- **Hypothesis:** the full per-lead research pass in outreach-email Step 1 (3-6 fresh facts,
+  new searches, PageSpeed) doesn't move reply/interested/booked rate enough to justify its
+  cost relative to a cheap variant that reuses only what lead-scoring already found
+  (`score_notes`) plus free Apollo/platform-detect fields — no new searches. If true, the
+  cheap variant lets significantly more leads get drafted and sent per week within the same
+  cost cap, which also fixes the "too few sends to read any signal" problem independent of
+  which arm wins.
+- **Why this variable, not lead-scoring's research (Step 4):** scoring's cost gate
+  (`.claude/skills/lead-scoring/SKILL.md` "Before Step 4") already controls cost there and
+  determines tier/triage — changing it would confound "how many leads qualify" with "how
+  good is the copy for leads that already qualified." This test only touches drafting, so
+  tier assignment and send volume *eligibility* are identical across arms; only the research
+  depth behind the copy for an already-qualified lead differs. One variable, per self-review's
+  own rule.
+- **Variable:** drafting research depth.
+- **Arms** (50/50, assigned per lead at draft time — see outreach-email SKILL.md Step 1):
+  - **deep (control):** current process unchanged — reuse `score_notes` + up to 3-6 fresh
+    facts from new research (site content, PageSpeed, press/hiring searches).
+  - **light (treatment):** reuse `score_notes` facts + free Apollo/`org_data`/
+    `platform_detect.py` fields only. Zero new WebSearch calls. Still passes the same
+    fact-check/voice gate — this is "built only from data already paid for," not "generic."
+- **ICP scope:** both startups and churches (same mechanism, mechanism-level not ICP-level),
+  results reportable broken out by ICP via `--icp` on `funnel.py stats`.
+- **Assignment:** deterministic hash so it's reproducible without shared state —
+  `python3 -c "import hashlib,sys; print(int(hashlib.md5(sys.argv[1].encode()).hexdigest(),16)%2)" "{icp}--{org-slug}--{person-slug}"`
+  → 0 = deep, 1 = light. Record `research_arm: deep|light` in the draft's frontmatter and
+  pass `--arm` on the `funnel.py record --stage emailed` call so results are queryable by arm.
+- **Target sample:** 100 sends/arm minimum before judging reply rate (200/arm before judging
+  anything subtler), per the self-review skill's own bar — 200 total before any read, 400
+  before a confident one.
+- **Guardrail:** this is a cost/architecture lever, not a copy variable — per
+  `.claude/skills/self-review/SKILL.md`, a verdict here is **propose-only**. Self-review
+  reports the comparison once sample size allows; it does not get auto-applied into a
+  permanent pipeline change without Ethan's sign-off, unlike a `config/playbook.yaml` copy
+  winner.
+- **Started:** 2026-10-21. **Status:** running, 0 sends either arm yet (starts with the next
+  drafting run).
 
 Reviewed 2026-08-15 (biweekly review): still pre-launch, zero sends, nothing to start yet.
 See `data/reports/2026-08-15-review.md`.

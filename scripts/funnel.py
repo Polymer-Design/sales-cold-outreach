@@ -57,7 +57,7 @@ def _now() -> str:
 
 
 def record(email: str, stage: str, icp: str = "", org: str = "", note: str = "",
-           source: str = "") -> dict:
+           source: str = "", arm: str = "") -> dict:
     if stage not in STAGES:
         sys.exit(f"Unknown stage '{stage}'. One of: {', '.join(STAGES)}")
     LOG.parent.mkdir(parents=True, exist_ok=True)
@@ -66,8 +66,12 @@ def record(email: str, stage: str, icp: str = "", org: str = "", note: str = "",
     # call-prep skill) or direct/organic (booked with no outreach history on file)?
     # "emailed"/"replied"/"interested" are by definition outreach-sourced, so source is
     # left blank there rather than redundantly set.
+    # arm: which split-test arm this lead drew, if any experiment is running
+    # (data/experiments.md) - e.g. EXP-001's research_arm (deep|light). Blank when no
+    # experiment applies. Set once at "emailed" time; later stages for the same email
+    # don't need to repeat it since stats() carries meta forward per email.
     event = {"at": _now(), "email": email.strip().lower(), "stage": stage,
-             "icp": icp, "org": org, "note": note, "source": source}
+             "icp": icp, "org": org, "note": note, "source": source, "arm": arm}
     with open(LOG, "a") as f:
         f.write(json.dumps(event) + "\n")
     return event
@@ -91,7 +95,7 @@ def _load(since: str | None, icp: str | None) -> list[dict]:
     return out
 
 
-def stats(since: str | None, icp: str | None) -> dict:
+def stats(since: str | None, icp: str | None, arm: str | None = None) -> dict:
     events = _load(since, icp)
 
     # Fold each lead down to the furthest stage it reached.
@@ -101,7 +105,11 @@ def stats(since: str | None, icp: str | None) -> dict:
         email = e["email"]
         reached.setdefault(email, set()).update(REACHES.get(e["stage"], {e["stage"]}))
         meta.setdefault(email, {}).update(
-            {k: e[k] for k in ("icp", "org", "source") if e.get(k)})
+            {k: e[k] for k in ("icp", "org", "source", "arm") if e.get(k)})
+
+    if arm:
+        keep = {em for em, m in meta.items() if m.get("arm") == arm}
+        reached = {em: s for em, s in reached.items() if em in keep}
 
     def count(stage: str) -> int:
         return sum(1 for s in reached.values() if stage in s)
@@ -111,6 +119,25 @@ def stats(since: str | None, icp: str | None) -> dict:
 
     def rate(num: int, den: int) -> float | None:
         return round(100 * num / den, 1) if den else None
+
+    # Split-test breakdown: if any lead in scope carries an arm, report emailed/replied/
+    # interested/booked per arm so an experiment (e.g. EXP-001) can be judged without a
+    # separate CLI call. Leads with no arm (no experiment applied) are left out of this
+    # breakdown entirely rather than counted as a third bucket.
+    by_arm: dict[str, dict] = {}
+    if not arm:  # only build this when not already filtered to one arm
+        arms_present = {m.get("arm") for m in meta.values() if m.get("arm")}
+        for a in sorted(arms_present):
+            arm_emails = {em for em, m in meta.items() if m.get("arm") == a}
+            arm_reached = {em: s for em, s in reached.items() if em in arm_emails}
+            arm_counts = {s: sum(1 for st in arm_reached.values() if s in st) for s in STAGES}
+            by_arm[a] = {
+                "sends": arm_counts["emailed"],
+                "counts": arm_counts,
+                "reply_rate_pct": rate(arm_counts["replied"], arm_counts["emailed"]),
+                "interested_rate_pct": rate(arm_counts["interested"], arm_counts["emailed"]),
+                "booked_call_rate_pct": rate(arm_counts["booked"], arm_counts["emailed"]),
+            }
 
     # Two-layer booked breakdown: total intros booked, and the slice that came through
     # our own outreach (call-prep matched them, per the skill's Step 1) vs. direct/
@@ -139,7 +166,8 @@ def stats(since: str | None, icp: str | None) -> dict:
         "booked_by_source": booked_by_source,
         "booked_from_outreach_pct": rate(booked_from_outreach, booked),
         "awaiting_outcome": awaiting,
-        "filters": {"since": since, "icp": icp},
+        "by_arm": by_arm,
+        "filters": {"since": since, "icp": icp, "arm": arm},
     }
 
 
@@ -165,6 +193,14 @@ def _print_stats(s: dict) -> None:
         for a in s["awaiting_outcome"]:
             print(f"    - {a['email']} {('(' + a.get('org', '') + ')') if a.get('org') else ''}")
         print("    mark with: python scripts/funnel.py mark --email <email> --outcome won|lost")
+    if s.get("by_arm"):
+        print("\n  split-test arms (see data/experiments.md):")
+        for a, ad in s["by_arm"].items():
+            rr = ad["reply_rate_pct"]
+            br = ad["booked_call_rate_pct"]
+            print(f"    {a:6} sends={ad['sends']:<4} "
+                  f"reply={rr if rr is not None else 'n/a'}% "
+                  f"booked={br if br is not None else 'n/a'}%")
 
 
 def main() -> None:
@@ -181,6 +217,10 @@ def main() -> None:
     r.add_argument("--source", default="", choices=["", "outreach", "direct"],
                    help="Only meaningful on --stage booked: did this come from our own "
                         "outreach (matched in Step 1 of call-prep) or direct/organic?")
+    r.add_argument("--arm", default="",
+                   help="Split-test arm this lead drew, if any experiment in "
+                        "data/experiments.md applies (e.g. deep|light for EXP-001). "
+                        "Blank when no experiment applies.")
 
     m = sub.add_parser("mark", help="record a call's outcome (won/lost)")
     m.add_argument("--email", required=True)
@@ -190,17 +230,19 @@ def main() -> None:
     st = sub.add_parser("stats", help="print the funnel and conversion rates")
     st.add_argument("--since", help="ISO timestamp/date lower bound (e.g. 2026-08-01)")
     st.add_argument("--icp", choices=["startups", "churches"])
+    st.add_argument("--arm", help="Filter to one split-test arm instead of the by-arm "
+                                  "breakdown (e.g. deep or light for EXP-001)")
     st.add_argument("--json", action="store_true")
 
     args = p.parse_args()
 
     if args.cmd == "record":
         print(json.dumps(record(args.email, args.stage, args.icp, args.org, args.note,
-                                 args.source)))
+                                 args.source, args.arm)))
     elif args.cmd == "mark":
         print(json.dumps(record(args.email, args.outcome, note=args.note)))
     elif args.cmd == "stats":
-        s = stats(args.since, args.icp)
+        s = stats(args.since, args.icp, args.arm)
         if args.json:
             print(json.dumps(s, indent=2))
         else:

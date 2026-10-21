@@ -56,6 +56,10 @@ or statistical significance if you can compute it). Otherwise keep the test runn
 - sequence structure (step count, wait days)
 - any volume/cap increase
 - positioning shifts (new offer framing, new proof claims)
+- drafting research depth / cost-tier choices (e.g. EXP-001 - a research-depth verdict is
+  reported with the sample-size caveat, never auto-applied into
+  `.claude/skills/outreach-email/SKILL.md` itself the way a copy winner updates
+  `config/playbook.yaml`)
 
 Every auto-applied change names the experiment that justified it, so any single winner is one
 `git revert` of `config/playbook.yaml` away from undone.
