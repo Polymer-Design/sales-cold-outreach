@@ -3,12 +3,15 @@ contact_name: Alex Marantelos
 contact_title: Co-Founder & CEO
 organization: Intryc (YC S24)
 icp: startups
-apollo_contact_id: 66f151641b2642000174621b
+apollo_person_id: 66f151641b2642000174621b
+apollo_contact_id: 6ad90228a35fcf0018a02628
 score_total: 57
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-21
+pushed_at: 2026-10-21T18:19:24Z
+mailbox: ethan@growwithpolymer.com
 ---
 
 ## research
