@@ -3,12 +3,15 @@ contact_name: Cody Swain
 contact_title: Co-Founder & CEO
 organization: Parametric (YC F25)
 icp: startups
-apollo_contact_id: 699d49f246cb6b0001f8d3b7
+apollo_person_id: 699d49f246cb6b0001f8d3b7
+apollo_contact_id: 6ad902015e0408001c082c4b
 score_total: 58
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-21
+pushed_at: 2026-10-21T18:18:45Z
+mailbox: ethan@growwithpolymer.com
 ---
 
 ## research
