@@ -1,3 +1,7 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Money module handoff: internal pricing, owner-pay splits and ledger seed. This repo is
+# public, so these stay local; the app imports them into the database via Money > Settings.
+docs/money-module/

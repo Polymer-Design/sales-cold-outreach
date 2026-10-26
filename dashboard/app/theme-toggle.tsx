@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MoonIcon, SunIcon } from "./icons";
 
 type Theme = "dark" | "light";
 
@@ -18,14 +19,17 @@ export default function ThemeToggle() {
     localStorage.setItem("polymer-theme", theme);
   }, [theme]);
 
+  const next = theme === "light" ? "dark" : "light";
   return (
     <button
-      className="themetoggle"
+      type="button"
+      className="railitem"
       onClick={() => setTheme((theme ?? "dark") === "dark" ? "light" : "dark")}
-      aria-label="Toggle light/dark theme"
-      title="Toggle light/dark theme"
+      aria-label={`Switch to ${next} theme`}
+      title={`Switch to ${next} theme`}
     >
-      {theme === "light" ? "☾ Dark" : "☀ Light"}
+      <span className="railicon">{theme === "light" ? <MoonIcon /> : <SunIcon />}</span>
+      <span className="raillabel">{theme === "light" ? "Dark mode" : "Light mode"}</span>
     </button>
   );
 }

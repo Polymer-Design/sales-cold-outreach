@@ -1,9 +1,12 @@
 # Outreach Command Center (dashboard)
 
-A small Next.js app that reads the same `data/` and `config/` files the Python pipeline
-already writes to, and shows them as a real dashboard. No database, no separate API - it
-rebuilds automatically every time Vercel picks up a push to `main`, so it's always as fresh
-as the last commit.
+A small Next.js app with three sections in a collapsible left rail:
+
+- **Outreach** reads the same `data/` and `config/` files the Python pipeline writes, at build
+  time; it rebuilds on every push to `main`.
+- **Planner** (Build Planner: kickoff capacity, schedule, proposal dates) and **Money**
+  (payment splitter, card/runway ledgers, full-time goals) store shared data in Postgres
+  (see step 5 below).
 
 Gated to `@hellopolymer.com` Google accounts only (see `lib/auth.ts`).
 
@@ -69,6 +72,35 @@ Note: I built the payload parsing against Cal.com's documented webhook shape but
 a real delivery yet - if the first real booking doesn't show up as a call-prep briefing, check
 the Vercel function logs for `app/api/webhooks/cal` first; the error will say exactly which
 field didn't parse.
+
+### 5. Database for Planner + Money (Neon, free)
+
+Outreach still reads repo files at build time. The **Planner** and **Money** sections need live
+shared writes (Ethan and Blair see the same bookings and ledger), so they use Postgres:
+
+1. Vercel -> the `sales-cold-outreach` project -> **Storage -> Create Database -> Neon** (free
+   plan) -> connect it to this project for Production (and Preview if you want). This sets
+   `DATABASE_URL`.
+2. Redeploy. Tables are created automatically on first request (`lib/db.ts`); there's no
+   separate migrate step.
+3. Money -> **Settings -> Import**: upload `pricing-config.json` and `ledger-seed.json` from the
+   Money handoff. They live only in the database, never in git: this repo is public and they
+   contain internal pricing and owner-pay splits. Re-importing the seed skips rows already there.
+   When pricing changes, import the new config the same way.
+
+Until `DATABASE_URL` is set, Planner and Money show a setup notice instead of erroring.
+
+## Tests
+
+```
+cd dashboard
+npm test
+```
+
+Runs the pure scheduling and money math (`lib/planner/schedule.test.ts`,
+`lib/money/money.test.ts`) with Node's built-in test runner, against every acceptance test in the
+two handoff specs. The Money tests read the real config from `docs/money-module/` (gitignored); if
+it's missing they're skipped with a message saying so.
 
 ## Local development
 

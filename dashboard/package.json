@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "node --test \"lib/**/*.test.ts\""
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
     "js-yaml": "^5.4.2",
     "next": "16.3.0",
     "next-auth": "4.24.15",

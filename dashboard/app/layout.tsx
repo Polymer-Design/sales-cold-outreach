@@ -19,7 +19,7 @@ const THEME_INIT = `try{if(localStorage.getItem('polymer-theme')==='light')docum
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
