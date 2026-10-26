@@ -15,10 +15,10 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  // api/webhooks/* is deliberately excluded - those are called by external services
+  // api/webhooks/* and api/cron/* are deliberately excluded - those are called by external services
   // (e.g. Cal.com) with no session cookie, and authenticate themselves instead (see
-  // app/api/webhooks/cal/route.ts's HMAC signature check).
+  // app/api/webhooks/cal/route.ts's HMAC signature check, and the cron routes' CRON_SECRET).
   matcher: [
-    "/((?!api/auth|api/webhooks|signin|_next/static|_next/image|favicon.ico|icon.svg).*)",
+    "/((?!api/auth|api/webhooks|api/cron|signin|_next/static|_next/image|favicon.ico|icon.svg).*)",
   ],
 };

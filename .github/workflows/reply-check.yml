@@ -1,11 +1,18 @@
 name: Reply check
 
+# Primary trigger: Vercel cron (dashboard/vercel.json) -> workflow_dispatch at ~9:17am,
+# 1:17pm, 5:17pm ET weekdays. GitHub's `schedule:` is a late, off-peak backup only - see
+# daily-pipeline.yml for why. The guard job makes a duplicate trigger for the same slot a
+# no-op.
 on:
   schedule:
-    - cron: "0 13,17,21 * * 1-5" # 9am, 1pm, 5pm ET weekdays - 3x/day spanning 8a-6p per
-      # Ethan's ask (2026-10-14), down from every 2h. Cold-email replies aren't
-      # minute-sensitive, so this costs nothing in quality.
-  workflow_dispatch: {}
+    - cron: "47 14,18,22 * * 1-5" # backup only
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Run even if a reply check ran in the last 150 minutes"
+        type: boolean
+        default: false
 
 permissions:
   id-token: write # required by anthropics/claude-code-action to auth via OIDC
@@ -13,12 +20,38 @@ permissions:
   issues: write
   pull-requests: write
 
-concurrency:
-  group: outreach-pipeline
-  cancel-in-progress: false
-
 jobs:
+  guard:
+    # Slots are 4h apart; skip if any earlier non-cancelled reply-check started in the last
+    # 150 minutes (i.e. this slot was already covered by the other trigger).
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          if [ "$FORCE" = "true" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          since=$(date -u -d '150 minutes ago' +%FT%TZ)
+          earlier=$(gh api "repos/${{ github.repository }}/actions/workflows/reply-check.yml/runs?created=%3E%3D${since}&per_page=100" \
+            --jq '[.workflow_runs[] | select(.run_number < ${{ github.run_number }}) | select(.conclusion != "cancelled")] | length')
+          if [ "$earlier" -gt 0 ]; then
+            echo "Slot already covered ($earlier earlier run(s) since $since) - skipping."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
   replies:
+    needs: guard
+    if: needs.guard.outputs.run == 'true'
+    concurrency:
+      group: outreach-pipeline
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

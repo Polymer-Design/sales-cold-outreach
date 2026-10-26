@@ -1,0 +1,8 @@
+{
+  "crons": [
+    { "path": "/api/cron/daily-pipeline", "schedule": "7 13 * * 1-5" },
+    { "path": "/api/cron/reply-check-am", "schedule": "17 13 * * 1-5" },
+    { "path": "/api/cron/reply-check-midday", "schedule": "17 17 * * 1-5" },
+    { "path": "/api/cron/reply-check-pm", "schedule": "17 21 * * 1-5" }
+  ]
+}

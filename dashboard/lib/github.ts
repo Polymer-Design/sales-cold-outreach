@@ -43,6 +43,22 @@ export async function dispatchCallBooked(payload: CallBookedPayload, token: stri
   }
 }
 
+// Fires a workflow_dispatch run. Used by the Vercel cron routes (app/api/cron) as the
+// primary scheduler - GitHub's own `schedule:` trigger was firing 4-6h late or not at
+// all. The workflows themselves skip duplicate same-day/same-slot runs, so a double
+// trigger here costs a ~10s guard job, not a second Claude run.
+export async function dispatchWorkflow(workflowFile: string, token: string) {
+  const res = await fetch(`${API}/actions/workflows/${workflowFile}/dispatches`, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify({ ref: "main" }),
+  });
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(`GitHub rejected the workflow dispatch (${res.status}): ${detail.slice(0, 300)}`);
+  }
+}
+
 export type OpenPR = {
   number: number;
   title: string;

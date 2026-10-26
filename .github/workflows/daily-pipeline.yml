@@ -1,9 +1,19 @@
 name: Daily outreach pipeline
 
+# Primary trigger: Vercel cron (dashboard/vercel.json) -> workflow_dispatch, ~9:07am ET.
+# GitHub's own `schedule:` is only a backup now - measured 2026-10-12..26 it fired 4.5-6.5h
+# late every weekday and skipped two Fridays entirely (top-of-hour crons are GitHub's most
+# congested slot; their docs say queued schedule runs can be dropped under load). The backup
+# runs off-peak and later; the guard job makes whichever trigger arrives second a no-op.
 on:
   schedule:
-    - cron: "0 13 * * 1-5" # 9am ET weekdays
-  workflow_dispatch: {}
+    - cron: "41 14 * * 1-5" # backup only, ~10:41am ET weekdays
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Run even if a pipeline run already happened today"
+        type: boolean
+        default: false
 
 permissions:
   id-token: write # required by anthropics/claude-code-action to auth via OIDC
@@ -11,12 +21,43 @@ permissions:
   issues: write
   pull-requests: write
 
-concurrency:
-  group: outreach-pipeline
-  cancel-in-progress: false
-
 jobs:
+  guard:
+    # One real pipeline run per ET day. Any earlier run of this workflow today (queued,
+    # running, or finished - anything but cancelled) means this one exits here, in seconds,
+    # before Claude is ever called. Counting failed runs too is deliberate: a retry would
+    # spend another ~$7-9, and partial work from a crash is already committed.
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          if [ "$FORCE" = "true" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          since=$(date -u -d "$(TZ=America/New_York date +%F) 00:00 $(TZ=America/New_York date +%z)" +%FT%TZ)
+          earlier=$(gh api "repos/${{ github.repository }}/actions/workflows/daily-pipeline.yml/runs?created=%3E%3D${since}&per_page=100" \
+            --jq '[.workflow_runs[] | select(.run_number < ${{ github.run_number }}) | select(.conclusion != "cancelled")] | length')
+          if [ "$earlier" -gt 0 ]; then
+            echo "Already ran today ($earlier earlier run(s) since $since) - skipping."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
   daily:
+    needs: guard
+    if: needs.guard.outputs.run == 'true'
+    # Job-level (not workflow-level) so a guarded duplicate never enters the queue - GitHub
+    # cancels the PENDING run in a concurrency group whenever another one joins, so a
+    # duplicate sitting in the group could knock out a real pending reply-check.
+    concurrency:
+      group: outreach-pipeline
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 90 # raised from 60 2026-10-16 - scoring needs real headroom now that
       # step 1 scores backlog before ingesting. Briefly 120 on 2026-10-17 for a 30-lead
