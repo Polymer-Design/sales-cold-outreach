@@ -32,7 +32,7 @@ body: |
 
   A raise like that usually means hiring and new product pages faster than a small team can design them.
 
-  We build fixed-price Webflow sites for funded teams, usually live in 30-60 days, with a CMS your team runs without a developer.
+  We build fixed-price sites for funded teams, usually live in 30-60 days, with a CMS your team runs without a developer.
 
   Make sense to connect?
 
