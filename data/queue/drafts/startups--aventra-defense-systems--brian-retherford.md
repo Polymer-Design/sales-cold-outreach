@@ -30,7 +30,7 @@ body: |
 
   Congrats on the $17.5M round. Scaling Piranha into production while your site still looks like a pre-seed landing page is a strange mismatch for backers like Konvoy and Booz Allen Ventures.
 
-  We build fixed-price Webflow sites for teams right after a raise, usually live in 30-60 days, with a CMS your own team can update without a developer.
+  We build fixed-price sites for teams right after a raise, usually live in 30-60 days, with a CMS your own team can update without a developer.
 
   Want to jump on a call this week?
 
