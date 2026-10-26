@@ -43,15 +43,18 @@ scoring:
 
 cost_caps:
   # Soft weekly ceiling on daily-pipeline's real Claude spend (scripts/cost_tracker.py),
-  # checked before each run starts. Baseline set by Ethan 2026-10-17: $20/week ($100/mo
-  # extra on top of Apollo's existing ~$100/mo).
+  # checked before each run starts.
   #
-  # TEMP bump to $40 for the week of 2026-10-19 only, per Ethan's explicit request - this
-  # week's real total was inflated by manually re-triggering runs to build/test the Hot
-  # Leads dashboard feature (~$16 in one day from that alone), not normal operation, and
-  # the $20 baseline would otherwise have blocked real Tue-Fri scheduled runs before the
-  # week even got going. Revert to 20 starting the week of 2026-10-26 (a reminder is
-  # scheduled for Monday 2026-10-26) unless real steady-state usage says otherwise by then.
+  # Originally set by Ethan 2026-10-17 at $20/week, then bumped to $40 the week of
+  # 2026-10-19 as a one-week TEMP measure (that week's spend was inflated by manually
+  # re-triggering runs to build/test the Hot Leads dashboard). Revisited 2026-10-26 per the
+  # scheduled reminder: real steady-state cost (not the dashboard-testing spend) turned out
+  # to be $7-9 per day the pipeline actually does work (scoring + drafting/pushing), i.e.
+  # ~$35-45/week for a normal 5-day week even with zero manual re-triggering - $20 was never
+  # going to cover real operation, and at $40 the cap already skipped two full weekdays
+  # (2026-10-22, 10-23) in one week. Confirmed with Ethan 2026-10-26: **keep $40/week as the
+  # standing cap**, not temporary - it matches what full-utilization operation actually
+  # costs. Revisit only if real usage drifts meaningfully from this, not on a timer.
   #
   # Not a hard real-time circuit breaker - it can't stop a run already in progress from
   # overspending, but it stops the NEXT scheduled run once the
