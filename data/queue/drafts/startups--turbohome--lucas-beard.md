@@ -30,7 +30,7 @@ body: |
 
   That's the kind of mismatch that makes a 4.8-star, 58-review brand look less buttoned up than it actually is.
 
-  We rebuild sites like this on Webflow with a CMS your team runs, so copy like that gets caught and fixed in minutes, not left live for months.
+  We rebuild sites like this on Astro or Webflow with a CMS your team runs, so copy like that gets caught and fixed in minutes, not left live for months.
 
   Worth 15 minutes?
 
