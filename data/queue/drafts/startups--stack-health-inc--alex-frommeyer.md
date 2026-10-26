@@ -7,7 +7,7 @@ apollo_contact_id: 6464669f92dab10001d5337c
 score_total: 85
 tier: hot
 research_arm: light
-status: hot_approved
+status: ready
 drafted_at: 2026-10-26
 ---
 
@@ -47,7 +47,7 @@ body: |
 
   That kind of track record deserves a site that tells the same story the cap table does.
 
-  We do fixed-price Webflow builds for funded teams in exactly this spot, usually live in 30-60 days.
+  We do fixed-price builds for funded teams in exactly this spot, on the platform that fits how your team works, usually live in 30-60 days.
 
   Open to a quick call this week?
 

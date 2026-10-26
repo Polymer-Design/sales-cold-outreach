@@ -7,7 +7,7 @@ apollo_contact_id: 6a9ddd9c91070c0001a971df
 score_total: 75
 tier: hot
 research_arm: deep
-status: hot_approved
+status: ready
 drafted_at: 2026-10-26
 ---
 
@@ -30,7 +30,7 @@ body: |
 
   That's the kind of mismatch that makes a 4.8-star, 58-review brand look less buttoned up than it actually is.
 
-  We rebuild sites like this on Astro or Webflow with a CMS your team runs, so copy like that gets caught and fixed in minutes, not left live for months.
+  We rebuild sites like this with a CMS your team runs, so copy like that gets caught and fixed in minutes, not left live for months.
 
   Worth 15 minutes?
 
@@ -45,7 +45,7 @@ body: |
 
   Right now your homepage loads in about 3.2 seconds on mobile, which matters when leads are touring homes from a phone.
 
-  We build fixed-price Webflow sites, usually live in 30-60 days, with a CMS your team runs without a developer.
+  We build fixed-price sites, usually live in 30-60 days, with a CMS your team runs without a developer.
 
   Open to a quick call this week?
 

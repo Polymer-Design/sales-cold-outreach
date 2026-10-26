@@ -7,7 +7,7 @@ apollo_contact_id: 6864b55be72a260001551a98
 score_total: 97
 tier: hot
 research_arm: light
-status: hot_approved
+status: ready
 drafted_at: 2026-10-26
 ---
 
@@ -43,7 +43,7 @@ body: |
 
   From $3M in stealth funding to a $17.5M raise in about a year, with Piranha already up to roughly 400 flights. That pace doesn't leave much time for the site to catch up.
 
-  We build fixed-price Webflow sites specifically for funded teams moving this fast, live in 30-60 days, so the story matches the traction.
+  We build fixed-price sites specifically for funded teams moving this fast, on a stack matched to where you're headed, live in 30-60 days, so the story matches the traction.
 
   Open to a quick call this week?
 
@@ -68,7 +68,7 @@ notes:
 - "$3M in stealth funding" / founders as former Army officers -> matches pulse2.com's separate seed-round article
 - "roughly 400 flights" -> attributed to company statements per washingtontechnology.com, phrased as "already up to roughly" (not asserted as independently verified), consistent with the source's own hedging
 - Platform/track: squarespace -> new_build_track confirmed via scripts/platform_detect.py, matches research block
-- Proof point: Fispoke used only as a plain capability statement (fixed-price Webflow build, team-run CMS), no numbers/results borrowed, no vertical-fit claim made (defense tech != fintech)
+- Proof point: Fispoke used only as a plain capability statement (fixed-price build, team-run CMS), no numbers/results borrowed, no vertical-fit claim made (defense tech != fintech)
 - No pricing/tier named, CTA is the intro call only, no booking link
 - voice_check.py: clean on all three emails
 - word counts: email_1 69w, email_2 65w, email_3 33w - all within band (50-85 / 40-80 / 30-60)

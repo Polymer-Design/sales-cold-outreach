@@ -16,6 +16,11 @@ skill (via `scripts/platform_detect.py`). This changes the OFFER, not just the w
 - **new_build_track**: pitch the website build (Sprint/Core/Custom per
   `knowledge/business-overview.md`). Case studies tagged `track: new_build` in their
   frontmatter apply here.
+  The build is platform-agnostic: we match the stack to the client (Webflow, or custom
+  Astro + Vercel + Sanity). Never pitch "a Webflow build" or imply Webflow is what we do;
+  pitch the outcome (a site their team can edit, fast, built to scale). See the pitch rule
+  in `knowledge/business-overview.md`. Citing a case study's real platform as a fact about
+  that past project is fine.
 - **subscription_track** (lead is on Webflow/Webflow Source - the only platforms
   `scripts/platform_detect.py` currently auto-detects into this track): pitch the right
   monthly plan tier per `knowledge/business-overview.md` (Grow/Partner for startups,

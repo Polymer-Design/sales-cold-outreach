@@ -14,7 +14,8 @@ excluded:
   - e-commerce / DTC companies
 
 services_this_icp_maps_to:
-  - Webflow website builds (new_build_track)
+  - Website builds, platform matched to the client - Webflow/Webflow Source or custom
+    Astro + Vercel + Sanity (new_build_track)
   - Ongoing monthly plan design (subscription_track - Care/Grow/Partner/Partner Plus,
     see knowledge/business-overview.md)
   # Pitch decks and brand/identity design are real Polymer services but are NOT currently

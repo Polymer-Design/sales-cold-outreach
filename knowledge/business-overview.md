@@ -6,7 +6,7 @@ it doesn't go in an email. Items marked PENDING are not citable yet. Items marke
 
 ## The basics
 
-- Polymer is a full-service design and Webflow studio, founded 2017, based in New Jersey.
+- Polymer is a full-service design and web development studio, founded 2017, based in New Jersey.
 - Website: hellopolymer.com — **live now**. ICP-specific solutions pages (churches,
   startups, etc.) are coming soon but not live yet - don't reference them as if they exist.
   Never send cold outreach from this domain — see `config/domains.yaml`.
@@ -17,8 +17,17 @@ it doesn't go in an email. Items marked PENDING are not citable yet. Items marke
   headline. Positioning line: "A fixed price. A live site in weeks. The same team to keep
   it growing."
 - Core pitch line: "we build the systems growing teams run on."
-- Stack we build on: Webflow, Vercel, or Webflow Source; design in Figma. Ops side:
-  Stripe/Trello/Brevo.
+- Stack: we match the platform to the client, not the client to a platform. Two paths:
+  Webflow (or Webflow Source) when the team wants visual, no-developer editing; or a custom
+  Astro site hosted on Vercel with Sanity CMS when they need more flexibility, performance,
+  or room to scale. The choice is made to solve their current problems and set them up to
+  grow. Design in Figma. Ops side: Stripe/Trello/Brevo.
+- **Pitch rule (corrected 2026-10-26 per Ethan):** never present Webflow as what we build,
+  or as the default. The pitch is platform fit: we pick the stack that fits how their team
+  works and where they're headed. Only name a specific platform in an email when the lead's
+  own research makes it relevant (e.g. they're already on Webflow and the angle is a monthly
+  plan); otherwise talk about the outcome (a site their team can edit, that's fast, that
+  scales), not the tool.
 - Voice in pricing-adjacent copy: plain, direct, no wordplay, no em dashes (same rule as
   everywhere else, see `knowledge/voice-and-tone.md`).
 
@@ -124,8 +133,8 @@ with the same team.
 ## What we sell to each ICP
 
 - **Startups**: a credible, high-craft marketing site shipped fast, without agency bloat
-  pricing. Webflow (or Webflow Source) means their team can edit content without a
-  developer.
+  pricing, on a platform matched to them: their team edits content without a developer
+  (Webflow, or Sanity on a custom Astro build), and the site can scale with them.
 - **Churches**: websites that integrate with the tools the church already runs on —
   Planning Center / Church Center especially (events, groups, sermons, giving, check-in).
   PENDING: integration calculator scope (waiting on Chris's list of productized modules).
