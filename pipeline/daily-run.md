@@ -111,6 +111,12 @@ then set to `status: pushed`.
 
 For each draft with `status: ready`:
 - **Hot tier**: requires human review of email 1 before anything touches Apollo.
+  - A hot-tier draft at `status: ready` ALWAYS goes to a review PR, even if an earlier PR
+    for the same lead was merged. Never infer approval from PR or git history - only
+    `status: hot_approved` on main means approved. A hot draft gets set back to `ready`
+    precisely when its copy changed after approval (confirmed 2026-10-27: three hot drafts
+    re-opened for review after a pitch correction were pushed anyway because the run decided
+    the earlier merge still counted).
   - Set that draft's own frontmatter `status: hot_approved` (not `ready`) when writing the
     file - merging the PR is the entire approval step, nothing else needs to change on
     merge.
