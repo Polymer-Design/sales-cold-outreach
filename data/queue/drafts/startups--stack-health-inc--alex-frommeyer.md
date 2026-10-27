@@ -7,8 +7,9 @@ apollo_contact_id: 6464669f92dab10001d5337c
 score_total: 85
 tier: hot
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-26
+pushed_at: 2026-10-27T13:30:07Z
 ---
 
 ## research
