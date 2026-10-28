@@ -107,10 +107,13 @@ jobs:
           # "failure" by the action's own wrapper for landing at 173 turns; nothing was
           # lost (if:always() below saved it anyway) but a real success showing red is
           # confusing. Briefly 260 same day for a 30-lead batch experiment that got rolled
-          # back (see pipeline/daily-run.md) - reverted alongside it.
+          # back (see pipeline/daily-run.md) - reverted alongside it. Raised 200->260 on
+          # 2026-10-28: a complete, successful run (20 contacts pushed, ~26 drafts) took 217
+          # turns and was marked "failure" even though everything was committed. Spend is
+          # bounded by the weekly cost cap, not this number.
           claude_args: |
             --model claude-sonnet-5
-            --max-turns 200
+            --max-turns 260
             --allowedTools "Bash,Read,Write,Edit,Glob,Grep,WebFetch,WebSearch"
         env:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
