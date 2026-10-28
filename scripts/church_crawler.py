@@ -67,6 +67,10 @@ FIELDS = ["name", "website", "city", "state", "churchcenter_slug", "signal",
 
 UA = {"User-Agent": "PolymerResearchBot/1.0 (+https://hellopolymer.com)"}
 CHURCHCENTER_RE = re.compile(r"https?://([a-z0-9][a-z0-9-]*)\.churchcenter\.com", re.I)
+# Planning Center's own hosts, not a church's slug. js.churchcenter.com serves the Church
+# Center embed script, so a site loading it does use Planning Center - it just doesn't
+# name its slug there (2026-10-28: 8 real PC churches were flagged as false positives).
+CHURCHCENTER_HOSTS = {"js", "www", "api", "assets", "cdn", "static"}
 PLANNING_CENTER_RE = re.compile(
     r"planningcenteronline\.com|planning\s*center|pco\.bz|churchcenter\s+app", re.I)
 # Pages most likely to link out to Church Center.
@@ -86,9 +90,12 @@ def fetch(url: str) -> str:
 
 def extract_signal(html: str) -> tuple[str, str]:
     """Return (churchcenter_slug, signal_strength) from page HTML."""
-    m = CHURCHCENTER_RE.search(html)
-    if m:
-        return m.group(1).lower(), "churchcenter_subdomain"
+    subs = [m.lower() for m in CHURCHCENTER_RE.findall(html)]
+    slugs = [x for x in subs if x not in CHURCHCENTER_HOSTS]
+    if slugs:
+        return slugs[0], "churchcenter_subdomain"
+    if subs:
+        return "", "churchcenter_embed"
     if PLANNING_CENTER_RE.search(html):
         return "", "planning_center_mention"
     return "", ""
