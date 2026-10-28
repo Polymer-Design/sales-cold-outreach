@@ -21,6 +21,11 @@ leave the rest for the next run - a predictable, affordable daily drain beats a 
 expensive run that blows its budget.  Write scores to the index (and Apollo custom fields
 in live mode).
 
+**Reserve up to 5 of those 15 for church leads** whenever any are waiting (unscored church
+rows in either file); hand any unused church slots to startups. Added 2026-10-28: the
+startup backlog (160+ unscored) otherwise wins every slot and the two church inboxes sit
+idle.
+
 **History on this number, so it isn't re-litigated from scratch:** tried raising this to 30
 on 2026-10-17 on the theory that Steps 2/3/5 are now near-free lookups against data
 captured at ingestion (`org_data`, the church crawler's output, Apollo contact fields - see
@@ -102,6 +107,15 @@ Take the highest-scored undrafted leads, hot tier first then warm, up to
 `limits.emails_drafted_per_day`. Cold tier: skip (tag only). For each, run the
 **outreach-email** skill, then the **fact-check-email** skill. Respect the max-2-rewrite rule.
 
+**Draft per ICP, and only what can be sent today.** For each ICP, today's sending room is
+(that ICP's mailboxes in `config/domains.yaml`) × `inbox_health.send_caps.new_contacts_per_mailbox_daily`,
+minus contacts already added today and minus drafts already sitting at `status: ready` for
+that ICP. Draft at most that many per ICP - a draft that can't be pushed today just ages its
+research and costs money (2026-10-28: 26 drafted, 20 could go out). Split
+`limits.emails_drafted_per_day` between the ICPs that have warm/hot leads waiting, up to
+half each; give a share one ICP can't use to the other. Within an ICP, hot first, then
+highest score.
+
 ## 4. Push ready drafts (live mode only)
 
 **First, check for already-approved hot-tier leads from a PREVIOUS run:** any draft under
@@ -145,11 +159,14 @@ For each draft with `status: ready`:
      enough on its own, no per-run or per-contact approval needed. That's the design: only
      hot tier (above) and interested-reply booking emails need human review.
 
-  Respect the per-mailbox cap from `config/system.yaml` `inbox_health.send_caps`: use
-  `warmup_daily` for any mailbox with fewer than `min_sends_to_evaluate` sends in the last 30
-  days (still ramping - see `data/inbox-health/latest.json`, `status: insufficient_data`),
-  `healthy_daily` once past that. Count what's already scheduled on each mailbox today so the
-  cap holds across the two ICPs.
+  Respect the per-mailbox cap from `config/system.yaml`
+  `inbox_health.send_caps.new_contacts_per_mailbox_daily`: at most that many NEW contacts
+  added to sequences from each mailbox per day (follow-ups to earlier contacts don't count -
+  the number is already sized for them). Count contacts already added today (the `emailed`
+  funnel events dated today, per mailbox) so the cap holds across runs and both ICPs. Ready
+  drafts past the cap stay `status: ready` for the next run. All four inboxes are warmed;
+  don't apply a separate warmup cap even if `data/inbox-health/latest.json` says
+  `insufficient_data`.
 - Set `status: pushed` + timestamp. In dry_run, leave `status: ready` and just report.
 - **Funnel:** for each contact actually added to a sequence (live mode), record it:
   `python scripts/funnel.py record --email <email> --stage emailed --icp <icp> --org <org>`.

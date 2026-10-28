@@ -23,6 +23,17 @@ Two modes:
   probe   Read data/leads/churches/probe-slugs.csv (slug,name) and check whether
           {slug}.churchcenter.com resolves to a real Church Center instance.
 
+  replenish
+          Top up seeds.csv from Apollo organization search (apollo_client.py org-search,
+          config/icp-churches.yaml apollo_org_filters; 1 credit per page of up to 100 orgs).
+          Keeps names that read like a local congregation, drops HQs/parachurch/vendors,
+          dedupes by domain against seeds, candidates and the crawled log, and remembers
+          which Apollo page it reached in seed-cursor.json. Run before crawl.
+
+Every seed crawl checks is logged to crawled.csv (hit or miss), so a church is only ever
+checked once - before 2026-10-28 misses weren't recorded and the same seeds got
+re-crawled every week while no new ones were added.
+
 Output: appends new finds to data/leads/churches/candidates.csv with status=new.
 The daily pipeline picks candidates up from there (Apollo finds the people).
 
@@ -37,6 +48,7 @@ import argparse
 import csv
 import re
 import sys
+import json
 import time
 from datetime import date
 from pathlib import Path
@@ -47,6 +59,9 @@ import requests
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LEADS_DIR = REPO_ROOT / "data/leads/churches"
 CANDIDATES = LEADS_DIR / "candidates.csv"
+SEEDS = LEADS_DIR / "seeds.csv"
+CRAWLED = LEADS_DIR / "crawled.csv"
+CURSOR = LEADS_DIR / "seed-cursor.json"
 FIELDS = ["name", "website", "city", "state", "churchcenter_slug", "signal",
           "status", "found_at"]
 
@@ -98,6 +113,50 @@ def probe_slug(slug: str) -> bool:
                    ("page not found", "couldn't find", "doesn't exist", "no longer available"))
 
 
+# Replenish name screen: keep what reads like a local congregation, drop the HQs,
+# parachurch orgs, schools and vendors an Apollo "church" keyword search also returns.
+KEEP_RE = re.compile(r"\b(church|chapel|fellowship|tabernacle|cathedral|parish|congregation|"
+                     r"assembly|temple|kirk)\b", re.I)
+DROP_RE = re.compile(r"\b(ministries|ministry|network|association|conference|convention|"
+                     r"foundation|seminary|school|academy|university|college|institute|camp|"
+                     r"publishing|publications|missions?|denomination|diocese|synod|"
+                     r"presbytery|council|alliance|federation|headquarters|supply|furniture|"
+                     r"software|insurance|consulting|media|radio|television|bookstore|"
+                     r"store|childcare|preschool|daycare|credit union|loans?|capital)\b", re.I)
+
+
+def domain_of(url: str) -> str:
+    url = (url or "").strip().lower()
+    if not url:
+        return ""
+    host = urlparse(url if "://" in url else "https://" + url).netloc
+    return host[4:] if host.startswith("www.") else host
+
+
+def _read_csv(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    with open(path) as f:
+        return list(csv.DictReader(f))
+
+
+def _append_csv(path: Path, fields: list[str], rows: list[dict]) -> None:
+    new_file = not path.exists()
+    with open(path, "a", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        if new_file:
+            w.writeheader()
+        w.writerows(rows)
+
+
+def known_domains() -> set[str]:
+    out = set()
+    for path, col in ((SEEDS, "website"), (CANDIDATES, "website"), (CRAWLED, "website")):
+        out |= {domain_of(r.get(col, "")) for r in _read_csv(path)}
+    out.discard("")
+    return out
+
+
 def load_existing() -> set[str]:
     if not CANDIDATES.exists():
         return set()
@@ -121,7 +180,8 @@ def crawl(args) -> None:
         sys.exit(f"No seed list at {seeds_path}. Copy seeds.example.csv and fill it "
                  "from church directories (see this file's docstring).")
     existing = load_existing()
-    found, checked = [], 0
+    done = {domain_of(r["website"]) for r in _read_csv(CRAWLED)} | {domain_of(w) for w in existing}
+    found, checked, log = [], 0, []
     with open(seeds_path) as f:
         seeds = list(csv.DictReader(f))
     for seed in seeds:
@@ -132,8 +192,9 @@ def crawl(args) -> None:
             continue
         if not website.startswith("http"):
             website = "https://" + website
-        if website.lower() in existing:
+        if website.lower() in existing or domain_of(website) in done:
             continue
+        done.add(domain_of(website))
         checked += 1
         base = website.rstrip("/")
         slug, signal = "", ""
@@ -145,6 +206,8 @@ def crawl(args) -> None:
             slug, signal = extract_signal(html)
             if signal == "churchcenter_subdomain":
                 break
+        log.append({"website": website, "result": signal or "miss",
+                    "checked_at": date.today().isoformat()})
         if signal:
             found.append({
                 "name": seed.get("name", urlparse(website).netloc),
@@ -176,6 +239,9 @@ def crawl(args) -> None:
             flagged += 1
 
     append_candidates(found)
+    _append_csv(CRAWLED, ["website", "result", "checked_at"], log)
+    remaining = sum(1 for sd in seeds if sd.get("website") and domain_of(sd["website"]) not in done)
+    print(f"{remaining} seeds left uncrawled.")
     print(f"\nChecked {checked} seeds, found {len(found)} with Planning Center signal "
           f"({flagged} flagged needs_review - shared slug, likely false positive). "
           f"Appended to {CANDIDATES.relative_to(REPO_ROOT)}")
@@ -206,14 +272,66 @@ def probe(_args) -> None:
     print(f"\nFound {len(found)} live Church Center instances.")
 
 
+def replenish(args) -> None:
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    import apollo_client  # noqa: E402 - same scripts/ dir, needs APOLLO_API_KEY
+    from types import SimpleNamespace
+
+    crawled = {domain_of(r["website"]) for r in _read_csv(CRAWLED)} | \
+              {domain_of(r["website"]) for r in _read_csv(CANDIDATES)}
+    backlog = sum(1 for r in _read_csv(SEEDS)
+                  if domain_of(r.get("website", "")) and domain_of(r["website"]) not in crawled)
+    if backlog >= args.want:
+        print(f"{backlog} seeds still uncrawled (>= {args.want}); no refill needed.")
+        return
+
+    cursor = json.loads(CURSOR.read_text()) if CURSOR.exists() else {"page": 1}
+    seen = known_domains()
+    added: list[dict] = []
+    pages = 0
+    while len(added) + backlog < args.want and pages < args.max_pages:
+        page = cursor["page"]
+        res = apollo_client.org_search(SimpleNamespace(icp="churches", page=page, per_page=100))
+        orgs = (res.get("organizations") or []) + (res.get("accounts") or [])
+        pages += 1
+        if not orgs:
+            print(f"Apollo page {page} empty - wrapping back to page 1 next time.")
+            cursor["page"] = 1
+            break
+        cursor["page"] = page + 1
+        kept = 0
+        for o in orgs:
+            name = (o.get("name") or "").strip()
+            dom = domain_of(o.get("website_url") or o.get("primary_domain") or o.get("domain") or "")
+            if not name or not dom or dom in seen:
+                continue
+            if not KEEP_RE.search(name) or DROP_RE.search(name):
+                continue
+            seen.add(dom)
+            kept += 1
+            added.append({"name": name, "website": dom, "city": o.get("city") or "",
+                          "state": o.get("state") or ""})
+        print(f"Apollo page {page}: {len(orgs)} orgs, kept {kept} as new seeds.")
+    if added:
+        _append_csv(SEEDS, ["name", "website", "city", "state"], added)
+    CURSOR.write_text(json.dumps(cursor) + "\n")
+    print(f"Added {len(added)} seeds ({pages} Apollo credit(s) at most); "
+          f"{backlog + len(added)} now waiting to be crawled.")
+
+
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest="cmd", required=True)
     c = sub.add_parser("crawl")
     c.add_argument("--limit", type=int, default=50, help="max seeds to check this run")
     sub.add_parser("probe")
+    r = sub.add_parser("replenish")
+    r.add_argument("--want", type=int, default=150,
+                   help="top up until this many seeds are waiting to be crawled")
+    r.add_argument("--max-pages", type=int, default=5,
+                   help="most Apollo pages (credits) to spend in one run")
     args = p.parse_args()
-    (crawl if args.cmd == "crawl" else probe)(args)
+    {"crawl": crawl, "probe": probe, "replenish": replenish}[args.cmd](args)
 
 
 if __name__ == "__main__":

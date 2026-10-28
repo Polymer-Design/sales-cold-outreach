@@ -4,6 +4,7 @@ import { dispatchWorkflow } from "@/lib/github";
 // Vercel cron entry points (see vercel.json). Each reply-check slot gets its own path so
 // every cron entry runs at most once per day, which Hobby-plan cron requires.
 const JOBS: Record<string, string> = {
+  "church-crawler": "church-crawler.yml",
   "daily-pipeline": "daily-pipeline.yml",
   "reply-check-am": "reply-check.yml",
   "reply-check-midday": "reply-check.yml",

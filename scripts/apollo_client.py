@@ -10,6 +10,7 @@ Usage:
   python scripts/apollo_client.py people-search --icp churches --domain firstchurch.org
   python scripts/apollo_client.py people-search --icp startups --no-enrich  # free, masked results
   python scripts/apollo_client.py people-search --icp startups --filter-set apollo_filters_yc  # YC channel
+  python scripts/apollo_client.py org-search --icp churches [--page 1]  # 1 credit per page with results
   python scripts/apollo_client.py sequences
   python scripts/apollo_client.py add-to-sequence --sequence-id X --contact-ids a,b --mailbox you@domain.com
   python scripts/apollo_client.py upsert-contact --json '{"first_name": ...}'
@@ -112,6 +113,19 @@ def people_search(args) -> dict:
     return result
 
 
+def org_search(args) -> dict:
+    """Organization search (mixed_companies/search) with config/icp-{icp}.yaml's
+    `apollo_org_filters` block. Used to refill the church crawler's seed list. Costs 1 credit
+    per request that returns results (0 for an empty page), up to 100 orgs per page."""
+    icp = load_yaml(f"config/icp-{args.icp}.yaml")
+    filters = {k: v for k, v in (icp.get("apollo_org_filters") or {}).items() if v}
+    if not filters:
+        sys.exit(f"No 'apollo_org_filters' block in config/icp-{args.icp}.yaml.")
+    filters["page"] = args.page
+    filters["per_page"] = args.per_page
+    return _req("POST", "mixed_companies/search", filters)
+
+
 def sequences(_args) -> dict:
     return _req("POST", "emailer_campaigns/search", {"page": 1, "per_page": 50})
 
@@ -190,6 +204,10 @@ def main() -> None:
     ps.add_argument("--no-enrich", action="store_true",
                      help="Skip the credit-costing enrichment call; results keep masked "
                           "names and no email/domain.")
+    os_ = sub.add_parser("org-search")
+    os_.add_argument("--icp", required=True, choices=["startups", "churches"])
+    os_.add_argument("--page", type=int, default=1)
+    os_.add_argument("--per-page", type=int, default=100)
     sub.add_parser("sequences")
     ats = sub.add_parser("add-to-sequence")
     ats.add_argument("--sequence-id", required=True)
@@ -202,7 +220,7 @@ def main() -> None:
     sub.add_parser("stats")
 
     args = p.parse_args()
-    fn = {"email-accounts": email_accounts, "people-search": people_search,
+    fn = {"email-accounts": email_accounts, "people-search": people_search, "org-search": org_search,
           "sequences": sequences, "add-to-sequence": add_to_sequence,
           "upsert-contact": upsert_contact, "replies": replies, "stats": stats}[args.cmd]
     print(json.dumps(fn(args), indent=2))

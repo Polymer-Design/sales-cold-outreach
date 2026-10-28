@@ -109,6 +109,17 @@ apollo_filters:
   # candidates from the crawler (staff count / service count / seating as proxies, same
   # as the lead-scoring skill's firmographic estimate approach).
 
+# Refills data/leads/churches/seeds.csv (scripts/church_crawler.py replenish -> apollo_client.py
+# org-search). Added 2026-10-28: the seed list had been a one-time hand-built batch of 46
+# churches, so the weekly crawler kept re-checking the same list and the church inboxes
+# went idle. Keyword search also surfaces denominational HQs, parachurch orgs and vendors;
+# replenish filters those by name before they become seeds. Employee bands are a rough
+# 250+ attendance proxy (staff count); scoring still applies the real attendance floor.
+apollo_org_filters:
+  q_organization_keyword_tags: ["church", "christian church"]
+  organization_locations: ["United States"]
+  organization_num_employees_ranges: ["11,50", "51,200", "201,500"]
+
 trigger_signals:
   - building campaign or capital campaign announcement
   - new executive pastor or communications hire

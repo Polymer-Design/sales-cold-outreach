@@ -114,5 +114,12 @@ inbox_health:
     bounce_alarm_above_pct: 5 # act now: pause sends, connect + warm a replacement inbox
     min_sends_to_evaluate: 20 # fewer sends than this and a bounce % is just noise
   send_caps:
-    warmup_daily: 10 # per mailbox while still warming
-    healthy_daily: 22 # per mailbox once healthy (reference doc says 20-25)
+    # NEW contacts enrolled per mailbox per day (set 2026-10-28 with Ethan; all four inboxes
+    # are fully warmed). Each contact gets 3 emails over ~7 days, so 10 new/day settles at
+    # ~30 total emails per inbox per day once follow-ups stack up - the target volume.
+    # Apollo also has each inbox's own daily sending limit set to 30 as a hard backstop.
+    # Raise to ~13-16 (40-50 total/day) after 2-3 weeks with bounce rate under 2%.
+    # (Replaced the old warmup_daily/healthy_daily split: the "warming" status came from
+    # the inbox-health check reading 0 sends due to a broken Apollo stats endpoint, so every
+    # inbox was stuck on the warmup cap.)
+    new_contacts_per_mailbox_daily: 10

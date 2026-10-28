@@ -1,13 +1,16 @@
 name: Church crawler
 
+# Weekdays ~7:23am ET via Vercel cron (dashboard/vercel.json -> workflow_dispatch), ahead of
+# the 9:07 daily pipeline that turns new candidates into contacts. No GitHub `schedule:` -
+# see daily-pipeline.yml for why GitHub's cron isn't relied on. Each run first refills the
+# seed list from Apollo when fewer than 150 seeds are waiting (1 credit per page of up to
+# 100 orgs), then checks up to 100 new seeds for a Planning Center signal.
 on:
-  schedule:
-    - cron: "0 11 * * 2" # Tuesdays 7am ET
   workflow_dispatch:
     inputs:
       limit:
         description: "Max seeds to check (crawl mode only)"
-        default: "50"
+        default: "100"
       mode:
         description: "crawl (seeds.csv) or probe (probe-slugs.csv) - see script docstring"
         default: "crawl"
@@ -25,13 +28,18 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
+      - name: Refill seeds from Apollo when running low
+        if: ${{ (github.event.inputs.mode || 'crawl') == 'crawl' }}
+        run: python scripts/church_crawler.py replenish --want 150 --max-pages 5
+        env:
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
       - name: Crawl or probe for Planning Center signal
         run: |
           mode="${{ github.event.inputs.mode || 'crawl' }}"
           if [ "$mode" = "probe" ]; then
             python scripts/church_crawler.py probe
           else
-            python scripts/church_crawler.py crawl --limit "${{ github.event.inputs.limit || '50' }}"
+            python scripts/church_crawler.py crawl --limit "${{ github.event.inputs.limit || '100' }}"
           fi
       - name: Commit new candidates
         # Same fetch+rebase+retry discipline as daily-pipeline.yml - a bare `git push`

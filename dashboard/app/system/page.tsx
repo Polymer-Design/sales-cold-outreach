@@ -58,12 +58,8 @@ export default async function SystemPage() {
               <span className="v">{cfg.inboxHealth.minSendsToEvaluate ?? "—"}</span>
             </div>
             <div className="kv">
-              <span className="k">Warmup send cap</span>
-              <span className="v">{cfg.inboxHealth.warmupDaily ?? "—"} / day</span>
-            </div>
-            <div className="kv">
-              <span className="k">Healthy send cap</span>
-              <span className="v">{cfg.inboxHealth.healthyDaily ?? "—"} / day</span>
+              <span className="k">New contacts per inbox</span>
+              <span className="v">{cfg.inboxHealth.newContactsPerMailboxDaily ?? "—"} / day (~3× that in total emails once follow-ups run)</span>
             </div>
           </div>
 

@@ -44,8 +44,7 @@ export type SystemConfig = {
     bounceWatchAbovePct: string | null;
     bounceAlarmAbovePct: string | null;
     minSendsToEvaluate: string | null;
-    warmupDaily: string | null;
-    healthyDaily: string | null;
+    newContactsPerMailboxDaily: string | null;
   };
 };
 
@@ -99,8 +98,7 @@ export function getSystemConfig(): SystemConfig {
       bounceWatchAbovePct: field(inboxHealth, "bounce_watch_above_pct"),
       bounceAlarmAbovePct: field(inboxHealth, "bounce_alarm_above_pct"),
       minSendsToEvaluate: field(inboxHealth, "min_sends_to_evaluate"),
-      warmupDaily: field(inboxHealth, "warmup_daily"),
-      healthyDaily: field(inboxHealth, "healthy_daily"),
+      newContactsPerMailboxDaily: field(inboxHealth, "new_contacts_per_mailbox_daily"),
     },
   };
 }
