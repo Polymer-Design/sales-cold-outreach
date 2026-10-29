@@ -3,12 +3,15 @@ contact_name: Kyle Noble
 contact_title: Head of Marketing & Growth
 organization: Manta Cares
 icp: startups
-apollo_contact_id: 54c17db4746869163919ec15
+apollo_person_id: 54c17db4746869163919ec15
 score_total: 56
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-28
+pushed_at: 2026-10-29T13:41:08Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34cf20d21e1001c030a3a
 ---
 
 ## research

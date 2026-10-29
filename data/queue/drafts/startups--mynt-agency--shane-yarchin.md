@@ -3,12 +3,15 @@ contact_name: Shane Yarchin
 contact_title: COO / Co-Founder
 organization: Mynt Agency
 icp: startups
-apollo_contact_id: 61162e7d2735d00001aab5a9
+apollo_person_id: 61162e7d2735d00001aab5a9
 score_total: 60
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-28
+pushed_at: 2026-10-29T13:41:10Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34cf50d21e1001c030a8d
 ---
 
 ## research

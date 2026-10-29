@@ -3,12 +3,15 @@ contact_name: Mariano Sorgente
 contact_title: Founder and CEO
 organization: ISSEN (YC F24)
 icp: startups
-apollo_contact_id: 68182d52bdec050001f0187a
+apollo_person_id: 68182d52bdec050001f0187a
 score_total: 56
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:41:04Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34cec7a27e0000cb60829
 ---
 
 ## research

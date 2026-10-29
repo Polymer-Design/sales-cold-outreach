@@ -3,12 +3,15 @@ contact_name: Ashwin Nandakumar
 contact_title: Founder & CEO
 organization: Granza Bio
 icp: startups
-apollo_contact_id: 66fc1e4a69f2a50001017c84
+apollo_person_id: 66fc1e4a69f2a50001017c84
 score_total: 56
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-28
+pushed_at: 2026-10-29T13:40:59Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34cea33be62001416c3cd
 ---
 
 ## research

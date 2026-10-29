@@ -3,12 +3,15 @@ contact_name: Omar Abdelaziz
 contact_title: Co-founder & CEO
 organization: Blue (YC S25)
 icp: startups
-apollo_contact_id: 54a413b27468693209dde82a
+apollo_person_id: 54a413b27468693209dde82a
 score_total: 55
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:40:48Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34cdfc4ed8c000cd4b5b1
 ---
 
 ## research

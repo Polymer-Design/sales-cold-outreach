@@ -3,12 +3,15 @@ contact_name: Blesson Abraham
 contact_title: Co-Founder/CEO
 organization: AviaryAI
 icp: startups
-apollo_contact_id: 66f053a660019600017abd82
+apollo_person_id: 66f053a660019600017abd82
 score_total: 56
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:40:46Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34cdd5aaeeb0020a5bc57
 ---
 
 ## research

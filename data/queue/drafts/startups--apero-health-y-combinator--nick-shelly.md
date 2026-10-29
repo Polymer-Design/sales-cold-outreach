@@ -3,12 +3,15 @@ contact_name: Nick Shelly
 contact_title: Co-founder & CEO
 organization: Apero Health (Y Combinator)
 icp: startups
-apollo_contact_id: 66f3f0eca768a50001d638ad
+apollo_person_id: 66f3f0eca768a50001d638ad
 score_total: 56
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:40:44Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34cdb766b61001c05555c
 ---
 
 ## research

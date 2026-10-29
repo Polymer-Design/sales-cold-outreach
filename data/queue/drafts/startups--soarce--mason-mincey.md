@@ -3,12 +3,15 @@ contact_name: Mason Mincey
 contact_title: COO & Co-founder
 organization: Soarce
 icp: startups
-apollo_contact_id: 66ffa8d203b9b7000175b49f
+apollo_person_id: 66ffa8d203b9b7000175b49f
 score_total: 58
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-28
+pushed_at: 2026-10-29T13:41:22Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34d01cc6bad001c84abf0
 ---
 
 ## research

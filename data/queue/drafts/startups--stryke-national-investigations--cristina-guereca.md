@@ -3,12 +3,15 @@ contact_name: Cristina Guereca
 contact_title: Co-Founder & Chief Operations Officer
 organization: STRYKE National Investigations
 icp: startups
-apollo_contact_id: 60cbd58a5834f200019f83da
+apollo_person_id: 60cbd58a5834f200019f83da
 score_total: 56
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:41:29Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34d087e618c000c254d63
 ---
 
 ## research

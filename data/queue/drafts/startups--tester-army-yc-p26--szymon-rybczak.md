@@ -3,12 +3,15 @@ contact_name: Szymon Rybczak
 contact_title: Co-Founder & CEO
 organization: TesterArmy (YC P26)
 icp: startups
-apollo_contact_id: 6356a3cdf28e5600010a7230
+apollo_person_id: 6356a3cdf28e5600010a7230
 score_total: 70
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:40:07Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34ca6cc6bad001c849f82
 ---
 
 ## research

@@ -3,12 +3,15 @@ contact_name: Amayr Babar
 contact_title: Co-Founder & CEO
 organization: Nautilus (YC S25)
 icp: startups
-apollo_contact_id: 61178bd492603400010f271c
+apollo_person_id: 61178bd492603400010f271c
 score_total: 63
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:41:16Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34cfb8878080018a81ce6
 ---
 
 ## research

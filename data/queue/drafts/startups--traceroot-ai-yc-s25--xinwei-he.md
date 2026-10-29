@@ -3,12 +3,15 @@ contact_name: Xinwei He
 contact_title: Founder and CEO
 organization: TraceRoot.AI (YC S25)
 icp: startups
-apollo_contact_id: 5d6b89b9f651258c77a3914a
+apollo_person_id: 5d6b89b9f651258c77a3914a
 score_total: 57
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:41:32Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34d0b8878080018a81e39
 ---
 
 ## research

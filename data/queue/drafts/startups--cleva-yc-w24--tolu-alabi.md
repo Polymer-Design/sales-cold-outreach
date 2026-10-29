@@ -3,12 +3,15 @@ contact_name: Tolu Alabi
 contact_title: Co-founder & CEO
 organization: Cleva (YC W24)
 icp: startups
-apollo_contact_id: 66f45cd6c280f30001f6da43
+apollo_person_id: 66f45cd6c280f30001f6da43
 score_total: 55
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:40:50Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34ce1fba6b90014207a5d
 ---
 
 ## research

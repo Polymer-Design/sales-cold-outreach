@@ -3,12 +3,15 @@ contact_name: Najmuzzaman Mohammad
 contact_title: Co-founder & CEO
 organization: Nex.ai (YC S26)
 icp: startups
-apollo_contact_id: 64ca166ff4aa890001469ab0
+apollo_person_id: 64ca166ff4aa890001469ab0
 score_total: 56
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:41:18Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34cfdfba6b900142080a6
 ---
 
 ## research

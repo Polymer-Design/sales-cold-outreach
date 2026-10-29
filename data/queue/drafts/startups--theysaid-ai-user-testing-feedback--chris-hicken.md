@@ -3,12 +3,15 @@ contact_name: Chris Hicken
 contact_title: Co-Founder & CEO
 organization: TheySaid | AI user testing & feedback
 icp: startups
-apollo_contact_id: 67a666f565a916000175159d
+apollo_person_id: 67a666f565a916000175159d
 score_total: 60
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-28
+pushed_at: 2026-10-29T13:41:31Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34d09d34f150020d05457
 ---
 
 ## research

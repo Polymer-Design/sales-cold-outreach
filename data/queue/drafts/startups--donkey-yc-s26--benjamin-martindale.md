@@ -3,12 +3,15 @@ contact_name: Benjamin Martindale
 contact_title: Co-founder & CEO
 organization: Donkey (YC S26)
 icp: startups
-apollo_contact_id: 61d6d9ea4fe6d4000101bee0
+apollo_person_id: 61d6d9ea4fe6d4000101bee0
 score_total: 56
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:40:53Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34ce39e0d9b00148a1552
 ---
 
 ## research

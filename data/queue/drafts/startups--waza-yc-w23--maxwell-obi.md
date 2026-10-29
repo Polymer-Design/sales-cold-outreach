@@ -3,12 +3,15 @@ contact_name: Maxwell Obi
 contact_title: Co-founder & CEO
 organization: Waza (YC W23)
 icp: startups
-apollo_contact_id: 66f4d3ddfae045000143fd6d
+apollo_person_id: 66f4d3ddfae045000143fd6d
 score_total: 57
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:41:35Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34d0dd34f150020d05484
 ---
 
 ## research

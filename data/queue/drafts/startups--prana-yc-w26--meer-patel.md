@@ -3,12 +3,15 @@ contact_name: Meer Patel
 contact_title: Co-Founder & CEO
 organization: Prana (YC W26)
 icp: startups
-apollo_contact_id: 5fd4a0d96e03a700018cae36
+apollo_person_id: 5fd4a0d96e03a700018cae36
 score_total: 58
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-28
+pushed_at: 2026-10-29T13:41:20Z
+mailbox: ehoover@growwithpolymer.com
+apollo_contact_id: 6ae34cfffba6b900142080c5
 ---
 
 ## research

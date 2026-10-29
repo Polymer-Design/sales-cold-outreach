@@ -3,12 +3,15 @@ contact_name: Pierre-Alexandre Kamienny
 contact_title: Co-founder & CEO
 organization: Kinro (YC P26)
 icp: startups
-apollo_contact_id: 5e6b31ed8cab710001ce3c1f
+apollo_person_id: 5e6b31ed8cab710001ce3c1f
 score_total: 62
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
 drafted_at: 2026-10-29
+pushed_at: 2026-10-29T13:41:06Z
+mailbox: ethan@growwithpolymer.com
+apollo_contact_id: 6ae34cf064eed3001447be38
 ---
 
 ## research
