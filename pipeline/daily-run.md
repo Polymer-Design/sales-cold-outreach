@@ -14,17 +14,18 @@ got the chance to clear warm tier).
 
 Run the **lead-scoring** skill on every unscored lead already sitting in
 `data/leads/index.jsonl` (`status: ingested`) and every `status: ingested` row in
-`data/leads/churches/candidates.csv`. Cap this step at **15 leads per run**, well under
+`data/leads/churches/candidates.csv`. Cap this step at **20 leads per run**, well under
 `limits.new_leads_scored_per_day`'s 50 (the DAILY cap across however many runs happen that
 day, not a single run's budget). If the backlog is bigger than 15, score that slice and
 leave the rest for the next run - a predictable, affordable daily drain beats a single
 expensive run that blows its budget.  Write scores to the index (and Apollo custom fields
 in live mode).
 
-**Reserve up to 5 of those 15 for church leads** whenever any are waiting (unscored church
+**Reserve up to 10 of those 20 for church leads** whenever any are waiting (unscored church
 rows in either file); hand any unused church slots to startups. Added 2026-10-28: the
 startup backlog (160+ unscored) otherwise wins every slot and the two church inboxes sit
-idle.
+idle. Raised 2026-10-29 per Ethan from 5-of-15 to 10-of-20, so startups keep their 10 and
+the church inboxes (20 new contacts/day of room) get enough scored leads to use it.
 
 **History on this number, so it isn't re-litigated from scratch:** tried raising this to 30
 on 2026-10-17 on the theory that Steps 2/3/5 are now near-free lookups against data
@@ -35,7 +36,9 @@ cost ~nothing to screen out. Real result: $10.46 for one 30-lead run, well above
 per the rule below) was mostly leads that genuinely earned real research - the gate had
 little to skip, which is CORRECT behavior, not a bug, just not the cost savings hoped for
 on that particular batch. Pulled back to 15 the same day rather than let that ride.
-**Revisit raising this again once `data/costs.jsonl` (`scripts/cost_tracker.py check`)
+(Raised to 20 on 2026-10-29, explicitly by Ethan, to make room for 10 church leads -
+not on theory. Watch `data/costs.jsonl`; if the weekly cap starts skipping days, this is
+the first number to look at.) **Revisit raising this again once `data/costs.jsonl` (`scripts/cost_tracker.py check`)
 shows several consecutive 15-lead runs landing comfortably under the old baseline** - that
 would mean the gate is earning real savings on the backlog mix at the time, and headroom
 exists to raise the per-run cap again. Don't raise it on theory alone a second time.
