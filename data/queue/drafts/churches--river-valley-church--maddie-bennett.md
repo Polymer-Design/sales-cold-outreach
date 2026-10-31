@@ -28,7 +28,7 @@ body: |
 
   Every one of River Valley's 15 campus pages, from Apple Valley to Eswatini, still says "More Information Coming Soon," even with nearly 10,000 people attending each week.
 
-  You're already on Webflow, so this isn't a rebuild. It's a team keeping pace with growth that's outrun the site's content.
+  You're already on Webflow, so this isn't a rebuild. You just need a team keeping pace with growth that's outrun the site's content.
 
   That's what our Grow plan is built for: a dedicated team adding real campus pages monthly, so newcomers land on something real instead of a placeholder.
 
