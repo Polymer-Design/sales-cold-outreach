@@ -48,6 +48,16 @@ per ICP).
   `light` arm (Sunlight YC S22), 5 on `deep` (Patientdesk.ai, Parametric, SendtoWin, Intryc,
   The Travel Foundry) - arm assigned per the deterministic hash, not chosen. Still far below
   the 100/200-per-arm bar needed before reading anything into results.
+- **Update 2026-11-01 (biweekly review):** 71 of 113 total sends since launch now carry an
+  arm: 33 `deep`, 38 `light` (the other 42 sends predate 2026-10-21 or are hot-tier drafts,
+  which don't get an arm). Still under the 100/arm minimum - still collecting, no verdict.
+
+Reviewed 2026-11-01 (biweekly review): first review with real send volume (113 sends,
+2026-10-17 through 2026-10-30), delivery clean on 3/4 mailboxes, 0 replies/opens so far (too
+early to read). No experiment cleared the sample-size bar so `config/playbook.yaml` stays
+unchanged. Trailing 7-day Claude spend is over the weekly cost cap ($70.32 vs. $40), driven
+by one 2026-10-30 catch-up run - next scheduled run will auto-skip; see
+`data/reports/2026-11-01-review.md` for the full breakdown and recommendations.
 
 Reviewed 2026-08-15 (biweekly review): still pre-launch, zero sends, nothing to start yet.
 See `data/reports/2026-08-15-review.md`.
