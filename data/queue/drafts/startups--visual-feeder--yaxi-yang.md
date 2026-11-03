@@ -3,11 +3,12 @@ contact_name: Yaxi Yang
 contact_title: Co-founder, COO
 organization: Visual Feeder
 icp: startups
-apollo_contact_id: 66f3cdad47398e0001efea46
+apollo_contact_id: 6ae9e9472084d10018903c5e
 score_total: 56
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
+pushed_at: 2026-11-03T14:04:00Z
 drafted_at: 2026-10-30
 ---
 
