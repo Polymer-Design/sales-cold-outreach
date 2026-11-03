@@ -1,12 +1,16 @@
 # Reply check run
 
-Executed by `.github/workflows/reply-check.yml` (every 2h, business hours ET) or manually.
+Executed by `.github/workflows/reply-check.yml` (3x per weekday, only when `scripts/reply_gate.py` finds an unhandled reply) or manually.
 
 ## 1. Pull new replies
 
-Via `scripts/apollo_client.py replies --since <last-run>` (last run timestamp lives in
-`data/replies/.last-check`). In dry_run mode with no mailboxes connected this returns
-nothing; that's a healthy no-op, exit quietly.
+Via `scripts/apollo_client.py replies` (no `--since`), then drop any message whose `id` is
+already in `data/replies/seen.json` - those were handled by an earlier run. What's left is
+this run's work. (Changed 2026-11-03: the workflow now only calls this run when
+`scripts/reply_gate.py` finds an unhandled replied message by that same rule, and records
+the ids as handled after this run succeeds. `--since` filters on when the OUTBOUND email was
+created, so it can miss a reply to an older email.) In dry_run mode with no mailboxes
+connected this returns nothing; that's a healthy no-op, exit quietly.
 
 ## 2. Classify
 

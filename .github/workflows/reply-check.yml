@@ -61,7 +61,21 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
 
+      - name: Any unhandled replies? (free, no Claude)
+        # Added 2026-11-03: every check since mid-October found 0 replies and still paid
+        # for a Claude run to say so. Fails open - if Apollo can't be read, Claude runs.
+        id: gate
+        run: |
+          python3 scripts/reply_gate.py check >> "$GITHUB_OUTPUT"
+          if grep -q "new=false" "$GITHUB_OUTPUT"; then
+            date -u +%FT%TZ > data/replies/.last-check
+          fi
+        env:
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+
       - name: Check and classify replies with Claude
+        if: steps.gate.outputs.new != 'false'
+        id: claude
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -77,6 +91,10 @@ jobs:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           GH_TOKEN: ${{ github.token }}
+
+      - name: Remember the replies Claude handled
+        if: steps.claude.outcome == 'success'
+        run: python3 scripts/reply_gate.py mark
 
       - name: Push any uncommitted data changes
         # anthropics/claude-code-action rewrites the git remote to its own short-lived

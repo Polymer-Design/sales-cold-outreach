@@ -25,6 +25,13 @@ run's turn budget and the backlog only grows (confirmed live 2026-10-15/16: inge
 3 days straight, scoring ran 0 of those days, 59 leads piled up unscored while 0 new ones
 got the chance to clear warm tier).
 
+**First, run the free pre-screen:** `python scripts/prescreen.py`, then commit
+`data/leads/index.jsonl` ("prescreen YYYY-MM-DD"). It marks cold, with no Claude research,
+startup leads in an excluded industry (e-commerce/DTC, from Apollo's `org_data`) or whose
+domain is dead or now redirects to a different company. Added 2026-11-03: 81 of the first 221
+startups scored came out cold, mostly for reasons visible without research. Leads it screens
+out don't count toward this step's per-run cap - the slots go to leads worth researching.
+
 Run the **lead-scoring** skill on every unscored lead already sitting in
 `data/leads/index.jsonl` (`status: ingested`) and every `status: ingested` row in
 `data/leads/churches/candidates.csv`. Cap this step at **20 leads per run**, well under
@@ -123,11 +130,14 @@ Take the highest-scored undrafted leads, hot tier first then warm, up to
 `limits.emails_drafted_per_day`. Cold tier: skip (tag only). For each, run the
 **outreach-email** skill, then the **fact-check-email** skill. Respect the max-2-rewrite rule.
 
-**Draft per ICP, and only what can be sent today.** For each ICP, today's sending room is
-(that ICP's mailboxes in `config/domains.yaml`) × `inbox_health.send_caps.new_contacts_per_mailbox_daily`,
-minus contacts already added today and minus drafts already sitting at `status: ready` for
-that ICP. Draft at most that many per ICP - a draft that can't be pushed today just ages its
-research and costs money (2026-10-28: 26 drafted, 20 could go out). Split
+**Draft per ICP, keeping a 2-day stock of ready drafts.** For each ICP, one day's sending
+room is (that ICP's mailboxes in `config/domains.yaml`) ×
+`inbox_health.send_caps.new_contacts_per_mailbox_daily`. Target 2 days of that room in
+warm drafts at `status: ready` (after today's pushes): draft at most (2 × daily room) −
+(ready drafts already waiting for that ICP). The stock is what keeps sending steady when a
+run stops at its budget or gets skipped - step 0 of the next run sends from it before doing
+any research (added 2026-11-03). Don't go past 2 days: research older than that gets stale
+(2026-10-28: drafting far past what could be sent just aged research). Split
 `limits.emails_drafted_per_day` between the ICPs that have warm/hot leads waiting, up to
 half each; give a share one ICP can't use to the other. Within an ICP, hot first, then
 highest score.
