@@ -7,7 +7,7 @@ apollo_contact_id: 54abb3697468693007975207
 score_total: 79
 tier: hot
 research_arm: deep
-status: ready
+status: hot_approved
 drafted_at: 2026-11-03
 ---
 
@@ -21,7 +21,7 @@ drafted_at: 2026-11-03
 - knowledge/business-overview.md (Webflow -> monthly plan; churches lead with Care or Grow; plain capability statement, no approved subscription_track case study exists yet per knowledge/case-studies/README.md)
 
 ## email_1
-subject: "no items found"
+subject: Northland <> no items found
 body: |
   Hey Bradley,
 
@@ -31,7 +31,7 @@ body: |
 
   You're already on Webflow, so this isn't a rebuild. It's a dedicated team catching things like this before anyone else does.
 
-  Worth 15 minutes?
+  Worth 15 minutes to see how we can help maintain and grow your website?
 
   God Bless,
   Ethan

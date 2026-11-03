@@ -7,7 +7,7 @@ apollo_contact_id: 5b3090fea6da98eb5d45d46c
 score_total: 84
 tier: hot
 research_arm: light
-status: ready
+status: hot_approved
 drafted_at: 2026-11-03
 ---
 
@@ -22,17 +22,17 @@ drafted_at: 2026-11-03
 - knowledge/business-overview.md (Webflow -> monthly plan; churches lead with Care or Grow; plain capability statement, no approved subscription_track case study exists yet per knowledge/case-studies/README.md)
 
 ## email_1
-subject: the © XXXX footer
+subject: Fellowship <> the © XXXX footer
 body: |
   Hey Aaron,
 
   Fellowship's homepage footer still reads "© XXXX Fellowship Church," next to a couple of placeholder links that go nowhere.
 
-  For one of the largest churches in the country, across five campuses plus online, that's a rough front door for anyone checking service times before Sunday.
+  For one of the largest churches in the country, that's a rough front door for anyone checking service times before Sunday.
 
   You're already on Webflow, so this isn't a rebuild. It's a dedicated team catching things like this as they show up, plus building new pages as the campuses grow.
 
-  Worth 15 minutes to talk through?
+  Worth 15 minutes to talk through how we could help?
 
   God Bless,
   Ethan
