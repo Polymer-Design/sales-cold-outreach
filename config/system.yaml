@@ -42,25 +42,17 @@ scoring:
   draft_cold_tier: false
 
 cost_caps:
-  # Soft weekly ceiling on daily-pipeline's real Claude spend (scripts/cost_tracker.py),
-  # checked before each run starts.
+  # Hard ceiling on ONE automated daily-pipeline run's Claude spend, enforced inside the
+  # run itself (claude --max-budget-usd, set from this value in daily-pipeline.yml). When a
+  # run hits it, it stops; whatever it already committed stays. Every weekday run starts
+  # with a fresh budget - nothing carries over, so one expensive day (or a manual run)
+  # never blocks the days after it.
   #
-  # Originally set by Ethan 2026-10-17 at $20/week, then bumped to $40 the week of
-  # 2026-10-19 as a one-week TEMP measure (that week's spend was inflated by manually
-  # re-triggering runs to build/test the Hot Leads dashboard). Revisited 2026-10-26 per the
-  # scheduled reminder: real steady-state cost (not the dashboard-testing spend) turned out
-  # to be $7-9 per day the pipeline actually does work (scoring + drafting/pushing), i.e.
-  # ~$35-45/week for a normal 5-day week even with zero manual re-triggering - $20 was never
-  # going to cover real operation, and at $40 the cap already skipped two full weekdays
-  # (2026-10-22, 10-23) in one week. Confirmed with Ethan 2026-10-26: **keep $40/week as the
-  # standing cap**, not temporary - it matches what full-utilization operation actually
-  # costs. Revisit only if real usage drifts meaningfully from this, not on a timer.
-  #
-  # Not a hard real-time circuit breaker - it can't stop a run already in progress from
-  # overspending, but it stops the NEXT scheduled run once the
-  # trailing 7 days are at/over this - see daily-pipeline.yml's "Check weekly cost cap" step.
-  # A skipped run notifies (scripts/notify.py), never just silently stalls lead flow.
-  weekly_usd: 40
+  # Replaced the trailing 7-day cap (weekly_usd: 40) on 2026-11-03 per Ethan: one $35 run
+  # on 10/30 kept the pipeline dark for a whole week of paid-for inboxes. $10/day is about
+  # what a normal full run cost before (10/27-10/29: $7.46-$12.56), so a normal day finishes
+  # and an outlier day gets cut off at $10 instead of $35. Worst case ~$50 per 5-day week.
+  daily_usd: 10
 
 sequence:
   steps: 3

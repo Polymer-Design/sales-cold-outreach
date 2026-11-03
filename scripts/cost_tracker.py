@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Tracks real Claude API spend for daily-pipeline runs and enforces a soft weekly cap.
+"""Tracks real Claude API spend for daily-pipeline runs.
 
-Soft, not a real-time circuit breaker: it can't stop a run already in progress from
-overspending, but it stops the NEXT run from starting once the rolling 7-day total is at
-or over the configured cap (config/system.yaml cost_caps.weekly_usd). Logs every run's
-real reported cost to data/costs.jsonl regardless of outcome, so the running total is
-accurate even after a crash (see daily-pipeline.yml's `if: always()` record step).
+The cap itself is per run: config/system.yaml cost_caps.daily_usd goes to claude's
+--max-budget-usd, which stops a run once it has spent that much. This script prints that
+number for the workflow and logs every run's real reported cost to data/costs.jsonl
+regardless of outcome (see daily-pipeline.yml's `if: always()` record step).
 
 Usage:
+  python scripts/cost_tracker.py budget    # prints cost_caps.daily_usd
   python scripts/cost_tracker.py record --workflow daily-pipeline --log <claude-execution-output.json>
-  python scripts/cost_tracker.py check --window week   # prints total, exits 1 if >= cap
+  python scripts/cost_tracker.py check --window week --cap 50   # report a trailing total
 """
 
 import argparse
@@ -28,7 +28,11 @@ _COST_RE = re.compile(r'"total_cost_usd"\s*:\s*(-?[0-9]+(?:\.[0-9]+)?)')
 
 def _load_cap() -> float:
     cfg = yaml.safe_load((REPO_ROOT / "config/system.yaml").read_text())
-    return float((cfg.get("cost_caps") or {}).get("weekly_usd", 9999))
+    return float((cfg.get("cost_caps") or {}).get("daily_usd", 10))
+
+
+def budget(args) -> None:
+    print(f"{_load_cap():g}")
 
 
 def _extract_cost(log_path: str) -> float | None:
@@ -106,6 +110,9 @@ def main() -> None:
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest="cmd", required=True)
 
+    bud = sub.add_parser("budget")
+    bud.set_defaults(func=budget)
+
     rec = sub.add_parser("record")
     rec.add_argument("--workflow", required=True)
     rec.add_argument("--log", required=True)
@@ -114,7 +121,7 @@ def main() -> None:
     chk = sub.add_parser("check")
     chk.add_argument("--window", choices=["day", "week", "month"], default="week")
     chk.add_argument("--cap", type=float, default=None,
-                      help="Override config/system.yaml cost_caps.weekly_usd for testing.")
+                      help="Cap to compare against (default: cost_caps.daily_usd).")
     chk.set_defaults(func=check)
 
     args = p.parse_args()

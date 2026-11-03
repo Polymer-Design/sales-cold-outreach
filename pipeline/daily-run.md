@@ -3,6 +3,19 @@
 Executed by `.github/workflows/daily-pipeline.yml` (weekdays 9am ET) or manually.
 Read `CLAUDE.md` hard rules first. Check `config/system.yaml` `mode` before every Apollo write.
 
+**This run has a hard spend budget** (`config/system.yaml` `cost_caps.daily_usd`, enforced by
+`--max-budget-usd`). When it runs out, the run stops mid-step with no warning. So:
+
+## 0. Push what's already ready, before anything else
+
+Run step 4 (push ready drafts) first, on drafts left from earlier runs: `hot_approved` on
+main, and warm `status: ready` drafts within today's per-mailbox cap. These cost almost
+nothing and are the only part of the run that actually sends email - they must never wait
+behind scoring and drafting, which are what use up the budget. (Added 2026-11-03: a run
+that stops at the budget during scoring should still have sent yesterday's drafts.) Commit
+and push right after. Then continue with step 1; step 4 runs again at the end for anything
+drafted today.
+
 ## 1. Score the backlog first
 
 Scoring is the turn-expensive step (platform detection + real research per lead), not
