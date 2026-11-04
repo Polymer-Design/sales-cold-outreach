@@ -54,43 +54,58 @@ export function getFunnelStats(icpFilter?: "startups" | "churches") {
   const events = readJsonl<FunnelEvent>("data/funnel/events.jsonl").filter(
     (e) => !icpFilter || e.icp === icpFilter
   );
+  return funnelStats(events);
+}
 
+// Pure, so it can be tested without the repo's data files.
+export function funnelStats(events: FunnelEvent[]) {
   const reached = new Map<string, Set<StageKey>>();
   const source = new Map<string, string>(); // email -> source, from its "booked" event
+  const emailedByUs = new Set<string>();
   for (const e of events) {
     const stage = e.stage as StageKey;
     const set = reached.get(e.email) ?? new Set<StageKey>();
     for (const s of REACHES[stage] ?? [stage]) set.add(s);
     reached.set(e.email, set);
     if (e.source) source.set(e.email, e.source);
+    if (stage === "emailed") emailedByUs.add(e.email);
   }
 
+  // A call booked direct (referral, the website - nobody we emailed) isn't part of the
+  // outreach funnel. Folding it in like an outreach lead counted it as emailed, replied and
+  // interested, and inflated the booked-call rate (2026-11-04: 2 direct bookings, 0 from
+  // outreach, overview still showed a non-zero booked/emailed rate). Direct leads only
+  // count toward total intros booked (and won/lost, below).
+  const isDirect = (em: string) => source.get(em) === "direct" && !emailedByUs.has(em);
+  const outreach = [...reached.entries()].filter(([em]) => !isDirect(em));
+  const direct = [...reached.entries()].filter(([em]) => isDirect(em));
+
   const counts = Object.fromEntries(
-    STAGE_KEYS.map((s) => [s, [...reached.values()].filter((set) => set.has(s)).length])
+    STAGE_KEYS.map((s) => [s, outreach.filter(([, set]) => set.has(s)).length])
   ) as Record<StageKey, number>;
 
   const bookedRate = counts.emailed ? Math.round((counts.booked / counts.emailed) * 1000) / 10 : null;
   const closeRate = counts.booked ? Math.round((counts.won / counts.booked) * 1000) / 10 : null;
 
-  // Two-layer booked breakdown: total intros booked, and the slice that came through
-  // our own outreach vs. direct/organic. Same logic as scripts/funnel.py's stats(), so
-  // the dashboard and the CLI agree.
+  // Two-layer booked breakdown: total intros booked (outreach + direct), and the slice that
+  // came through our own outreach. Same logic as scripts/funnel.py's stats().
   const bookedEmails = [...reached.entries()].filter(([, s]) => s.has("booked")).map(([em]) => em);
   const bookedBySource: Record<string, number> = {};
   for (const em of bookedEmails) {
-    const src = source.get(em) || "unknown";
+    const src = isDirect(em) ? "direct" : source.get(em) || (emailedByUs.has(em) ? "outreach" : "unknown");
     bookedBySource[src] = (bookedBySource[src] ?? 0) + 1;
   }
+  const bookedTotal = bookedEmails.length;
   const bookedFromOutreach = bookedBySource["outreach"] ?? 0;
-  const bookedFromOutreachPct = counts.booked
-    ? Math.round((bookedFromOutreach / counts.booked) * 1000) / 10
-    : null;
+  const bookedFromOutreachPct = bookedTotal ? Math.round((bookedFromOutreach / bookedTotal) * 1000) / 10 : null;
 
   return {
     counts,
     bookedRate,
     closeRate,
-    leadsTotal: reached.size,
+    leadsTotal: outreach.length,
+    bookedTotal,
+    bookedDirect: direct.filter(([, s]) => s.has("booked")).length,
     bookedBySource,
     bookedFromOutreach,
     bookedFromOutreachPct,

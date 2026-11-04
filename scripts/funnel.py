@@ -107,6 +107,16 @@ def stats(since: str | None, icp: str | None, arm: str | None = None) -> dict:
         meta.setdefault(email, {}).update(
             {k: e[k] for k in ("icp", "org", "source", "arm") if e.get(k)})
 
+    # A call booked direct (referral, the website - nobody we emailed) isn't part of the
+    # outreach funnel: folding it in counted it as emailed/replied/interested and inflated
+    # the booked-call rate. Direct leads only count toward total intros booked and won/lost.
+    # Same rule as dashboard/lib/data.ts funnelStats().
+    emailed_by_us = {e["email"] for e in events if e["stage"] == "emailed"}
+    direct = {em: s for em, s in reached.items()
+              if meta.get(em, {}).get("source") == "direct" and em not in emailed_by_us}
+    all_reached = reached
+    reached = {em: s for em, s in reached.items() if em not in direct}
+
     if arm:
         keep = {em for em, m in meta.items() if m.get("arm") == arm}
         reached = {em: s for em, s in reached.items() if em in keep}
@@ -144,17 +154,20 @@ def stats(since: str | None, icp: str | None, arm: str | None = None) -> dict:
     # organic (booked with nothing on file - referral, website, etc). Pre-source events
     # (recorded before this field existed) fall under "unknown" rather than being
     # silently dropped or miscounted either way.
-    booked_emails = [em for em, s in reached.items() if "booked" in s]
+    booked_scope = reached if arm else all_reached
+    booked_emails = [em for em, s in booked_scope.items() if "booked" in s]
     booked_by_source: dict[str, int] = {}
     for em in booked_emails:
-        src = meta.get(em, {}).get("source") or "unknown"
+        src = ("direct" if em in direct else meta.get(em, {}).get("source")
+               or ("outreach" if em in emailed_by_us else "unknown"))
         booked_by_source[src] = booked_by_source.get(src, 0) + 1
     booked_from_outreach = booked_by_source.get("outreach", 0)
+    booked_total = len(booked_emails)
 
     # Booked calls still awaiting a won/lost mark - the "needs you" list.
     awaiting = [
         {"email": em, **meta.get(em, {})}
-        for em, s in reached.items()
+        for em, s in all_reached.items()
         if "booked" in s and "won" not in s and "lost" not in s
     ]
 
@@ -163,8 +176,9 @@ def stats(since: str | None, icp: str | None, arm: str | None = None) -> dict:
         "counts": counts,
         "booked_call_rate_pct": rate(booked, emailed),   # booked / emailed
         "close_rate_pct": rate(won, booked),             # won / booked
+        "booked_total": booked_total,                    # outreach + direct
         "booked_by_source": booked_by_source,
-        "booked_from_outreach_pct": rate(booked_from_outreach, booked),
+        "booked_from_outreach_pct": rate(booked_from_outreach, booked_total),
         "awaiting_outcome": awaiting,
         "by_arm": by_arm,
         "filters": {"since": since, "icp": icp, "arm": arm},
@@ -182,9 +196,9 @@ def _print_stats(s: dict) -> None:
     cr = s["close_rate_pct"]
     print(f"  booked-call rate (booked/emailed): {br if br is not None else 'n/a'}%")
     print(f"  close rate (won/booked):           {cr if cr is not None else 'n/a'}%")
-    if c["booked"]:
+    if s["booked_total"]:
         op = s["booked_from_outreach_pct"]
-        print(f"\n  booked by source (of {c['booked']} total):")
+        print(f"\n  booked by source (of {s['booked_total']} total, outreach + direct):")
         for src, n in sorted(s["booked_by_source"].items(), key=lambda kv: -kv[1]):
             print(f"    {src:10} {n}")
         print(f"  -> {op if op is not None else 'n/a'}% of booked calls came from our outreach")
