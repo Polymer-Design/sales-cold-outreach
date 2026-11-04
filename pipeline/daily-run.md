@@ -140,7 +140,10 @@ any research (added 2026-11-03). Don't go past 2 days: research older than that 
 (2026-10-28: drafting far past what could be sent just aged research). Split
 `limits.emails_drafted_per_day` between the ICPs that have warm/hot leads waiting, up to
 half each; give a share one ICP can't use to the other. Within an ICP, hot first, then
-highest score.
+highest score. **Alternate ICPs while drafting** (one church, one startup, one church...)
+rather than finishing one ICP before starting the other, so a run that ends early (budget,
+turns) still leaves both ICPs with drafts. Confirmed 2026-11-04: the run drafted 7 churches
+(4 hot) first, ended, and the startup inboxes got 0 new contacts despite 12 fresh warm leads.
 
 ## 4. Push ready drafts (live mode only)
 
