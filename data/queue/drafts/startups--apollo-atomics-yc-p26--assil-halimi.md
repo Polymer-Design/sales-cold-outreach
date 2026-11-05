@@ -7,7 +7,7 @@ apollo_contact_id: 62caaa5f3f875200019266b4
 score_total: 83
 tier: hot
 research_arm: light
-status: ready
+status: hot_approved
 drafted_at: 2026-11-05
 ---
 
@@ -24,7 +24,7 @@ subject: post-seed site plans
 body: |
   Hey Assil,
 
-  Congrats on the $31M seed, that's a serious vote of confidence in compact reactors.
+  Congrats on the $31M seed! That's a serious vote of confidence.
 
   Raises that size usually mean new hires, new investors, and a lot more eyes on apolloatomics.com within the next few months.
 
