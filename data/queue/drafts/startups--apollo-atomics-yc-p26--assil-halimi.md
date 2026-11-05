@@ -24,7 +24,7 @@ subject: post-seed site plans
 body: |
   Hey Assil,
 
-  Congrats on the $31M seed, that's a serious vote of confidence in compact reactors.
+  Congrats on the $31M seed! That's a serious vote of confidence.
 
   Raises that size usually mean new hires, new investors, and a lot more eyes on apolloatomics.com within the next few months.
 
