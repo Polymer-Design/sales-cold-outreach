@@ -7,8 +7,11 @@ apollo_contact_id: 57d90f34a6da98724a55bd00
 score_total: 75
 tier: hot
 research_arm: deep
-status: hot_approved
+status: pushed
 drafted_at: 2026-11-04
+pushed_at: 2026-11-05T13:11:33Z
+mailbox: ehoover@integratedchurchwebsites.com
+apollo_contact_id_resolved: 6aec806bf2cfee001029f5b5
 ---
 
 ## research
