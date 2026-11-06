@@ -7,8 +7,11 @@ apollo_contact_id: 57dbe20aa6da9868cb325269
 score_total: 66
 tier: warm
 research_arm: light
-status: ready
+status: pushed
 drafted_at: 2026-11-06
+pushed_at: 2026-11-06
+pushed_via_mailbox: ethan@growwithpolymer.com
+apollo_contact_id_pushed: 6aedd67adb3bc7000c50db18
 ---
 
 ## research
