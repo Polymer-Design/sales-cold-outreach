@@ -3,12 +3,14 @@ contact_name: Assil Halimi
 contact_title: Founder and CEO
 organization: Apollo Atomics (YC P26)
 icp: startups
-apollo_contact_id: 62caaa5f3f875200019266b4
+apollo_contact_id: 6aedd186768a8b0010bb634e
 score_total: 83
 tier: hot
 research_arm: light
-status: hot_approved
+status: pushed
 drafted_at: 2026-11-05
+pushed_at: 2026-11-06T13:09:30Z
+pushed_via_mailbox: ethan@growwithpolymer.com
 ---
 
 ## research
