@@ -33,6 +33,10 @@ it doesn't go in an email. Items marked PENDING are not citable yet. Items marke
 
 ## Pricing (confirmed 2026-10-11, citable when relevant)
 
+When Ethan sends an updated pricing/tiers file, it replaces this section: update it here,
+keep the date current, and note what changed in the commit message. This file is the only
+pricing source the outreach, call-prep and booking-reply skills read.
+
 Outreach never closes a sale or quotes a final price - every email's CTA is the 20-minute
 intro call (separate Cal.com link per ICP, see `config/system.yaml`). Prices below are
 public and fine to set expectations with ("fixed price, starting at $3,000"); **Internal**
@@ -54,6 +58,11 @@ Same structure both ICPs. Timelines count from the kickoff date (the discovery m
   50% at signing / 50% at design approval.
 - Custom: from $18,000 - scoped on a follow-up call (e.g. multi-campus). 40/30/30 payment,
   final at launch.
+
+**Page counts mean static pages.** CMS collection items (blog posts, sermons, events, team
+bios, case studies) don't count toward a tier's page limit, however many there are (Ethan,
+2026-11-09). CMS adds setup work per collection, and migrating a large archive can push a
+project toward Custom, but the item count itself never does.
 
 **Included in every build:** custom design in Figma, responsive development, basic on-page
 SEO at launch, 2 design revision rounds (3 on Custom), set meetings (discovery, design
