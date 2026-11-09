@@ -91,10 +91,10 @@ Run fresh (don't trust a stale cached value if the lead record is old):
 
 ## Step 4 — Recommend a package
 
-**Counting pages for a tier:** only static pages count toward a tier's page limit (Core's 5
-for startups, 10 for churches). CMS collection items - blog posts, sermons, events, team
+**Counting pages for a tier:** a page means a unique layout, and only those count toward a
+tier's page limit (Core: up to 6, same for churches and startups). CMS collection items - blog posts, sermons, events, team
 bios, case studies, "insights" - do NOT count, however many there are (confirmed by Ethan
-2026-11-09). What CMS adds is setup work per collection (its template and fields) and any
+2026-11-09, and in the November 2026 pricing). What CMS adds is setup work per collection (its template and fields) and any
 migration of existing items; a large archive to migrate can push toward Custom on its own,
 the item count never does. Sitemaps often list legal pages, tag/category archives and
 thank-you pages as "static" - say the static count is an upper estimate to confirm on the
@@ -104,14 +104,23 @@ Using the track (Step 3), the page count and CMS scope (Step 3), and
 `knowledge/business-overview.md`'s pricing and "which offer to lead with" section, name an
 actual recommended package or plan - not just the track. Examples of the reasoning to show,
 not just the conclusion:
-- 1 page, new_build_track → Sprint/Campaign
-- 3-5 pages (startups) or up to 10 (churches), new_build_track, no deep CMS scope → Core
-- 6+ pages (startups) or 10+ (churches), or real CMS/migration complexity, or multi-campus,
-  or Series B+ → Custom
+- 1 page, new_build_track → Sprint ($2,500, live in 2 weeks). Churches too: Campaign is
+  retired.
+- Up to 6 unique layouts, new_build_track, standard CMS → Core ($6,500, live in 4 weeks).
+  One or two layouts over → Core plus an extra page at $750 each (internal add-on, fine to
+  quote on the call).
+- Well past 6 layouts, real migration or CMS architecture work, multi-campus, or Series B+
+  → Custom (from $12,000, 6-10 weeks, set before start).
 - Already on Webflow/Webflow Source, or a custom-code site (Astro/Vercel/etc) →
   subscription_track monthly plan tier (Grow/Partner for startups, Care/Grow for churches)
   per `knowledge/business-overview.md`
-- Church on Planning Center specifically → lead with Core (integrations already included)
+- Integrations (Planning Center, YouTube, CRM, scheduling) are add-ons at $1,500 each, no
+  longer included in Core. A church on Planning Center + YouTube is Core + two integrations
+  (about $9,500) or Custom, which is where the pricing doc says most of those church sites
+  land. Show both and what would decide it.
+
+Always pair a price with its timeline in the brief ("$6,500, live in 4 weeks"); that's how
+Ethan says it on the call.
 
 This is a suggestion for Ethan to use or override on the call, not a locked quote - frame it
 that way in the briefing, and never state a price as if it's already been offered to them.
@@ -130,8 +139,8 @@ lead, not a script.
 4. 14-17 min - Timeline, launch date, who decides and who will run the site.
 5. 17-20 min - Ethan plays back what he heard and names the tier he thinks fits, with the
    reason. **If it fits clearly inside one tier, he names the price on the call** (e.g.
-   "that's our Core build, $9,500"). If it sits between tiers or is Custom, he names the tier
-   and the starting price ("Custom, from $15,000") and offers a scoping call instead of a
+   "that's our Core build, $6,500, live in 4 weeks"). If it sits between tiers or is Custom,
+   he names the tier and the starting price ("Custom, from $12,000") and offers a scoping call instead of a
    number. Next step: a proposal, or the scoping call. (Confirmed by Ethan 2026-11-09.)
 
 **Questions**, grouped by what each one decides. Use the standard set below, then make 3-5
@@ -148,7 +157,7 @@ specific ones so Ethan can see what the research added.
 - *Pages* (sets the tier - static pages only):
   - Which pages do you picture at launch? (Walk the main nav together.)
   - Anything on the current site you'd drop or merge?
-  - Is there a single page or campaign that matters most? (Sprint/Campaign fit.)
+  - Is there a single page or campaign that matters most? (Sprint fit.)
 - *Content and CMS* (doesn't change page count, does change setup work):
   - What content changes often - blog, news, events, team, case studies, sermons?
   - Who will update the site after launch, and how comfortable are they with tools?
@@ -177,8 +186,8 @@ specific ones so Ethan can see what the research added.
 
 **Tier map for the wrap-up** - how answers point to a tier (prices from
 `knowledge/business-overview.md`, never a quote): one page or a single campaign →
-Sprint/Campaign; up to 5 static pages (startups) / 10 (churches) with standard CMS and
-integrations → Core; more static pages, heavy migration, several custom integrations,
+Sprint; up to 6 unique page layouts with standard CMS → Core, with any integrations or an
+extra page or two as add-ons; well past 6 layouts, heavy migration, several integrations,
 compliance review, multi-campus, or a team that needs a custom Astro + Sanity setup to scale →
 Custom (scoped on a follow-up call). Already on Webflow or a custom-code site and happy with
 it → a monthly plan instead of a rebuild. Note in the briefing which 2-3 answers would

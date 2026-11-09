@@ -4,15 +4,16 @@
 import type { FullTimeSplit, PricingConfig } from "./config.ts";
 
 export const PLAN_KEYS = ["care", "grow", "partner", "plus"] as const;
-export const BUILD_KEYS = ["sprint", "sCore", "cCore", "cCustom"] as const;
+// November 2026 pricing: one Sprint, Core and Custom for both ICPs (Campaign, Church Core
+// and the separate church prices are retired).
+export const BUILD_KEYS = ["sprint", "core", "custom"] as const;
 export type PlanKey = (typeof PLAN_KEYS)[number];
 export type BuildKey = (typeof BUILD_KEYS)[number];
 
 export const BUILD_LABEL: Record<BuildKey, string> = {
-  sprint: "Sprint / Campaign",
-  sCore: "Startup Core",
-  cCore: "Church Core",
-  cCustom: "Church Custom",
+  sprint: "Sprint",
+  core: "Core",
+  custom: "Custom",
 };
 
 export type GoalsState = {
@@ -35,8 +36,8 @@ export const DEFAULT_GOALS: GoalsState = {
   actAvg: 0,
   alloc: null,
   plans: { care: 2, grow: 2, partner: 2, plus: 1 },
-  builds: { sprint: 8, sCore: 4, cCore: 6, cCustom: 2 },
-  buildHours: { sprint: 25, sCore: 60, cCore: 90, cCustom: 130 },
+  builds: { sprint: 8, core: 10, custom: 2 },
+  buildHours: { sprint: 25, core: 55, custom: 130 },
 };
 
 export function mergeGoals(raw: Partial<GoalsState> | null | undefined): GoalsState {
@@ -47,8 +48,11 @@ export function mergeGoals(raw: Partial<GoalsState> | null | undefined): GoalsSt
   }
   if (raw.alloc) s.alloc = { ...raw.alloc };
   Object.assign(s.plans, raw.plans ?? {});
-  Object.assign(s.builds, raw.builds ?? {});
-  Object.assign(s.buildHours, raw.buildHours ?? {});
+  // Only known keys: a mix saved before the November 2026 pricing has sCore/cCore/cCustom.
+  for (const k of BUILD_KEYS) {
+    if (typeof raw.builds?.[k] === "number") s.builds[k] = raw.builds[k];
+    if (typeof raw.buildHours?.[k] === "number") s.buildHours[k] = raw.buildHours[k];
+  }
   return s;
 }
 

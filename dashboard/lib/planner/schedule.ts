@@ -28,33 +28,32 @@ export const DEFAULT_SETTINGS: PlannerSettings = {
   anchor: "2026-10-05",
   cadence: 2,
   tiers: {
+    // November 2026 pricing: Sprint live in 2 weeks, Core in 4. Each template keeps the
+    // total hours of the old 4- and 8-week ones, with pairs of weeks merged.
     sprint: {
-      name: "Sprint / Campaign",
-      note: "One page · 4 weeks",
+      name: "Sprint",
+      note: "One page · 2 weeks",
       phases: [
-        { name: "Concept", kind: "concept", blair: 8, ethan: 1 },
-        { name: "Review + revisions", kind: "review", blair: 3, ethan: 1 },
-        { name: "Development", kind: "dev", blair: 4, ethan: 4 },
-        { name: "QA + launch", kind: "launch", blair: 1, ethan: 3 },
+        { name: "Concept + revisions", kind: "concept", blair: 11, ethan: 2 },
+        { name: "Development + launch", kind: "launch", blair: 5, ethan: 7 },
       ],
     },
     core: {
-      name: "Startup Core",
-      note: "Up to 5 pages · 8 weeks",
+      name: "Core",
+      note: "Up to 6 pages · 4 weeks",
       phases: [
-        { name: "Homepage concept", kind: "concept", blair: 9, ethan: 1 },
-        { name: "Review + revisions", kind: "review", blair: 3, ethan: 1 },
-        { name: "Interior pages", kind: "design", blair: 7, ethan: 2 },
-        { name: "Interior pages", kind: "design", blair: 6, ethan: 3 },
-        { name: "Client feedback", kind: "review", blair: 3, ethan: 1 },
-        { name: "Development", kind: "dev", blair: 4, ethan: 4 },
-        { name: "Development", kind: "dev", blair: 3, ethan: 4 },
-        { name: "QA + launch", kind: "launch", blair: 1, ethan: 3 },
+        { name: "Homepage concept + revisions", kind: "concept", blair: 12, ethan: 2 },
+        { name: "Interior pages", kind: "design", blair: 13, ethan: 5 },
+        { name: "Client feedback + development", kind: "dev", blair: 7, ethan: 5 },
+        { name: "Development + launch", kind: "launch", blair: 4, ethan: 7 },
       ],
     },
+    // Stored as "church" (the database's tier key) but it's Custom now: Church Core was
+    // retired in the November 2026 pricing, and most church sites with integrations land in
+    // Custom. Custom runs 6-10 weeks, set before start; this is the 8-week default.
     church: {
-      name: "Church Core",
-      note: "Up to 10 pages + integrations · 8 weeks",
+      name: "Custom",
+      note: "Scoped · 6-10 weeks (8-week template)",
       phases: [
         { name: "Homepage concept", kind: "concept", blair: 10, ethan: 1 },
         { name: "Review + revisions", kind: "review", blair: 4, ethan: 1 },

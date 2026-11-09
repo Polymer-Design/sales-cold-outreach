@@ -31,72 +31,87 @@ it doesn't go in an email. Items marked PENDING are not citable yet. Items marke
 - Voice in pricing-adjacent copy: plain, direct, no wordplay, no em dashes (same rule as
   everywhere else, see `knowledge/voice-and-tone.md`).
 
-## Pricing (confirmed 2026-10-11, citable when relevant)
+## Pricing (November 2026, approved by Ethan and Blair 2026-11-03, citable when relevant)
 
 When Ethan sends an updated pricing/tiers file, it replaces this section: update it here,
 keep the date current, and note what changed in the commit message. This file is the only
-pricing source the outreach, call-prep and booking-reply skills read.
+pricing source the outreach, call-prep and booking-reply skills read. (Source for this
+version: "Polymer pricing — November 2026", sent 2026-11-09. It replaced the separate
+startup and church price sheets from 2026-10-11.)
 
-Outreach never closes a sale or quotes a final price - every email's CTA is the 20-minute
-intro call (separate Cal.com link per ICP, see `config/system.yaml`). Prices below are
-public and fine to set expectations with ("fixed price, starting at $3,000"); **Internal**
-items at the bottom never appear in an email.
+One pricing view for both ICPs. No clients yet, so the priority is inbound, not margin:
+builds are priced above freelancer pricing and well below agency pricing, with timelines
+nobody else puts in writing.
+
+**Outreach never closes a sale or quotes a final price** - every email's CTA is the
+20-minute intro call (separate Cal.com link per ICP, see `config/system.yaml`). Public
+prices below are fine to set expectations with. **Speed is the edge, so a price always
+appears with its timeline**: "$6,500, live in 4 weeks", never the price alone. Don't call
+it launch, intro or discount pricing - it's how we work. **Internal** items never appear in
+an email.
 
 ### Initial builds
 
-Same structure both ICPs. Timelines count from the kickoff date (the discovery meeting).
+| | Sprint | Core | Custom |
+|---|---|---|---|
+| Price | $2,500 | $6,500 | From $12,000 |
+| Scope | 1 long-form page | Up to 6 pages, with CMS setup (blog, case studies, sermons, events) | Scoped. Most church sites with Planning Center + YouTube land here |
+| Live in | 2 weeks | 4 weeks | 6-10 weeks, set before start |
+| Payment | 100% on signing | 50% on signing / 50% at design approval | 40 / 30 / 30, final payment at launch |
+| Included | Custom design, responsive build, basic on-page SEO, 2 revision rounds, 30 days launch support | Same as Sprint | Same + strategy, CMS architecture, migration |
 
-**Startups & scale-ups:**
-- Sprint: $3,000 - one page, 30 days, 100% at signing.
-- Core: $9,500 - up to 5 pages, CMS where needed, 60 days, 50% at signing / 50% at design
-  approval.
-- Custom: from $15,000 - scoped on a follow-up call. 40/30/30 payment, final at launch.
-
-**Churches:**
-- Campaign: $3,000 - one page, 30 days, 100% at signing.
-- Core: $14,000 - up to 10 pages, **Planning Center + YouTube sermons included**, 60 days,
-  50% at signing / 50% at design approval.
-- Custom: from $18,000 - scoped on a follow-up call (e.g. multi-campus). 40/30/30 payment,
-  final at launch.
-
-**Page counts mean static pages.** CMS collection items (blog posts, sermons, events, team
-bios, case studies) don't count toward a tier's page limit, however many there are (Ethan,
-2026-11-09). CMS adds setup work per collection, and migrating a large archive can push a
-project toward Custom, but the item count itself never does.
-
-**Included in every build:** custom design in Figma, responsive development, basic on-page
-SEO at launch, 2 design revision rounds (3 on Custom), set meetings (discovery, design
-review, dev review, launch, handoff), 30 days of launch support (free fixes to anything we
-built - no free months of a monthly plan). Hosting is billed directly by the platform, not
-by Polymer.
-
-**Booking terms:** if a project can't start for 30+ days after signing, a 25% deposit holds
-the slot; the rest of the first payment is due at work start.
-
-**Add-ons (public):** Planning Center Events ($1,500, on Church Campaign), YouTube sermons
-($1,500, on Church Campaign), Planning Center Groups ($1,500, any church package),
-multi-campus filtering (from $2,000, quoted), integration or automation (from $1,500,
-quoted).
+- Same tiers for churches and startups. **The Campaign tier is retired** - churches use
+  Sprint for one-pagers (conferences, series, initiatives). **Church Core and the separate
+  church prices are gone** - there's one Core and one Custom.
+- Where the ICPs differ, it's one line, not a separate price, e.g. integrations:
+  "Churches: Planning Center, YouTube · Startups: CRM, scheduling, analytics."
+- **A "page" means a unique layout.** CMS items (blog posts, sermons, events, team bios,
+  case studies) never count toward a tier's page total, however many there are. CMS adds
+  setup work per collection, and migrating a large archive can push a project toward
+  Custom, but the item count itself never does.
+- Timelines count from the Kickoff Date: the business day after the first payment,
+  completed onboarding questionnaire, brand assets and account access are in. Final content
+  is due by a Content Due Date set at kickoff.
+- Booking terms: if a project can't start for 30+ days after signing, a 25% deposit holds
+  the slot; the rest of the first payment is due at work start.
+- Capacity: "We take on a limited number of builds each month" is fine to say. Never
+  publish slot counts.
+- Hosting is billed directly by the platform, not by Polymer.
 
 ### Monthly plans
 
-Same four plans both ICPs, billed monthly in advance through Stripe, no contract. Ideal for
-(not limited to) sites already on Webflow/Webflow Source; also fits Astro sites, Vercel
-sites, and other custom-code sites. A site on a hosted builder (WordPress, Squarespace,
-Wix, a church-specific platform) needs a new build first - never pitch a monthly plan as a
-replacement for that.
+Same plans both ICPs, billed monthly in advance through Stripe, no contract. Ideal for (not
+limited to) sites already on Webflow/Webflow Source; also fits Astro, Vercel and other
+custom-code sites. A site on a hosted builder (WordPress, Squarespace, Wix, a church-specific
+platform) needs a new build first - never pitch a monthly plan as a replacement for that.
 
-| | Care | Grow | Partner | Partner Plus |
-|---|---|---|---|---|
-| Price | $500/mo | $1,500/mo | $3,000/mo | $5,000/mo |
-| Hours | ~3 | ~10 | 15 | 30 |
-| First response | 3 business days | 2 business days | 1 business day | 1 business day |
-| Scope | Fixes, small edits, content updates | Care + new pages, landing pages, CMS work, small automations | Grow + design collateral, decks, brand work | Same as Partner |
+| | Care | Grow (most popular) | Partner |
+|---|---|---|---|
+| Price | $500/mo | $1,000/mo | $2,500/mo |
+| First response | 3 business days | 2 business days | 1 business day |
+| Scope | Fixes, small edits, content updates | Care + new pages, landing pages, CMS work, small automations | Grow + design collateral, decks, brand work |
 
-Uptime monitoring and integration fixes are included and don't use hours. Extra hours: five-
-hour blocks for $1,000, upfront, good for 30 days (hours don't roll over). Upgrade anytime;
-downgrades take effect at the next billing date. Site-down issues get same-day handling on
-Partner.
+- **Partner Plus** ($5,000/mo) is a "talk to us" option for bigger needs, not a standard plan
+  card. Fine to mention when a lead clearly needs more than Partner.
+- Plans are sold on what's included - uptime monitoring, a monthly site report, priority
+  slot access for future builds, integration fixes - not on hours. Churches: Planning
+  Center + YouTube monitoring is included.
+- Hours don't appear in outward copy (see Internal). Extra 5-hour blocks are $1,000,
+  upfront, good for 30 days, no rollover. Upgrade anytime; downgrades take effect at the
+  next billing date.
+
+### Internal only - quoted on intro calls, never in an email
+
+These can appear in call-prep briefs and be said on a call. Never in outreach copy, a PR, or
+anything published.
+
+| Add-on | Price |
+|---|---|
+| Extra page (Sprint or Core) | $750 |
+| Integration (Planning Center, YouTube, CRM, scheduling, etc.) | $1,500 each |
+| Priority start (optional, later) | about +15% |
+
+Example: church Core + Planning Center + YouTube = about $9,500.
 
 ### One-off services
 
@@ -116,19 +131,29 @@ outreach-email skill's Step 0 for exactly how a lead gets tagged):
 - **On Astro, Vercel, or another custom-code site:** a monthly plan still fits - frame it
   around ongoing updates and support from a dedicated team, not a rebuild.
 - **On a hosted builder (WordPress, Squarespace, Wix, a church-specific platform):** lead
-  with a new build. Sprint/Campaign as the low-risk entry point, Core as the main offer.
-- **Churches on Planning Center** (`[church].churchcenter.com`): lead with Church Core
-  specifically - the Planning Center + YouTube integrations are already included in it,
-  which is the strongest personalization angle available.
-- **Multi-campus churches, or startups that are Series B+ or already 15+ pages:** Custom.
-  Mention a range ("from $18,000"), never a specific quote.
+  with a new build. Sprint ($2,500, live in 2 weeks) as the low-risk entry point, Core
+  ($6,500, live in 4 weeks) as the main offer.
+- **Churches on Planning Center** (`[church].churchcenter.com`): still the strongest
+  personalization angle - a site built to work with the Planning Center they already run.
+  Integrations are no longer included in Core and their price is internal, so emails say
+  what we connect to, not what it costs. Fine to cite Core's public price and timeline;
+  the integration price is for the call.
+- **Multi-campus churches, or startups that are Series B+ or need well past 6 page
+  layouts:** Custom. Mention "from $12,000", never a specific quote.
 
 The natural path to pitch, when relevant: start with a build, then stay on a monthly plan
 with the same team.
 
-### Internal only - never in an email, PR, or outward-facing text
+### Other internal items
 
-- Additional-page pricing on entry tiers ($1,500/page, Sprint max 3 pages / Campaign max 2)
+- Monthly plan hour caps (Care about 3, Grow about 8, Partner 15, Partner Plus 30) and
+  15-minute time tracking
+- Market reference: freelancers $500-2k per site; small to mid agencies $5-10k for a
+  one-pager and $15-40k for 5-8 pages over 8-12 weeks; bigger shops $50k+
+- Slot counts (Sprint 1 every 2 weeks, Core 1 every 4 weeks to start; Custom on its own
+  schedule)
+- The client-goes-silent policy (Content Due Date, pause, restart fees) - it's in the Terms
+  of Service, but don't raise it in sales copy
 - Friends discount (10%, shown as a line item)
 - Internal active-work limits and how the team staffs requests
 - Hourly rate for extra meetings outside a plan ($150/hr)

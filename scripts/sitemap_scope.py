@@ -2,8 +2,9 @@
 """Estimate a site's page count and static-vs-CMS-collection split from its sitemap.
 
 Used by call-prep (and available to lead-scoring/outreach-email) to size which
-package fits: Sprint/Campaign (1 page), Core (up to 5 startups / 10 churches), or
-Custom (more than that, or real CMS-driven scope). Pure page count from a sitemap
+package fits: Sprint (1 page), Core (up to 6 unique page layouts, same for churches and
+startups), or Custom (more than that, or real CMS-driven scope). CMS items never count
+toward a tier's pages (November 2026 pricing). Pure page count from a sitemap
 is a reasonable proxy for this - it's what the pricing tiers are themselves scoped on.
 
 Heuristic, not a certainty: a path-prefix shared by 3+ URLs (e.g. /blog/*, /sermons/*,

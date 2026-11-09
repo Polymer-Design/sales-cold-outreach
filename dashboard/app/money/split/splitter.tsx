@@ -37,7 +37,7 @@ export default function Splitter({
   entries: LedgerEntry[];
 }) {
   const router = useRouter();
-  const startItem = cfg.items.find((i) => i.key === "cCore") ?? cfg.items[0];
+  const startItem = cfg.items.find((i) => i.key === "core") ?? cfg.items[0];
   const [itemKey, setItemKey] = useState(startItem.key);
   const item = cfg.items.find((i) => i.key === itemKey) as Item;
 

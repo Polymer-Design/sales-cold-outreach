@@ -30,11 +30,13 @@ test("1. no builds: every tier's next open kickoff is the first window", () => {
   assert.deepEqual(at(DEFAULT_SETTINGS, []), { sprint: 0, core: 0, church: 0 });
 });
 
-test("2. Church Core at week 0: Sprint 2, Startup Core 2, Church Core 4", () => {
-  assert.deepEqual(at(DEFAULT_SETTINGS, [build("church", 0)]), { sprint: 2, core: 2, church: 4 });
+// November 2026 pricing: Sprint is 2 weeks, Core 4, and the "church" tier key is Custom (8
+// weeks). Core's compressed weeks are heavier, so it can't overlap a Custom's design weeks.
+test("2. Custom at week 0: Sprint 4, Core 8, Custom 4", () => {
+  assert.deepEqual(at(DEFAULT_SETTINGS, [build("church", 0)]), { sprint: 4, core: 8, church: 4 });
 });
 
-test("3. Startup Core at 0, Sprint at 2 and 4: every tier opens at 6", () => {
+test("3. Core at 0, Sprint at 2 and 4: every tier opens at 6", () => {
   const builds = [build("core", 0), build("sprint", 2), build("sprint", 4)];
   assert.deepEqual(at(DEFAULT_SETTINGS, builds), { sprint: 6, core: 6, church: 6 });
 });
@@ -68,7 +70,7 @@ test("conflict reasons are human readable and booking over capacity is still all
   const load = p.buildLoad([build("church", 0)]);
   const c = p.conflicts("sprint", 0, load);
   assert.ok(c.some((x) => x.msg === "second concept week of Oct 5"));
-  assert.ok(c.some((x) => /^Blair at 18\/17h week of Oct 5$/.test(x.msg)));
+  assert.ok(c.some((x) => /^Blair at 21\/17h week of Oct 5$/.test(x.msg)));
 });
 
 test("launch date is the Friday of the last phase week", () => {
@@ -78,7 +80,7 @@ test("launch date is the Friday of the last phase week", () => {
   assert.equal(new Date(launch).toISOString().slice(0, 10), "2026-12-25");
   assert.equal(
     text.split("\n").slice(0, 4).join("\n"),
-    "Grace Hill Church · Church Core\nKickoff: Mon, Nov 2\nWeek of Mon, Nov 2: Homepage concept\nWeek of Mon, Nov 9: Review + revisions (your team)",
+    "Grace Hill Church · Custom\nKickoff: Mon, Nov 2\nWeek of Mon, Nov 2: Homepage concept\nWeek of Mon, Nov 9: Review + revisions (your team)",
   );
   assert.equal(text.split("\n").at(-1), "Launch: Fri, Dec 25");
 });
@@ -87,8 +89,9 @@ test("build status: upcoming, current phase, launched", () => {
   const p = planner(DEFAULT_SETTINGS);
   const b = build("sprint", 2);
   assert.equal(p.status(b, TODAY).label, "Upcoming");
-  assert.equal(p.status(b, parseDate("2026-10-28")).label, "Review + revisions");
-  assert.equal(p.status(b, parseDate("2026-11-16")).label, "Launched");
+  assert.equal(p.status(b, parseDate("2026-10-21")).label, "Concept + revisions");
+  assert.equal(p.status(b, parseDate("2026-10-28")).label, "Development + launch");
+  assert.equal(p.status(b, parseDate("2026-11-02")).label, "Launched");
 });
 
 test("slot deposit flag: kickoff more than 30 days after booking", () => {

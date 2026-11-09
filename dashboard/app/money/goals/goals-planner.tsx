@@ -79,7 +79,7 @@ export default function GoalsPlanner({
   const runNeed = n.one * 3.5;
   const price = (k: string) => cfg.items.find((i) => i.key === k)?.price ?? 0;
   const item = (k: string) => cfg.items.find((i) => i.key === k);
-  const exampleBuild = price("cCore");
+  const exampleBuild = price("core");
 
   const rungCopy = [
     {
@@ -173,7 +173,7 @@ export default function GoalsPlanner({
               </div>
             ))}
           </div>
-          <p className="note">Shown on a {usd(exampleBuild)} Church Core.</p>
+          <p className="note">Shown on a {usd(exampleBuild)} Core build.</p>
         </section>
 
         <section className="card stack">

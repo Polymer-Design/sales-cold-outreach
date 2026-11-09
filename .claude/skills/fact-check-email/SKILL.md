@@ -20,6 +20,11 @@ For every claim about the lead in all three emails:
 ## Check 2 — Facts about Polymer
 
 For every claim about Polymer, pricing, or past work:
+- **Pricing** must match the current pricing section of `knowledge/business-overview.md`
+  exactly (it changes - the November 2026 version retired Campaign and the separate church
+  prices). A public price appears with its timeline ("$6,500, live in 4 weeks"). Internal
+  prices (add-ons like extra pages or integrations, plan hours) never appear. Fail any draft
+  quoting a retired tier or an old number.
 - Does it appear, verbatim-compatible, in `knowledge/business-overview.md` or an
   `approved`-status case study in `knowledge/case-studies/`?
 - Numbers must match exactly. "About 5 weeks" when the case study says 6 = fail.

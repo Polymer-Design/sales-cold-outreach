@@ -43,9 +43,12 @@ Call held Monday, Nov 9, with Ethan and Blair. Full transcript: [transcripts/202
 
 ### Tier read for the proposal
 
-- **Full site: Core ($9,500)** fits. About 4-6 static pages (Core allows up to 5), a blog migration, a Calendly link, and copy help. If Why Us and About split into two pages and the blog index counts as a page, it could reach 6. Decide whether to keep it inside Core's 5 or call it out.
-- **Quick win first: a Sprint one-pager ($3,000)**, per Blair's suggestion. Sprint's standard timeline is 30 days, so if the proposal promises about a week, say that explicitly.
-- Before sending, decide whether to offer the two as separate line items or as one option. Our pricing doc doesn't cover combining or crediting them, so that's your call.
+On the November 2026 pricing (approved Nov 3; the sections below "The short version" were written before the call on the old prices):
+
+- **Full site: Core ($6,500, live in 4 weeks)** fits cleanly. Core now allows up to 6 page layouts, so Home, Services, Why Us, About, Insights and booking all fit, even if Why Us and About split. The blog migration is CMS setup, which Core includes. Payment is 50% on signing, 50% at design approval.
+- **Calendly:** linking out to Calendly is a link, not an integration. A real embed or other integration would be $1,500, an internal add-on that's fine to quote.
+- **Quick win first: a Sprint one-pager ($2,500, live in 2 weeks)**, per Blair's suggestion. Blair said "about a week" on the call. Sprint's standard is now 2 weeks, so either promise 2 or say explicitly that this one is faster.
+- **Together, $9,000.** The pricing doc doesn't cover combining or crediting a Sprint into a Core, so whether to offer them separately or as one option is your call.
 
 ### Open questions to settle in the proposal or at discovery
 
@@ -56,6 +59,9 @@ Call held Monday, Nov 9, with Ethan and Blair. Full transcript: [transcripts/202
 - **Mark the outcome** (won/lost) once he decides on the proposal.
 
 ## The short version
+
+Written before the call, on the October pricing. See "Tier read for the proposal" above for current numbers.
+
 
 - FMI Financial is a fee-only wealth management firm (a registered investment adviser) in Oak Brook, IL. It's not a startup, even though the booking was tagged that way.
 - Their site is on Wix and slow on mobile: 17.2s to load the main content, performance score 41.

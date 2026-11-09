@@ -40,36 +40,38 @@ function split(group: Item["group"], amount: number, over: { contractor?: number
   return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, r2(v)]));
 }
 
-test("1. Church Core +2 pages + PC Groups, 50% at signing", { skip }, () => {
-  const it = item("cCore");
+// Prices from the November 2026 pricing (Sprint $2,500, Core $6,500, Custom from $12,000;
+// extra page $750, integrations $1,500 each; Grow $1,000, Partner $2,500).
+test("1. Core +2 pages + Planning Center, 50% at signing", { skip }, () => {
+  const it = item("core");
   const inp = inputs(it, { extraPages: 2 });
-  inp.addons.pcg.on = true;
+  inp.addons.pc.on = true;
   const t = projectTotals(it, inp, cfg);
-  assert.equal(t.total, 18_500);
+  assert.equal(t.total, 9500);
   const chip = paymentChips(it, t.total, 0)[0];
   assert.equal(chip.label, "50% at signing");
-  assert.equal(chip.value, 9250);
+  assert.equal(chip.value, 4750);
   const o = split("build", chip.value);
-  assert.equal(o.ethan, 2220);
-  assert.equal(o.blair, 2220);
-  assert.equal(o.ethanTax, 1017.5);
-  assert.equal(o.blairTax, 1017.5);
-  assert.equal(o.toCard, 2312.5);
+  assert.equal(o.ethan, 1140);
+  assert.equal(o.blair, 1140);
+  assert.equal(o.ethanTax, 522.5);
+  assert.equal(o.blairTax, 522.5);
+  assert.equal(o.toCard, 1187.5);
   assert.equal(o.toRunway, 0);
-  assert.equal(o.operating, 462.5);
+  assert.equal(o.operating, 237.5);
 });
 
-test("1b. included add-ons (PC Events, YouTube) add $0 on Church Core", { skip }, () => {
-  const it = item("cCore");
+test("1b. church Core + Planning Center + YouTube is about $9,500 (pricing doc example)", { skip }, () => {
+  const it = item("core");
   const inp = inputs(it);
-  inp.addons.pce.on = true;
+  inp.addons.pc.on = true;
   inp.addons.yt.on = true;
-  assert.equal(projectTotals(it, inp, cfg).total, 14_000);
+  assert.equal(projectTotals(it, inp, cfg).total, 9500);
 });
 
 test("2. Partner, one month", { skip }, () => {
-  const o = split("plan", paymentChips(item("partner"), 3000, 0)[0].value);
-  assert.deepEqual([o.amount, o.ethan, o.blair, o.ethanTax, o.blairTax, o.toCard, o.operating], [3000, 795, 795, 330, 330, 300, 450]);
+  const o = split("plan", paymentChips(item("partner"), 2500, 0)[0].value);
+  assert.deepEqual([o.amount, o.ethan, o.blair, o.ethanTax, o.blairTax, o.toCard, o.operating], [2500, 662.5, 662.5, 275, 275, 250, 375]);
 });
 
 test("3. hosting reimbursement $120 with card at $50", { skip }, () => {
@@ -79,35 +81,35 @@ test("3. hosting reimbursement $120 with card at $50", { skip }, () => {
   for (const k of ["ethan", "blair", "ethanTax", "blairTax", "toRunway", "contractor"]) assert.equal(o[k], 0, k);
 });
 
-test("4. Sprint 100% ($3,000) with card at $500", { skip }, () => {
-  const o = split("build", paymentChips(item("sprint"), 3000, 0)[0].value, { cardBalance: 500 });
-  assert.deepEqual([o.toCard, o.toRunway, o.ethan, o.blair, o.ethanTax, o.blairTax, o.operating], [500, 250, 720, 720, 330, 330, 150]);
+test("4. Sprint 100% ($2,500) with card at $500", { skip }, () => {
+  const o = split("build", paymentChips(item("sprint"), 2500, 0)[0].value, { cardBalance: 500 });
+  assert.deepEqual([o.toCard, o.toRunway, o.ethan, o.blair, o.ethanTax, o.blairTax, o.operating], [500, 125, 600, 600, 275, 275, 125]);
 });
 
-test("5. Startup Core 50% at signing ($4,750), contractor $1,000", { skip }, () => {
-  const it = item("sCore");
+test("5. Core 50% at signing ($3,250), contractor $1,000", { skip }, () => {
+  const it = item("core");
   const amount = paymentChips(it, projectTotals(it, inputs(it), cfg).total, 0)[0].value;
-  assert.equal(amount, 4750);
+  assert.equal(amount, 3250);
   const o = split("build", amount, { contractor: 1000 });
-  assert.equal(o.net, 3750);
-  assert.deepEqual([o.ethan, o.blair, o.ethanTax, o.blairTax, o.toCard, o.operating, o.contractor], [900, 900, 412.5, 412.5, 937.5, 187.5, 1000]);
+  assert.equal(o.net, 2250);
+  assert.deepEqual([o.ethan, o.blair, o.ethanTax, o.blairTax, o.toCard, o.operating, o.contractor], [540, 540, 247.5, 247.5, 562.5, 112.5, 1000]);
 });
 
 test("6. Sprint 100% with $200 operating top-up", { skip }, () => {
-  const o = split("build", 3000, { topUp: 200 });
-  assert.equal(o.toCard, 550);
-  assert.equal(o.operating, 350);
+  const o = split("build", 2500, { topUp: 200 });
+  assert.equal(o.toCard, 425);
+  assert.equal(o.operating, 325);
 });
 
-test("7. Startup Core + $1,500 integration, friends discount, 50% at signing", { skip }, () => {
-  const it = item("sCore");
+test("7. Core + $1,500 integration, friends discount, 50% at signing", { skip }, () => {
+  const it = item("core");
   const inp = inputs(it, { friends: true });
   inp.addons.integ.on = true;
   const t = projectTotals(it, inp, cfg);
-  assert.equal(t.subtotal, 11_000);
-  assert.equal(t.discount, 1100);
-  assert.equal(t.total, 9900);
-  assert.equal(paymentChips(it, t.total, 0)[0].value, 4950);
+  assert.equal(t.subtotal, 8000);
+  assert.equal(t.discount, 800);
+  assert.equal(t.total, 7200);
+  assert.equal(paymentChips(it, t.total, 0)[0].value, 3600);
 });
 
 test("8. scoped: $2,500 is one chip, $4,000 is 50/50", { skip }, () => {
@@ -116,25 +118,24 @@ test("8. scoped: $2,500 is one chip, $4,000 is 50/50", { skip }, () => {
   assert.deepEqual(paymentChips(it, 4000, null).map((c) => c.value), [2000, 2000]);
 });
 
-test("9. Church Custom at $22,000", { skip }, () => {
-  const it = item("cCustom");
+test("9. Custom at $22,000", { skip }, () => {
+  const it = item("custom");
   const t = projectTotals(it, inputs(it, { customAmount: 22_000 }), cfg);
   assert.deepEqual(paymentChips(it, t.total, null).map((c) => c.value), [8800, 6600, 6600, 5500, 3300, 22_000]);
 });
 
-test("10. two 50% chips worth $7,000: only the clicked one is selected", { skip }, () => {
-  const chips = paymentChips(item("cCore"), 14_000, 1);
-  assert.equal(chips[0].value, 7000);
-  assert.equal(chips[1].value, 7000);
+test("10. two 50% chips worth $3,250: only the clicked one is selected", { skip }, () => {
+  const chips = paymentChips(item("core"), 6500, 1);
+  assert.equal(chips[0].value, 3250);
+  assert.equal(chips[1].value, 3250);
   assert.deepEqual(chips.map((c) => c.selected), [false, true, false, false, false]);
 });
 
-test("11. page caps: Sprint 3, Campaign 2, Core uncapped", { skip }, () => {
+test("11. page caps: Sprint 3, Core uncapped, Custom and one-offs have no page stepper", { skip }, () => {
   assert.equal(canAddPage(item("sprint"), 2), true);
   assert.equal(canAddPage(item("sprint"), 3), false);
-  assert.equal(canAddPage(item("campaign"), 2), false);
-  assert.equal(canAddPage(item("sCore"), 40), true);
-  assert.equal(canAddPage(item("cCore"), 40), true);
+  assert.equal(canAddPage(item("core"), 40), true);
+  assert.equal(canAddPage(item("custom"), 0), false);
   assert.equal(canAddPage(item("audit"), 0), false);
 });
 
