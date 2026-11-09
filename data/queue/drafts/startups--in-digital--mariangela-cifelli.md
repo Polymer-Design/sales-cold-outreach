@@ -38,9 +38,9 @@ subject: who owns indigital.store
 body: |
   Hey Mariangela,
 
-  At 10 people and growing fast, the site usually sits with whoever has the most spare time, not someone whose job it actually is.
+  An outage like this is what happens when nobody's actually watching the site full time, which is normal at 10 people moving fast.
 
-  We're a dedicated team that builds it right and keeps it running, so an outage like this doesn't sit unnoticed.
+  We monitor and maintain what we build, so something like this gets caught before a prospect ever sees it.
 
   Open to a quick call this week?
 
@@ -69,3 +69,4 @@ notes:
 - scripts/voice_check.py: clean. word counts: 83w/54w/36w - within band.
 - sign-off: plain "Ethan". single CTA per email, no booking link, first sentence maximally specific (an observation no other company could share).
 - checked against other drafts in data/queue/ - distinct hook, no reused phrasing.
+- CORRECTION (2026-11-09, cross-batch cohesion re-check): email_2's original draft reused an "at N people, nobody owns the site, we're a dedicated team" skeleton that turned out to repeat across most of today's startups drafts - a real template fingerprint per knowledge/voice-and-tone.md's "Surviving AI inbox triage" section. Rewrote with a distinct structure/angle for this lead. Re-ran scripts/voice_check.py (clean) and word counts (all still within band) after the edit.

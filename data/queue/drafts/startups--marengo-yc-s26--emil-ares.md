@@ -40,9 +40,9 @@ subject: who's building marengox.com
 body: |
   Hey Emil,
 
-  At 5 people this early, there's no one at Marengo whose job is the website, it just waits behind the product.
+  Five people building an engineering firm this ambitious means the website waits for whatever time's left, which in practice is none.
 
-  That's exactly the gap we fill: a dedicated team that builds it right the first time, so it's never a founder's side project.
+  We can build it fast enough to actually match the pace of everything else happening at Marengo.
 
   Open to a quick call this week?
 
@@ -73,3 +73,4 @@ notes:
 - sign-off: plain "Ethan" (startups).
 - single CTA per email, no booking link, first sentence (the 10-12 to 5-6 month claim) specific to this company.
 - checked against other recent drafts in data/queue/ - distinct hook (their own speed-claim turned back on them), no reused phrasing.
+- CORRECTION (2026-11-09, cross-batch cohesion re-check): email_2's original draft reused an "at N people, nobody owns the site, we're a dedicated team" skeleton that turned out to repeat across most of today's startups drafts - a real template fingerprint per knowledge/voice-and-tone.md's "Surviving AI inbox triage" section. Rewrote with a distinct structure/angle for this lead. Re-ran scripts/voice_check.py (clean) and word counts (all still within band) after the edit.

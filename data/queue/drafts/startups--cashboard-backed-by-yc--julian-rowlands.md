@@ -41,9 +41,9 @@ subject: who owns cashboard.co
 body: |
   Hey Julian,
 
-  At 14 people post-raise, the site's usually whoever has the most spare time, not someone whose job it actually is.
+  Finance teams will look harder at Cashboard's site now that there's a real seed round behind the name, and most 14-person teams haven't had anyone dedicated to that page since launch.
 
-  We're a dedicated team that builds it right once, then keeps it current as the product and the story keep changing.
+  We can be the team that is, building it right once and keeping it current as the product changes.
 
   Open to a quick call this week?
 
@@ -76,3 +76,4 @@ notes:
 - sign-off: plain "Ethan" (startups).
 - single CTA per email, no booking link, first sentence ($5M FINTOP seed) specific to this company, not sendable elsewhere.
 - checked against other recent drafts in data/queue/ (Beyond Reach Labs, Didit) - distinct hook (funding + vertical-trust angle), no reused phrasing.
+- CORRECTION (2026-11-09, cross-batch cohesion re-check): email_2's original draft reused an "at N people, nobody owns the site, we're a dedicated team" skeleton that turned out to repeat across most of today's startups drafts - a real template fingerprint per knowledge/voice-and-tone.md's "Surviving AI inbox triage" section. Rewrote with a distinct structure/angle for this lead. Re-ran scripts/voice_check.py (clean) and word counts (all still within band) after the edit.

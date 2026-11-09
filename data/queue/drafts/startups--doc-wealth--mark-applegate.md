@@ -24,9 +24,9 @@ subject: doc wealth's headcount
 body: |
   Hey Mark,
 
-  Doc Wealth's headcount has quadrupled over the last two years, real growth for a firm built specifically around physician tax advice.
+  A tax advisory firm built specifically for physicians, quadrupling headcount in two years, is in an unusually trust-sensitive business.
 
-  Doctors vetting a new advisor usually judge trust from the website before they ever book a call.
+  Doctors vetting a new advisor tend to judge that trust from the website long before they book a call.
 
   We build sites for growing financial-services firms in weeks, then keep building after launch. For Fispoke, a fintech client, we moved them off Wix onto a 25-page, CMS-driven build with SEO built in.
 
@@ -39,9 +39,9 @@ subject: who owns docwealth.com
 body: |
   Hey Mark,
 
-  At 14 people and growing fast, the site's usually whoever has the most spare time, not someone whose actual job it is.
+  A tax advisory firm growing this fast needs a site that reads as established, not like a side project someone's squeezing in.
 
-  We're a dedicated team that builds it right once, then keeps it current as the firm grows.
+  We can be the team that makes sure it always does, built right once and kept current.
 
   Open to a quick call this week?
 
@@ -69,3 +69,4 @@ notes:
 - scripts/voice_check.py: clean. word counts: 77w/49w/42w - within band.
 - sign-off: plain "Ethan". single CTA per email, no booking link, first sentence specific to this company.
 - checked against other drafts in data/queue/ - distinct hook, no reused phrasing.
+- CORRECTION (2026-11-09, cross-batch cohesion re-check): email_2's original draft reused an "at N people, nobody owns the site, we're a dedicated team" skeleton that turned out to repeat across most of today's startups drafts - a real template fingerprint per knowledge/voice-and-tone.md's "Surviving AI inbox triage" section. Rewrote with a distinct structure/angle for this lead. Re-ran scripts/voice_check.py (clean) and word counts (all still within band) after the edit.

@@ -41,9 +41,9 @@ subject: who's shipping agnost.ai
 body: |
   Hey Dhruv,
 
-  At 5 people, the site usually gets whatever time is left after the product, which in practice means not much.
+  Five people post-YC means every hour goes toward the product, which is exactly why the site tends to stall out.
 
-  We're a dedicated team that builds it once, done right, then keeps it current so it's never back on your list.
+  Hand it to a team that only does this, and it stops being a line item on your own list.
 
   Open to a quick call this week?
 
@@ -75,3 +75,4 @@ notes:
 - sign-off: plain "Ethan" (startups).
 - single CTA per email, no booking link, first sentence specific to this company/role, not sendable elsewhere.
 - checked against other recent drafts in data/queue/ (Beyond Reach Labs, Didit, Cashboard) - distinct hook (own-job-lands-on-your-desk angle), no reused phrasing.
+- CORRECTION (2026-11-09, cross-batch cohesion re-check): email_2's original draft reused an "at N people, nobody owns the site, we're a dedicated team" skeleton that turned out to repeat across most of today's startups drafts - a real template fingerprint per knowledge/voice-and-tone.md's "Surviving AI inbox triage" section. Rewrote with a distinct structure/angle for this lead. Re-ran scripts/voice_check.py (clean) and word counts (all still within band) after the edit.

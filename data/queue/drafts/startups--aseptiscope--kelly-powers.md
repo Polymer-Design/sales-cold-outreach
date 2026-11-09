@@ -40,9 +40,9 @@ subject: who owns diskcover.com
 body: |
   Hey Kelly,
 
-  At 13 people heading into commercialization, the site usually sits with whoever has the most spare time, not someone whose job it actually is.
+  A 13-person medical device company rarely has anyone dedicated to the website, it's whoever's free between regulatory work and everything else.
 
-  We're a dedicated team that builds it right once, then keeps it current as the company grows.
+  We can be that dedicated team, so it stops being an afterthought.
 
   Open to a quick call this week?
 
@@ -71,3 +71,4 @@ notes:
 - scripts/voice_check.py: clean. word counts: 75w/51w/40w - within band.
 - sign-off: plain "Ethan". single CTA per email, no booking link.
 - checked against other drafts in data/queue/ - distinct hook, no reused phrasing.
+- CORRECTION (2026-11-09, cross-batch cohesion re-check): email_2's original draft reused an "at N people, nobody owns the site, we're a dedicated team" skeleton that turned out to repeat across most of today's startups drafts - a real template fingerprint per knowledge/voice-and-tone.md's "Surviving AI inbox triage" section. Rewrote with a distinct structure/angle for this lead. Re-ran scripts/voice_check.py (clean) and word counts (all still within band) after the edit.

@@ -41,9 +41,9 @@ subject: who owns ticketwallet.com
 body: |
   Hey Steven,
 
-  Post-raise, growth usually means more channels to run, which leaves less time to actually rebuild the site yourself.
+  Running growth after a raise usually means more channels and more campaigns, and less bandwidth left for the one page everything else points back to.
 
-  We're a dedicated team that takes that off your plate, builds it right once, then keeps it current.
+  We can own that piece outright, build it right, and keep it current.
 
   Open to a quick call this week?
 
@@ -75,3 +75,4 @@ notes:
 - sign-off: plain "Ethan" (startups).
 - single CTA per email, no booking link, first sentence specific to this company.
 - checked against other recent drafts in data/queue/ - distinct hook, no reused phrasing.
+- CORRECTION (2026-11-09, cross-batch cohesion re-check): email_2's original draft reused an "at N people, nobody owns the site, we're a dedicated team" skeleton that turned out to repeat across most of today's startups drafts - a real template fingerprint per knowledge/voice-and-tone.md's "Surviving AI inbox triage" section. Rewrote with a distinct structure/angle for this lead. Re-ran scripts/voice_check.py (clean) and word counts (all still within band) after the edit.
