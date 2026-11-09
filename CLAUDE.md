@@ -33,6 +33,12 @@ for the pipeline map. Scheduled jobs execute the instructions in `pipeline/`.
    interactive session (not a scheduled job) can use foreground subagents
    (`run_in_background: false`) if it will actually wait on the result in the same turn.
 
+## Call transcripts
+
+When Ethan sends an intro-call transcript, follow the call-prep skill's "After the call"
+section: save it under `data/call-prep/transcripts/`, add an `## After the call` summary to
+that lead's briefing, put both in the lead's Drive folder (`Prospects/{org}`), commit.
+
 ## Where things live
 
 - ICP definitions and Apollo filters: `config/icp-*.yaml` (still `status: draft` - treat

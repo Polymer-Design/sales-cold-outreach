@@ -129,7 +129,10 @@ lead, not a script.
 3. 7-14 min - Scope: pages, content/CMS, integrations, platform fit.
 4. 14-17 min - Timeline, launch date, who decides and who will run the site.
 5. 17-20 min - Ethan plays back what he heard and names the tier he thinks fits, with the
-   reason. Next step: a proposal, or a scoping call if it's Custom.
+   reason. **If it fits clearly inside one tier, he names the price on the call** (e.g.
+   "that's our Core build, $9,500"). If it sits between tiers or is Custom, he names the tier
+   and the starting price ("Custom, from $15,000") and offers a scoping call instead of a
+   number. Next step: a proposal, or the scoping call. (Confirmed by Ethan 2026-11-09.)
 
 **Questions**, grouped by what each one decides. Use the standard set below, then make 3-5
 of them specific to this lead using Steps 1-3 (their platform, page/CMS estimate, PageSpeed,
@@ -154,10 +157,15 @@ specific ones so Ethan can see what the research added.
   - What tools does the site need to talk to today - CRM, email/newsletter, scheduling,
     forms, payments, analytics, client portal, church management?
   - Anything you're adding or switching to in the next year?
-- *Platform fit* (Webflow vs. custom Astro + Vercel + Sanity - match the platform to them):
-  - Do you want your team editing visually, page by page, or mostly through structured
-    content (posts, entries) behind the scenes?
-  - Any performance, security or compliance requirements, or a developer on your side?
+- *Platform fit* (Webflow vs. custom Astro + Vercel + Sanity). Ethan decides this on three
+  things (2026-11-09): the size of their marketing team, how technically fluent it is, and how
+  much speed the site needs. A small or less technical team that needs a simpler tool →
+  Webflow. A technically savvy team → most likely Astro + Sanity. A real need for speed or
+  performance also points to Astro + Sanity.
+  - How big is the team that will work on the site, and who's on it?
+  - How comfortable is that team with technical tools? Anyone who writes code or works in a
+    CMS like Sanity or WordPress today?
+  - How much does site speed matter to you (paid traffic, SEO, a slow site today)?
   - How much do you expect the site to grow in the next 1-2 years?
 - *Timeline and decision*:
   - Is there a launch date or event driving the timing?
@@ -225,6 +233,23 @@ answers, and say what it answered.}
 {2-3 answers that would move this lead to a different tier, e.g. "If the blog isn't
 migrating, Core is back on the table"}
 ```
+
+## After the call - transcripts
+
+Ethan doesn't fill in post-call notes. He sends the call transcript into a Claude session,
+and that transcript becomes the record. When one arrives (an interactive session, not this
+workflow):
+1. Save it verbatim to `data/call-prep/transcripts/{date}--{name-slug}.md`, with a header
+   linking the briefing file.
+2. Append a `## After the call` section to the briefing: answers to the brief's questions
+   (pages, CMS, integrations, platform fit, timeline, decision makers), the tier Ethan named
+   and whether he gave a price, the agreed next step, and any open questions. Only what the
+   transcript says.
+3. Upload the transcript to the lead's Drive folder (`Prospects/{org}`) next to the briefing,
+   with `scripts/drive_intro_folder.py sync --org "{org}" --file <transcript>` or the Google
+   Drive connector, and refresh the briefing copy there.
+4. If the outcome is clear (signed, declined), mark it: `funnel.py mark --outcome won|lost`.
+   Otherwise leave it and say so.
 
 ## Step 6 — Mirror to Drive (before the email, so the email can link to it)
 

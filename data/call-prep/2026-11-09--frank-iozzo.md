@@ -50,7 +50,7 @@ Since this is a direct booking with no outreach history and an ICP tag that does
 2. **2-7 min — Vision and goals.** What's prompting a new site now, and what should the site do for the firm?
 3. **7-14 min — Scope.** Walk his main pages, the blog and insights content, compliance, the tools the site connects to, and platform fit.
 4. **14-17 min — Timeline and decision.** Target launch date, who else signs off (partners, compliance), who runs the site after launch.
-5. **17-20 min — Play it back.** Summarize what you heard, name the tier you think fits and why, and agree the next step: a proposal for Core, or a scoping call for Custom.
+5. **17-20 min — Play it back.** Summarize what you heard and name the tier you think fits and why. If it lands clearly in Core, name the price ($9,500). If it's Custom, say "from $15,000" and offer a scoping call. Agree the next step.
 
 ## Questions to ask
 
@@ -78,9 +78,10 @@ Questions marked **(from research)** are specific to Frank. The rest are the sta
 - What does the site need to connect to: a client portal login, scheduling for intro meetings, a newsletter or email tool, a CRM?
 - Anything you're adding or switching to in the next year?
 
-**Platform fit (Webflow vs. custom Astro + Vercel + Sanity)**
-- Do you want to edit pages visually yourself, or mostly just publish posts and updates?
-- Any security or performance requirements from your firm or your custodian?
+**Platform fit (Webflow vs. custom Astro + Vercel + Sanity: team size, technical fluency, speed)**
+- Who works on the site today: just you, or a marketing person or team?
+- How comfortable is whoever will update it with technical tools? A small, non-technical team points to Webflow.
+- **(from research)** Your site currently takes about 17 seconds to load on mobile. How much does speed matter to you? A real need for speed points to Astro + Sanity.
 
 **Timeline and decision**
 - Is there a date driving this, like a rebrand, a new service or the new year?
@@ -90,7 +91,7 @@ Questions marked **(from research)** are specific to Frank. The rest are the sta
 **After launch**
 - Who keeps the site updated once it's live? If he'd want ongoing help, that sets up a monthly plan later. Don't lead with it.
 
-**Already answered by research, so no need to ask:** what platform he's on (Wix), whether the current site is slow (mobile load measured at 17.2s), and roughly how much content exists.
+**Already answered by research, so no need to ask:** what platform he's on (Wix) and roughly how much content exists.
 
 ## What would change the recommendation
 
