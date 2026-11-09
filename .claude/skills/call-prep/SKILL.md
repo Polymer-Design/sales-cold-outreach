@@ -194,45 +194,57 @@ test data, to `data/call-prep/_test/{date}--{name-slug}.md` instead (see Step 1)
 **When:** {appointment_time}          **ICP:** {icp}          **Track:** {new_build|subscription}
 **Lead score:** {tier} ({total}), or "Not in our outreach system — booked directly"
 
-## What we sent them
-{subject lines + one-line summary of each of the 3 emails, or "n/a"}
+## The short version
+{3 bullets: who they are in one line, the one site fact that matters most, the tier you'd
+walk in with}
 
-## Company and industry
+## Call plan (20 min)
+{the five-part agenda from Step 4b, with time boxes}
+
+## Questions to ask
+{Step 4b's question groups, each group as a ### heading with a bullet list. The 3-5
+lead-specific questions marked "(from research)" and placed in the group they belong to;
+trim any standard question the research already answers, and say what it answered.}
+
+## Recommended package
+{the package/plan from Step 4, with the one-line reasoning (page count, track, etc.) -
+framed as a suggestion, not a quote already given}
+
+### What would change it
+{2-3 answers that would move this lead to a different tier, e.g. "If the blog isn't
+migrating, Core is back on the table"}
+
+## Suggested angle for the call
+One or two sentences — given the track and what's known, what's the natural opening
+thread to pull on. Not a script, just a running start.
+
+## Background
+
+### What we sent them
+{subject lines + one-line summary of each of the 3 emails, or "Booked directly, no
+outreach history"}
+
+### Company and industry
 {what they do, size/stage, anything timely, the specific person - each fact sourced}
 
-## What we found on them
-{the research bullets gathered at draft time, each with its source}
+### What we found on them
+{the research bullets gathered at draft time, each with its source; omit if none}
 
-## Their current stack and site scope
+### Their current stack and site scope
 - Platform: {webflow/squarespace/wix/subsplash/wordpress/unknown}
 - Pages: {total from sitemap_scope.py, with the static/CMS-collection split, or "not
   available" if no sitemap was found}
 - {Planning Center / ChMS signal if church}
 - PageSpeed: {performance, accessibility, best practices, SEO scores, load time}
 
-## Recommended package
-{the package/plan from Step 4, with the one-line reasoning (page count, track, etc.) -
-framed as a suggestion, not a quote already given}
-
-## Reply history
-{if they replied to outreach: what they said, how it was classified. Else: "No prior reply — this is their first touch" or "Booked directly, no outreach history"}
-
-## Suggested angle for the call
-One or two sentences — given the track and what's known, what's the natural opening
-thread to pull on. Not a script, just a running start.
-
-## Call plan (20 min)
-{the five-part agenda from Step 4b, with time boxes}
-
-## Questions to ask
-{Step 4b's question groups. The 3-5 lead-specific questions marked "(from research)" and
-placed in the group they belong to; trim any standard question the research already
-answers, and say what it answered.}
-
-## What would change the recommendation
-{2-3 answers that would move this lead to a different tier, e.g. "If the blog isn't
-migrating, Core is back on the table"}
+### Reply history
+{if they replied to outreach: what they said, how it was classified. Else omit}
 ```
+
+**Layout (Ethan, 2026-11-09):** what he needs on the call comes first, background last.
+Every list is a real Markdown list with a blank line before it, so it turns into bullets
+in the Google Doc. Keep repo paths and internal labels out of the body; it's read in Docs
+on his phone.
 
 ## After the call - transcripts
 
@@ -241,13 +253,21 @@ and that transcript becomes the record. When one arrives (an interactive session
 workflow):
 1. Save it verbatim to `data/call-prep/transcripts/{date}--{name-slug}.md`, with a header
    linking the briefing file.
-2. Append a `## After the call` section to the briefing: answers to the brief's questions
-   (pages, CMS, integrations, platform fit, timeline, decision makers), the tier Ethan named
-   and whether he gave a price, the agreed next step, and any open questions. Only what the
-   transcript says.
-3. Upload the transcript to the lead's Drive folder (`Prospects/{org}`) next to the briefing,
-   with `scripts/drive_intro_folder.py sync --org "{org}" --file <transcript>` or the Google
-   Drive connector, and refresh the briefing copy there.
+2. Add a `## After the call` section to the briefing, **right under the header** (above "The
+   short version" - once the call has happened, it's what matters most): why now, what they
+   want, the scope heard (answers to the brief's questions
+   - pages, CMS, integrations, platform fit, timeline, decision makers), what we told them,
+   the tier read for the proposal and whether a price was named, the agreed next step with
+   its date, and open questions. Only what the transcript says; label anything inferred.
+   Transcript speaker labels are often wrong (the tool mislabels who's talking), so work out
+   who said what from context and note it at the top of the saved transcript.
+3. Put both in the lead's Drive folder (`Prospects/{org}`) as Google Docs: the transcript as
+   a new Doc (upload it as `text/plain` so each spoken line stays its own line), and the
+   `## After the call` section added to the existing briefing Doc (same file, same link -
+   don't make a second briefing Doc). `scripts/drive_intro_folder.py sync
+   --org "{org}" --file <briefing> --file <transcript>` does both in CI; in an interactive
+   session the Google Drive/Docs connectors work too (create with `text/markdown`, never
+   HTML - see the script's note on dollar signs).
 4. If the outcome is clear (signed, declined), mark it: `funnel.py mark --outcome won|lost`.
    Otherwise leave it and say so.
 
@@ -271,9 +291,10 @@ python scripts/drive_intro_folder.py sync --org "{org}" \
 
 This creates (or reuses) a "Prospects" folder under the configured parent, then an org-named
 folder under that, and uploads/updates the briefing (plus the sent-sequence file with its
-research block, if matched) as plain markdown. Its JSON output includes a direct `url` per
-uploaded file (`https://drive.google.com/file/d/.../view`) - **use the briefing's own url
-as the "Full briefing" link in Step 7's email.**
+research block, if matched) **as Google Docs**, titled from each file's `# heading`
+(Ethan asked for every brief as a Doc, 2026-11-09). Its JSON output includes a direct `url`
+per uploaded Doc (`https://docs.google.com/document/d/.../edit`) - **use the briefing's own
+url as the "Full briefing" link in Step 7's email.**
 
 If the command errors (missing credentials, folder not shared, etc.), don't fail the whole
 run over it - the email + committed file are still the primary delivery. Fall back to the

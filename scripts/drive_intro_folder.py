@@ -2,7 +2,7 @@
 """Mirror call-prep context into Google Drive, organized by org name.
 
 Creates (or reuses) a "Prospects" subfolder under a configured parent folder, then an
-org-named subfolder under that, and uploads/updates markdown files into it - the
+org-named subfolder under that, and uploads/updates files into it as Google Docs - the
 call-prep briefing, and (if this lead came through outreach) the sequence file
 holding the research + the 3 emails that were sent. A separate automation (not in
 this repo) later moves the org folder into the main client folder once they sign -
@@ -61,7 +61,11 @@ def _find_child(drive, parent_id: str, name: str, mime: str | None = None) -> st
     # Without these, the API silently returns zero results instead of erroring, which is
     # how this stayed broken through a "the folder IS shared" report - the share was real,
     # these two params just weren't being sent.
-    q = f"'{parent_id}' in parents and name = {json.dumps(name)} and trashed = false"
+    # Drive query strings are single-quoted with backslash escapes. json.dumps would turn
+    # an em dash into \u2014, which Drive doesn't decode, so the lookup would miss and a
+    # duplicate would be created on every update.
+    quoted = "'" + name.replace("\\", "\\\\").replace("'", "\\'") + "'"
+    q = f"'{parent_id}' in parents and name = {quoted} and trashed = false"
     if mime:
         q += f" and mimeType = '{mime}'"
     resp = drive.files().list(
@@ -83,17 +87,33 @@ def _ensure_folder(drive, parent_id: str, name: str) -> str:
     return created["id"]
 
 
-def _upsert_markdown(drive, media_cls, parent_id: str, filename: str, content: str) -> str:
+DOC_MIME = "application/vnd.google-apps.document"
+
+
+def _upsert_doc(drive, media_cls, parent_id: str, title: str, content: str) -> str:
+    """Upload markdown as a native Google Doc, so Ethan can open, read and edit it on any
+    device (asked for 2026-11-09: every brief as a Doc, not a raw .md file). Uses Drive's
+    Markdown import, which keeps headings, lists, bold and links. Not HTML import: that one
+    turns text between two dollar signs ("from $15,000 ... ($9,500)") into an equation and
+    drops it (seen on the FMI Financial brief)."""
     media = media_cls(content.encode("utf-8"), mimetype="text/markdown")
-    existing = _find_child(drive, parent_id, filename)
+    existing = _find_child(drive, parent_id, title, DOC_MIME)
     if existing:
         drive.files().update(fileId=existing, media_body=media, supportsAllDrives=True).execute()
         return existing
     created = drive.files().create(
-        body={"name": filename, "parents": [parent_id]}, media_body=media, fields="id",
-        supportsAllDrives=True,
+        body={"name": title, "parents": [parent_id], "mimeType": DOC_MIME},
+        media_body=media, fields="id", supportsAllDrives=True,
     ).execute()
     return created["id"]
+
+
+def _doc_title(p: Path) -> str:
+    """The file's own '# heading' (e.g. 'Call prep: Jane Doe — Acme'), else its name."""
+    for line in p.read_text().splitlines():
+        if line.startswith("# "):
+            return line[2:].strip()
+    return p.stem
 
 
 def sync(org: str, file_paths: list[str]) -> dict:
@@ -107,9 +127,10 @@ def sync(org: str, file_paths: list[str]) -> dict:
         if not p.exists():
             missing.append(path_str)
             continue
-        file_id = _upsert_markdown(drive, media_cls, org_folder_id, p.name, p.read_text())
-        uploaded.append({"name": p.name, "id": file_id,
-                          "url": f"https://drive.google.com/file/d/{file_id}/view"})
+        title = _doc_title(p)
+        file_id = _upsert_doc(drive, media_cls, org_folder_id, title, p.read_text())
+        uploaded.append({"name": title, "id": file_id,
+                          "url": f"https://docs.google.com/document/d/{file_id}/edit"})
 
     if missing:
         print(f"WARNING: these files don't exist, skipped: {missing}", file=sys.stderr)
