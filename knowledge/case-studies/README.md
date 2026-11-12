@@ -10,5 +10,6 @@ Rules:
 - `public_url` is optional. Once the case study is live on hellopolymer.com, add the URL
   and emails can link to it. Until then it's citable in text but not linkable.
 
-Currently empty except the template. This is the single biggest blocker to strong
-personalization — even 2 short ones (one startup, one church) changes draft quality a lot.
+Currently has two: `fispoke.md` (startups) and `landmark-church.md` (churches). Still the
+single biggest blocker to strong personalization — more case studies, especially ones with
+verified metrics, changes draft quality a lot.
