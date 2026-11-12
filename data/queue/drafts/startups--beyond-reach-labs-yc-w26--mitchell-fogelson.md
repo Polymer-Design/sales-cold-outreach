@@ -7,7 +7,7 @@ apollo_person_id: 58c1c140f6512541dabc1b51
 score_total: 82
 tier: hot
 research_arm: light
-status: ready
+status: hot_approved
 drafted_at: 2026-11-09
 ---
 
