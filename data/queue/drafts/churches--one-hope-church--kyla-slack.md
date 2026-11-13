@@ -7,7 +7,9 @@ apollo_contact_id: 57da6d75a6da984aabc2ca8c
 score_total: 64
 tier: warm
 research_arm: light
-status: ready
+status: pushed
+pushed_at: 2026-11-13T13:30:00Z
+pushed_via_mailbox: ethan@integratedchurchwebsites.com
 drafted_at: 2026-11-13
 ---
 
