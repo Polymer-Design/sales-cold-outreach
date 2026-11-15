@@ -51,6 +51,17 @@ per ICP).
 - **Update 2026-11-01 (biweekly review):** 71 of 113 total sends since launch now carry an
   arm: 33 `deep`, 38 `light` (the other 42 sends predate 2026-10-21 or are hot-tier drafts,
   which don't get an arm). Still under the 100/arm minimum - still collecting, no verdict.
+- **Update 2026-11-15 (biweekly review):** 153 of 197 cumulative sends now carry an arm: 73
+  `deep`, 80 `light` (per `funnel.py stats`). Closer to the 100/arm minimum but still under it
+  on both arms - still collecting, no verdict. 0 replies across all 197 sends regardless of
+  arm, so even once the sample bar clears there's no signal yet to read.
+
+Reviewed 2026-11-15 (biweekly review): volume up to 197 cumulative sends (142 startups, 55
+churches), cost-cap fix from 2026-11-03 holding clean (no skipped runs since). New finding:
+`ehoover@integratedchurchwebsites.com` hit 16.7% unsubscribe / 5.3% bounce in Apollo's latest
+weekly rollup - both over this skill's alarm lines - recommended pausing new church-track
+adds to that mailbox pending review. Zero replies across all 197 sends, so no experiment
+backlog item opened. See `data/reports/2026-11-15-review.md` for the full breakdown.
 
 Reviewed 2026-11-01 (biweekly review): first review with real send volume (113 sends,
 2026-10-17 through 2026-10-30), delivery clean on 3/4 mailboxes, 0 replies/opens so far (too
