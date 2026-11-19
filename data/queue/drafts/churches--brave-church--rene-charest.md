@@ -7,7 +7,7 @@ apollo_contact_id: 64d8f403560f3d00011114cb
 score_total: 64
 tier: warm
 research_arm: light
-status: ready
+status: skipped
 drafted_at: 2026-11-19
 ---
 
@@ -94,3 +94,15 @@ notes:
 - One CTA per email, sign-off "God Bless," then "Ethan" on all three
 - Cohesion: distinct angles (visitor-facing split in e1, staff/publishing friction in e2,
   closer in e3), escalating brevity, no repeated proof point (Landmark stat only in email_1)
+
+## skip_reason
+Caught at push time (2026-11-19), after fact-check already passed: Apollo people/match for
+apollo_contact_id 64d8f403560f3d00011114cb returns email renec@vccfresno.org, not a
+brave.church address. WebFetch of vccfresno.org (2026-11-19) confirms that domain belongs to
+"Valley Christian Center," Fresno, CA - no mention of Rene Charest or Brave Church anywhere
+on it. WebSearch (2026-11-19) found no connection between a Rene Charest and Brave Church
+either. This looks like a stale/mismatched Apollo contact-to-org association, not a real
+Brave Church decision-maker - sending this org-specific draft to that address would misfire.
+Do not push. Needs a human check (or a fresh Apollo people-search against brave.church) before
+Brave Church gets another drafting pass; the org itself (confirmed Planning Center + 91 staff
+per org_data) may still be a fine lead once paired with a verified contact.
