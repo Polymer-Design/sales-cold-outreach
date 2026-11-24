@@ -6,8 +6,10 @@ icp: churches
 apollo_contact_id: 54a7109d746869705aac2a12
 score_total: 77
 tier: hot
-status: hot_approved
+status: pushed
 drafted_at: 2026-11-20
+pushed_at: 2026-11-24T13:10:59Z
+mailbox: ehoover@integratedchurchwebsites.com
 ---
 
 ## research
