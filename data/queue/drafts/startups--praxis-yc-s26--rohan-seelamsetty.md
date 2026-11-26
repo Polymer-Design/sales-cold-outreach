@@ -7,7 +7,10 @@ apollo_contact_id: 6715cf0e350bc60001d1a104
 score_total: 64
 tier: warm
 research_arm: deep
-status: ready
+status: pushed
+pushed_at: 2026-11-26T13:38:42Z
+pushed_via_mailbox: ehoover@growwithpolymer.com
+apollo_contact_id_resolved: 6b0836612ca96d00200a824b
 drafted_at: 2026-11-26
 ---
 
