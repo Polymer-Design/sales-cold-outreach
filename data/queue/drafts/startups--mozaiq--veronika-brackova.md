@@ -9,6 +9,11 @@ tier: warm
 research_arm: light
 status: ready
 drafted_at: 2026-11-26
+push_blocked_note: >
+  2026-11-27: not pushed. The stored apollo_contact_id does not resolve (GET
+  contacts/{id} 422s "does not exist"), and a fresh Apollo people-search/contacts-search
+  for mozaiq.com and for "Veronika Brackova" both return zero matches - no resolvable
+  current email. Not pushed rather than guess an address. Re-check on a future run.
 ---
 
 ## research

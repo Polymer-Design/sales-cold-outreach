@@ -9,6 +9,10 @@ tier: warm
 research_arm: light
 status: ready
 drafted_at: 2026-11-27
+push_blocked_note: >
+  2026-11-27: fresh Apollo people-search for psybercog.com returned 0 matches - no
+  resolvable current contact/email, so not pushed rather than guess an address. Re-check
+  on a future run.
 ---
 
 ## research

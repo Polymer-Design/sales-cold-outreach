@@ -9,6 +9,13 @@ tier: warm
 research_arm: deep
 status: ready
 drafted_at: 2026-11-27
+push_blocked_note: >
+  2026-11-27: fresh Apollo people-search for montrosechurch.org returned Cyndi Roberts'
+  title/record but with email dionna.williams@montrosechurch.org - a name/email mismatch.
+  Not pushed rather than risk sending to the wrong mailbox under Cyndi's name. Dave
+  Roberts' email (dave.roberts@montrosechurch.org) resolved cleanly as the secondary
+  contact if Ethan wants to push to him instead, or re-check Cyndi's record before next
+  run.
 ---
 
 ## research
